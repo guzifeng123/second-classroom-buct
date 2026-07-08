@@ -1,0 +1,71 @@
+.transfer-button {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  padding: 0 22px;
+  border: 1px solid #d7c08a;
+  border-radius: var(--app-radius-sm);
+  background: var(--app-gold-soft);
+  color: #775315;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 54px;
+  white-space: nowrap;
+}
+
+.transfer-button::before {
+  content: "↗";
+  margin-right: 8px;
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.transfer-button--online {
+  border-color: #72a88c;
+  background: #edf8f1;
+  color: #1f6f50;
+}
+
+.transfer-button--compact {
+  height: 54px;
+  padding: 0 18px;
+  font-size: 23px;
+  line-height: 52px;
+}
+
+.transfer-button[disabled] {
+  border-color: #d8ddd9;
+  background: #eef1ef;
+  color: #9aa39d;
+  opacity: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .transfer-button:not([disabled]):hover {
+    border-color: var(--app-brand-2);
+    box-shadow: var(--app-shadow-sm);
+  }
+}
+
+@media (min-width: 960PX) {
+  .transfer-button {
+    height: 38PX;
+    padding: 0 14PX;
+    font-size: 13PX;
+    line-height: 36PX;
+  }
+
+  .transfer-button::before {
+    margin-right: 5PX;
+    font-size: 13PX;
+  }
+
+  .transfer-button--compact {
+    height: 34PX;
+    padding: 0 12PX;
+    font-size: 12PX;
+    line-height: 32PX;
+  }
+}

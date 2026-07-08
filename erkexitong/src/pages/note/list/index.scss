@@ -1,0 +1,372 @@
+.note-list {
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding-bottom: 40px;
+  background:
+    linear-gradient(180deg, rgba(31, 61, 50, 0.08), rgba(31, 61, 50, 0) 340px),
+    var(--app-bg);
+}
+
+.note-list--gate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.note-list__gate-title {
+  color: var(--app-ink);
+  font-size: 34px;
+  font-weight: 900;
+}
+
+.note-list__gate-button,
+.note-list__back,
+.note-list__tool-button,
+.note-list__primary,
+.note-list__empty-button,
+.note-list__card-button {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--app-radius-sm);
+  font-weight: 900;
+}
+
+.note-list__hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 30px 28px 24px;
+  background:
+    radial-gradient(circle at 88% 18%, rgba(215, 192, 138, 0.16), rgba(215, 192, 138, 0) 34%),
+    var(--app-brand);
+}
+
+.note-list__label {
+  display: block;
+  color: var(--app-gold);
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 30px;
+}
+
+.note-list__title {
+  display: block;
+  margin-top: 8px;
+  color: #ffffff;
+  font-size: 34px;
+  font-weight: 900;
+  line-height: 42px;
+  word-break: break-word;
+}
+
+.note-list__sub {
+  display: block;
+  margin-top: 8px;
+  color: #c8d8d0;
+  font-size: 22px;
+  line-height: 32px;
+}
+
+.note-list__back {
+  flex: 0 0 auto;
+  width: 128px;
+  height: 58px;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  font-size: 23px;
+  line-height: 56px;
+}
+
+.note-list__tools {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 118px 118px;
+  gap: 10px;
+  margin: 22px 24px 12px;
+}
+
+.note-list__search {
+  height: 68px;
+  padding: 0 18px;
+  border: 1px solid var(--app-border-strong);
+  border-radius: var(--app-radius-sm);
+  background: var(--app-surface);
+  color: var(--app-ink);
+  font-size: 24px;
+}
+
+.note-list__tool-button,
+.note-list__primary {
+  height: 68px;
+  padding: 0;
+  font-size: 23px;
+  line-height: 66px;
+}
+
+.note-list__tool-button {
+  border: 1px solid var(--app-border-strong);
+  background: var(--app-brand-soft);
+  color: #245844;
+}
+
+.note-list__primary,
+.note-list__empty-button,
+.note-list__card-button {
+  background: var(--app-brand-2);
+  color: #ffffff;
+}
+
+.note-list__status {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 24px 14px;
+  color: var(--app-muted);
+  font-size: 21px;
+  line-height: 30px;
+}
+
+.note-list > .ui-status-banner,
+.note-list > .ui-empty-state {
+  margin-right: 24px;
+  margin-left: 24px;
+}
+
+.note-list > .ui-status-banner {
+  margin-bottom: 14px;
+}
+
+.note-list > .ui-empty-state {
+  margin-top: 34px;
+}
+
+.note-list__error {
+  display: block;
+  margin: 0 24px 14px;
+  padding: 14px 16px;
+  border: 1px solid #f0c9c4;
+  border-radius: var(--app-radius-sm);
+  background: var(--app-danger-soft);
+  color: var(--app-danger);
+  font-size: 22px;
+  line-height: 32px;
+}
+
+.note-list__empty {
+  margin: 34px 24px 0;
+  padding: 40px 26px;
+  border: 1px dashed var(--app-border-strong);
+  border-radius: var(--app-radius);
+  background:
+    linear-gradient(135deg, rgba(35, 129, 95, 0.05), rgba(215, 192, 138, 0.08)),
+    #f8fbf8;
+  text-align: center;
+}
+
+.note-list__empty-title {
+  display: block;
+  color: var(--app-ink);
+  font-size: 31px;
+  font-weight: 900;
+  line-height: 39px;
+}
+
+.note-list__empty-copy {
+  display: block;
+  margin-top: 12px;
+  color: var(--app-muted);
+  font-size: 23px;
+  line-height: 34px;
+}
+
+.note-list__empty-button {
+  width: 230px;
+  height: 64px;
+  margin: 24px auto 0;
+  font-size: 23px;
+  line-height: 62px;
+}
+
+.note-list__grid {
+  display: grid;
+  gap: 16px;
+  margin: 0 24px;
+}
+
+.note-list__card {
+  padding: 20px;
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: var(--app-shadow-sm);
+}
+
+.note-list__card-title {
+  display: block;
+  color: var(--app-ink);
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 36px;
+}
+
+.note-list__card-copy {
+  display: -webkit-box;
+  overflow: hidden;
+  margin-top: 8px;
+  color: var(--app-ink-soft);
+  font-size: 22px;
+  line-height: 32px;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.note-list__card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin-top: 16px;
+  color: var(--app-muted);
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.note-list__card-button {
+  width: 156px;
+  height: 54px;
+  margin-top: 18px;
+  font-size: 21px;
+  line-height: 52px;
+}
+
+@media (min-width: 960PX) {
+  .note-list {
+    padding: 20PX 24PX 40PX;
+  }
+
+  .note-list__hero,
+  .note-list__tools,
+  .note-list__status,
+  .note-list__error,
+  .note-list__empty,
+  .note-list__grid,
+  .note-list > .ui-status-banner,
+  .note-list > .ui-empty-state {
+    max-width: 1180PX;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .note-list__hero {
+    min-height: 118PX;
+    padding: 24PX 32PX;
+    border-radius: 8PX;
+  }
+
+  .note-list__label {
+    font-size: 13PX;
+    line-height: 19PX;
+  }
+
+  .note-list__title {
+    font-size: 28PX;
+    line-height: 34PX;
+  }
+
+  .note-list__sub {
+    font-size: 14PX;
+    line-height: 22PX;
+  }
+
+  .note-list__back {
+    width: 88PX;
+    height: 38PX;
+    font-size: 12PX;
+    line-height: 36PX;
+  }
+
+  .note-list__tools {
+    grid-template-columns: minmax(0, 1fr) 90PX 90PX;
+    gap: 8PX;
+    margin-top: 18PX;
+    margin-bottom: 10PX;
+  }
+
+  .note-list__search,
+  .note-list__tool-button,
+  .note-list__primary {
+    height: 40PX;
+    font-size: 13PX;
+    line-height: 38PX;
+  }
+
+  .note-list__search {
+    padding: 0 12PX;
+  }
+
+  .note-list__status {
+    font-size: 11PX;
+    line-height: 17PX;
+  }
+
+  .note-list__error {
+    padding: 10PX 12PX;
+    font-size: 12PX;
+    line-height: 18PX;
+  }
+
+  .note-list__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14PX;
+  }
+
+  .note-list__card {
+    padding: 18PX;
+  }
+
+  .note-list__card-title {
+    font-size: 17PX;
+    line-height: 23PX;
+  }
+
+  .note-list__card-copy {
+    font-size: 12PX;
+    line-height: 19PX;
+  }
+
+  .note-list__card-meta {
+    font-size: 11PX;
+    line-height: 16PX;
+  }
+
+  .note-list__card-button {
+    width: 92PX;
+    height: 34PX;
+    font-size: 12PX;
+    line-height: 32PX;
+  }
+
+  .note-list__empty {
+    padding: 42PX 28PX;
+  }
+
+  .note-list__empty-title {
+    font-size: 22PX;
+    line-height: 28PX;
+  }
+
+  .note-list__empty-copy {
+    font-size: 13PX;
+    line-height: 21PX;
+  }
+
+  .note-list__empty-button {
+    width: 132PX;
+    height: 38PX;
+    font-size: 12PX;
+    line-height: 36PX;
+  }
+}

@@ -1,0 +1,91 @@
+# 项目目标
+创建一个多端统一的应用，支持 **Android App、微信小程序、Web(H5)** 三个平台，
+所有平台共享同一套业务代码，并支持“多端流转”（同一账号在不同设备间无缝接续使用状态，例如手机编辑的内容在电脑上立刻继续）。
+
+# 技术栈与工具
+- 前端跨端框架：Taro 3.x + React + TypeScript
+- Android 端渲染方式：React Native（Taro 的 RN 模式）
+- 微信小程序：Taro 编译为原生小程序代码
+- Web：Taro 编译为 React SPA（H5）
+- 状态管理：Zustand（轻量、跨端无痛）
+- 网络请求：统一封装 axios / Taro.request
+- 实时通信：WebSocket（长连接），使用 socket.io-client 或原生 WebSocket
+- 后端（本次提示词仅前端部分，但需预留接口）：
+  - REST API 用于普通业务
+  - WebSocket 房间按用户 ID 分组，用于多端状态同步
+  - Redis 保存用户会话状态快照
+
+# 核心要求
+1. **一套代码覆盖三端**，利用 Taro 的条件编译处理极少量平台差异。
+2. **状态管理完全共享**，登录后的用户信息、业务数据、流转状态均通过 Zustand 统一管理。
+3. **所有端使用同一套 WebSocket 管理逻辑**：
+   - 用户登录后，WebSocket 连接到后端房间（room = 用户ID）
+   - 前端实时监听其他端发来的状态更新，并自动 merge 到本地 Zustand store
+   - 用户主动触发流转时，通过 WebSocket 发送“流转意图”给服务端，服务端广播到其他端
+4. **优雅的离线与重连机制**：
+   - WebSocket 断线自动重连
+   - 上线后自动拉取最新状态快照（API 调用）
+5. **目录结构清晰**，反映跨端复用的分层：
+   - src/pages 业务页面（跨端共享）
+   - src/components 跨端组件
+   - src/stores Zustand store
+   - src/services API 和 WebSocket 封装
+   - src/utils 工具函数
+   - platform/ 平台特有代码（极少，用 Taro 条件编译文件）
+
+# 需要 AI 生成的初始内容
+请按以下顺序生成代码，并确保每一步都可以独立运行：
+
+1. **项目初始化**
+   - 使用 Taro CLI 创建 React+TS 模板的命令（告诉用户如何执行）
+   - 安装必要依赖：zustand, socket.io-client, axios 等
+   - 生成 config 文件夹下各平台的配置（如 app.config.ts）
+
+2. **全局状态 Store**
+   - 创建 userStore（用户信息、登录状态、设备ID）
+   - 创建 transferStore（流转状态，例如“正在编辑的文档ID”、“播放进度”、“剪贴板内容”）
+   - 创建 connectionStore（WebSocket 连接状态、重连次数）
+
+3. **WebSocket 核心封装** (src/services/websocket.ts)
+   - 连接管理（基于 socket.io-client，自动带用户 token 鉴权）
+   - 房间加入/离开（join user room）
+   - 监听服务端广播事件，并自动更新对应的 Zustand store
+   - 发送流转意图的方法（sendTransfer），携带目标设备、动作和数据
+   - 心跳保活（针对 Android 后台场景做好保活提示）
+   - 重连机制
+
+4. **流转同步服务层** (src/services/transferService.ts)
+   - 在收到 WebSocket 流转事件时，根据事件类型（如 `EDIT_ITEM`、`PLAY_PROGRESS`）更新 transferStore
+   - 提供主动流转方法（如 `transferTo(targetDevice, action, payload)`）
+   - 提供拉取最新状态快照的方法（REST API 调用）
+
+5. **登录与设备管理示例页面**
+   - 一个简单的登录页面（输入用户ID）
+   - 登录成功后，将用户信息存入 userStore，初始化 WebSocket 连接
+   - 显示当前登录的设备列表（从后端获取，此处用 mock 数据）
+   - 提供“流转”按钮，模拟将当前编辑的文本内容流转到其他端
+
+6. **一个具体的跨端流转演示场景**
+   - 场景：“跨端笔记编辑”
+   - 页面上有一个多行文本输入框，内容实时保存在 Zustand transferStore 中
+   - 当用户点击“发送到其他设备”时，将当前文本内容通过 WebSocket 流转到同账号下的其他端
+   - 在其他端，文本会自动出现在输入框中，并可以继续编辑
+
+7. **三端编译与运行说明**
+   - 给出 H5 运行命令：`npm run dev:h5`
+   - 微信小程序编译与预览：`npm run dev:weapp`
+   - Android 原生预览：`npm run dev:rn` 及相关原生环境配置简要说明
+
+# 风格要求
+- 代码必须类型安全（TypeScript）
+- 遵循 React Hooks 最佳实践
+- 注释清晰，说明跨端适配的注意事项
+- 所有网络请求和 WebSocket 通信都假设后端已存在，提供接口格式示例（如 REST API 的 JSON 结构、WebSocket 事件名）
+- 使用 Taro 的 API（如 Taro.setStorage、Taro.request 等）以保证多端兼容
+
+# 期望的输出格式
+- 先给出项目完整的文件树
+- 然后逐一生成每个文件的完整代码（长代码用代码块包裹）
+- 最后给出如何运行的步骤
+
+现在请开始生成。

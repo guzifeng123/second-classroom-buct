@@ -1,0 +1,444 @@
+.evaluation-preview {
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding-bottom: 142px;
+  background:
+    linear-gradient(180deg, rgba(31, 61, 50, 0.08), rgba(31, 61, 50, 0) 340px),
+    var(--app-bg);
+}
+
+.evaluation-preview--gate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.evaluation-preview__gate-title {
+  color: var(--app-ink);
+  font-size: 34px;
+  font-weight: 900;
+}
+
+.evaluation-preview__gate-button,
+.evaluation-preview__ghost,
+.evaluation-preview__primary {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--app-radius-sm);
+  font-weight: 900;
+}
+
+.evaluation-preview__hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 30px 28px 24px;
+  background:
+    radial-gradient(circle at 88% 18%, rgba(215, 192, 138, 0.16), rgba(215, 192, 138, 0) 34%),
+    var(--app-brand);
+}
+
+.evaluation-preview__label {
+  display: block;
+  color: var(--app-gold);
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 30px;
+}
+
+.evaluation-preview__title {
+  display: block;
+  margin-top: 8px;
+  color: #ffffff;
+  font-size: 34px;
+  font-weight: 900;
+  line-height: 42px;
+  word-break: break-word;
+}
+
+.evaluation-preview__sub {
+  display: block;
+  margin-top: 8px;
+  color: #c8d8d0;
+  font-size: 22px;
+  line-height: 32px;
+}
+
+.evaluation-preview__score {
+  display: flex;
+  align-items: baseline;
+  flex: 0 0 auto;
+}
+
+.evaluation-preview__score-number {
+  color: #ffffff;
+  font-size: 56px;
+  font-weight: 900;
+  line-height: 62px;
+}
+
+.evaluation-preview__score-label {
+  margin-left: 4px;
+  color: #c7d7cf;
+  font-size: 24px;
+}
+
+.evaluation-preview__stats,
+.evaluation-preview__summaries {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 18px 24px;
+}
+
+.evaluation-preview__stat,
+.evaluation-preview__summary,
+.evaluation-preview__issues,
+.evaluation-preview__detail {
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: var(--app-shadow-sm);
+}
+
+.evaluation-preview__stat {
+  min-width: 0;
+  padding: 16px;
+}
+
+.evaluation-preview__stat-value {
+  display: block;
+  color: var(--app-brand);
+  font-size: 34px;
+  font-weight: 900;
+  line-height: 40px;
+}
+
+.evaluation-preview__stat-label {
+  display: block;
+  margin-top: 4px;
+  color: var(--app-muted);
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.evaluation-preview__issues,
+.evaluation-preview__detail {
+  margin: 0 24px 18px;
+  padding: 20px;
+}
+
+.evaluation-preview__section-title {
+  display: block;
+  margin-bottom: 12px;
+  color: #775315;
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 30px;
+}
+
+.evaluation-preview__issue,
+.evaluation-preview__issue-more {
+  display: block;
+  margin-top: 8px;
+  padding: 12px;
+  border-radius: var(--app-radius-sm);
+  background: var(--app-danger-soft);
+  color: var(--app-danger);
+  font-size: 21px;
+  line-height: 31px;
+}
+
+.evaluation-preview__scroll {
+  flex: 1;
+}
+
+.evaluation-preview__summaries {
+  grid-template-columns: 1fr;
+}
+
+.evaluation-preview__summary {
+  padding: 18px;
+}
+
+.evaluation-preview__summary-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.evaluation-preview__summary-title {
+  color: var(--app-ink);
+  font-size: 25px;
+  font-weight: 900;
+  line-height: 33px;
+}
+
+.evaluation-preview__summary-score {
+  color: var(--app-brand-2);
+  font-size: 23px;
+  font-weight: 900;
+}
+
+.evaluation-preview__summary-meta {
+  display: block;
+  margin-top: 8px;
+  color: var(--app-muted);
+  font-size: 21px;
+  line-height: 30px;
+}
+
+.evaluation-preview__dimension + .evaluation-preview__dimension {
+  margin-top: 18px;
+}
+
+.evaluation-preview__dimension-title {
+  display: block;
+  color: var(--app-ink);
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 34px;
+}
+
+.evaluation-preview__item {
+  margin-top: 14px;
+  padding: 16px;
+  border-radius: var(--app-radius-sm);
+  background: var(--app-surface-raised);
+}
+
+.evaluation-preview__item-title {
+  display: block;
+  color: #24322c;
+  font-size: 23px;
+  font-weight: 900;
+  line-height: 31px;
+}
+
+.evaluation-preview__record {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--app-border);
+}
+
+.evaluation-preview__record-title,
+.evaluation-preview__record-copy,
+.evaluation-preview__record-meta {
+  display: block;
+}
+
+.evaluation-preview__record-title {
+  color: #775315;
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 28px;
+}
+
+.evaluation-preview__record-copy {
+  margin-top: 6px;
+  color: var(--app-ink-soft);
+  font-size: 22px;
+  line-height: 32px;
+}
+
+.evaluation-preview__record-meta {
+  margin-top: 6px;
+  color: var(--app-muted);
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.evaluation-preview__bottom-space {
+  height: 20px;
+}
+
+.evaluation-preview__actions {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding: 14px 24px 20px;
+  border-top: 1px solid var(--app-border);
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 -12px 32px rgba(31, 61, 50, 0.08);
+}
+
+.evaluation-preview__ghost,
+.evaluation-preview__primary {
+  height: 66px;
+  width: 100%;
+  padding: 0 12px;
+  font-size: 24px;
+  line-height: 64px;
+}
+
+.evaluation-preview__ghost {
+  border: 1px solid var(--app-border-strong);
+  background: var(--app-brand-soft);
+  color: #245844;
+}
+
+.evaluation-preview__primary {
+  background: var(--app-brand-2);
+  color: #ffffff;
+}
+
+.evaluation-preview__primary[disabled] {
+  background: #b7c7bf;
+  color: #eef4f0;
+  opacity: 1;
+}
+
+@media (min-width: 960PX) {
+  .evaluation-preview {
+    padding: 20PX 24PX 92PX;
+  }
+
+  .evaluation-preview__hero,
+  .evaluation-preview__stats,
+  .evaluation-preview__issues,
+  .evaluation-preview__summaries,
+  .evaluation-preview__detail,
+  .evaluation-preview__actions {
+    max-width: 1180PX;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .evaluation-preview__hero {
+    min-height: 118PX;
+    padding: 24PX 32PX;
+    border-radius: 8PX;
+  }
+
+  .evaluation-preview__label {
+    font-size: 13PX;
+    line-height: 19PX;
+  }
+
+  .evaluation-preview__title {
+    font-size: 28PX;
+    line-height: 34PX;
+  }
+
+  .evaluation-preview__sub {
+    font-size: 14PX;
+    line-height: 22PX;
+  }
+
+  .evaluation-preview__score-number {
+    font-size: 58PX;
+    line-height: 62PX;
+  }
+
+  .evaluation-preview__score-label {
+    font-size: 20PX;
+  }
+
+  .evaluation-preview__stats {
+    gap: 12PX;
+    margin-top: 18PX;
+    margin-bottom: 14PX;
+  }
+
+  .evaluation-preview__stat {
+    padding: 16PX;
+  }
+
+  .evaluation-preview__stat-value {
+    font-size: 28PX;
+    line-height: 33PX;
+  }
+
+  .evaluation-preview__stat-label,
+  .evaluation-preview__summary-meta,
+  .evaluation-preview__record-meta {
+    font-size: 11PX;
+    line-height: 17PX;
+  }
+
+  .evaluation-preview__issues,
+  .evaluation-preview__detail {
+    padding: 18PX;
+  }
+
+  .evaluation-preview__section-title {
+    font-size: 13PX;
+    line-height: 19PX;
+  }
+
+  .evaluation-preview__issue,
+  .evaluation-preview__issue-more {
+    padding: 9PX 10PX;
+    font-size: 12PX;
+    line-height: 18PX;
+  }
+
+  .evaluation-preview__summaries {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12PX;
+    margin-top: 14PX;
+    margin-bottom: 14PX;
+  }
+
+  .evaluation-preview__summary {
+    padding: 14PX;
+  }
+
+  .evaluation-preview__summary-title,
+  .evaluation-preview__item-title {
+    font-size: 13PX;
+    line-height: 19PX;
+  }
+
+  .evaluation-preview__summary-score {
+    font-size: 12PX;
+  }
+
+  .evaluation-preview__dimension-title {
+    font-size: 17PX;
+    line-height: 23PX;
+  }
+
+  .evaluation-preview__item {
+    padding: 14PX;
+  }
+
+  .evaluation-preview__record-title,
+  .evaluation-preview__record-copy {
+    font-size: 12PX;
+    line-height: 19PX;
+  }
+
+  .evaluation-preview__actions {
+    right: 24PX;
+    bottom: 16PX;
+    left: 24PX;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8PX;
+    padding: 10PX 12PX;
+    border: 1px solid var(--app-border);
+    border-radius: 8PX;
+  }
+
+  .evaluation-preview__ghost,
+  .evaluation-preview__primary {
+    flex: 0 0 auto;
+    min-width: 88PX;
+    width: auto;
+    height: 34PX;
+    padding: 0 14PX;
+    font-size: 12PX;
+    line-height: 32PX;
+  }
+}

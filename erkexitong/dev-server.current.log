@@ -1,0 +1,934 @@
+
+> erkexitong@0.1.0 dev:h5
+> taro build --type h5 --watch
+
+👽 Taro v3.6.38
+
+Tips:
+1. 建议开启持久化缓存功能，能有效提升二次编译速度，详情请参考: https://docs.taro.zone/docs/config-detail#cache。
+
+
+
+→ Watching... [2026/7/7 14:29:50]
+
+
+ℹ️  Listening at http://172.30.221.103:10086/
+
+监听文件修改中...
+
+asset js/app.b732d16f.js 7.63 MiB [emitted] [immutable] (name: app)
+asset js/node_modules_hls_js_dist_hls_mjs.6bf006d9.js 3.23 MiB [emitted] [immutable]
+asset js/taro.b732d16f.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+asset js/src_pages_note_edit_index_tsx.7757b78f.js 217 KiB [emitted] [immutable]
+asset js/src_pages_evaluation_preview_index_tsx.8238a6f3.js 128 KiB [emitted] [immutable]
+asset js/src_pages_login_index_tsx.2d631f58.js 125 KiB [emitted] [immutable]
+asset js/src_pages_image_library_index_tsx.0f1944cc.js 113 KiB [emitted] [immutable]
+asset js/src_pages_note_list_index_tsx.2013c422.js 109 KiB [emitted] [immutable]
+asset js/src_pages_submission_history_index_tsx.e54e98c8.js 99.9 KiB [emitted] [immutable]
+asset js/src_pages_submission_result_index_tsx.08014580.js 88.2 KiB [emitted] [immutable]
+asset js/src_pages_error_index_tsx.5acb381c.js 49.8 KiB [emitted] [immutable]
+asset js/runtime.b732d16f.js 49.4 KiB [emitted] [immutable] (name: runtime)
+asset js/node_modules_stencil_core_internal_client_shadow-css_js.7f5d12fb.js 41 KiB [emitted] [immutable]
+asset index.html 1020 bytes [emitted]
+Entrypoint app 10.3 MiB = js/runtime.b732d16f.js 49.4 KiB js/taro.b732d16f.js 2.62 MiB js/app.b732d16f.js 7.63 MiB
+orphan modules 542 KiB [orphan] 280 modules
+runtime modules 32.8 KiB 18 modules
+modules by path ./node_modules/ 4.38 MiB 507 modules
+modules by path ./src/ 842 KiB
+  modules by path ./src/pages/ 511 KiB 39 modules
+  modules by path ./src/components/ 155 KiB 19 modules
+  modules by path ./src/services/*.ts 66.7 KiB 9 modules
+  modules by path ./src/stores/*.ts 48 KiB 5 modules
+  modules by path ./src/utils/*.ts 7.64 KiB 3 modules
+  modules by path ./src/*.scss 35.5 KiB 2 modules
+  ./src/app.config.ts 4.64 KiB [built] [code generated]
+  ./src/app.tsx 2.11 KiB [built] [code generated]
+  ./src/data/evaluationConfig.ts 11.7 KiB [built] [code generated]
+data:application/octet-stream;base64,AAEAAAALAIAAAwAw.. 6.1 KiB [built] [code generated]
+webpack 5.78.0 compiled successfully in 9942 ms
+→ Watching... [2026/7/7 14:47:17]
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10.3 MiB [emitted]
+  assets by path js/*.js 10.3 MiB
+    asset js/app.544f7b47.js 7.63 MiB [emitted] [immutable] (name: app)
+    asset js/taro.544f7b47.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.544f7b47.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 28.5 KiB [hmr]
+    asset app.b732d16f43118d5d5616.hot-update.js 27.6 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.b732d16f43118d5d5616.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.b732d16f43118d5d5616.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10.3 MiB = js/runtime.544f7b47.js 49.4 KiB runtime.b732d16f43118d5d5616.hot-update.js 868 bytes js/taro.544f7b47.js 2.62 MiB js/app.544f7b47.js 7.63 MiB app.b732d16f43118d5d5616.hot-update.js 27.6 KiB
+cached modules 5.73 MiB [cached] 867 modules
+runtime modules 32.8 KiB 18 modules
+./src/pages/evaluation/index.tsx 9.23 KiB [built] [code generated]
+webpack 5.78.0 compiled successfully in 287 ms
+→ Watching... [2026/7/7 14:47:51]
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10.6 MiB [emitted]
+  assets by path js/*.js 10.3 MiB
+    asset js/app.014f9e20.js 7.63 MiB [emitted] [immutable] (name: app)
+    asset js/taro.014f9e20.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.014f9e20.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 318 KiB [hmr]
+    asset app.544f7b475ccfacd20d77.hot-update.js 317 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.544f7b475ccfacd20d77.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.544f7b475ccfacd20d77.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10.6 MiB = js/runtime.014f9e20.js 49.4 KiB runtime.544f7b475ccfacd20d77.hot-update.js 868 bytes js/taro.014f9e20.js 2.62 MiB js/app.014f9e20.js 7.63 MiB app.544f7b475ccfacd20d77.hot-update.js 317 KiB
+cached modules 5.61 MiB [cached] 867 modules
+runtime modules 32.8 KiB 18 modules
+./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/pages/evaluation/index.scss 129 KiB [built] [code generated]
+webpack 5.78.0 compiled successfully in 352 ms
+→ Watching... [2026/7/7 14:48:25]
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10.6 MiB [emitted]
+  assets by path js/*.js 10.3 MiB
+    asset js/app.7a6a0c47.js 7.64 MiB [emitted] [immutable] (name: app)
+    asset js/taro.7a6a0c47.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.7a6a0c47.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 320 KiB [hmr]
+    asset app.014f9e2020ddd5d24c6c.hot-update.js 319 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.014f9e2020ddd5d24c6c.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.014f9e2020ddd5d24c6c.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10.6 MiB = js/runtime.7a6a0c47.js 49.4 KiB runtime.014f9e2020ddd5d24c6c.hot-update.js 868 bytes js/taro.7a6a0c47.js 2.62 MiB js/app.7a6a0c47.js 7.64 MiB app.014f9e2020ddd5d24c6c.hot-update.js 319 KiB
+cached modules 5.61 MiB [cached] 867 modules
+runtime modules 32.8 KiB 18 modules
+./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/pages/evaluation/index.scss 130 KiB [built] [code generated]
+webpack 5.78.0 compiled successfully in 281 ms
+→ Watching... [2026/7/7 14:48:50]
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10.6 MiB [emitted]
+  assets by path js/*.js 10.3 MiB
+    asset js/app.02451a7e.js 7.64 MiB [emitted] [immutable] (name: app)
+    asset js/taro.02451a7e.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.02451a7e.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 320 KiB [hmr]
+    asset app.7a6a0c4786869259e423.hot-update.js 319 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.7a6a0c4786869259e423.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.7a6a0c4786869259e423.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10.6 MiB = js/runtime.02451a7e.js 49.4 KiB runtime.7a6a0c4786869259e423.hot-update.js 868 bytes js/taro.02451a7e.js 2.62 MiB js/app.02451a7e.js 7.64 MiB app.7a6a0c4786869259e423.hot-update.js 319 KiB
+cached modules 5.61 MiB [cached] 867 modules
+runtime modules 32.8 KiB 18 modules
+./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/pages/evaluation/index.scss 130 KiB [built] [code generated]
+webpack 5.78.0 compiled successfully in 262 ms
+→ Watching... [2026/7/7 14:49:02]
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10.4 MiB [emitted]
+  assets by path js/*.js 10.3 MiB
+    asset js/app.6102ab05.js 7.64 MiB [emitted] [immutable] (name: app)
+    asset js/taro.6102ab05.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.6102ab05.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 83.8 KiB [hmr]
+    asset app.02451a7ecd9798e10bff.hot-update.js 82.9 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.02451a7ecd9798e10bff.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.02451a7ecd9798e10bff.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10.4 MiB = js/runtime.6102ab05.js 49.4 KiB runtime.02451a7ecd9798e10bff.hot-update.js 868 bytes js/taro.6102ab05.js 2.62 MiB js/app.6102ab05.js 7.64 MiB app.02451a7ecd9798e10bff.hot-update.js 82.9 KiB
+cached modules 5.71 MiB [cached] 867 modules
+runtime modules 32.8 KiB 18 modules
+./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/app.scss 32.8 KiB [built] [code generated]
+webpack 5.78.0 compiled successfully in 178 ms
+→ Watching... [2026/7/7 14:49:28]
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10.4 MiB [emitted]
+  assets by path js/*.js 10.3 MiB
+    asset js/app.dee66f7f.js 7.64 MiB [emitted] [immutable] (name: app)
+    asset js/taro.dee66f7f.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.dee66f7f.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 84.5 KiB [hmr]
+    asset app.6102ab05dc53cc049dd6.hot-update.js 83.6 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.6102ab05dc53cc049dd6.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.6102ab05dc53cc049dd6.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10.4 MiB = js/runtime.dee66f7f.js 49.4 KiB runtime.6102ab05dc53cc049dd6.hot-update.js 868 bytes js/taro.dee66f7f.js 2.62 MiB js/app.dee66f7f.js 7.64 MiB app.6102ab05dc53cc049dd6.hot-update.js 83.6 KiB
+cached modules 5.71 MiB [cached] 867 modules
+runtime modules 32.8 KiB 18 modules
+./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/app.scss 33.1 KiB [built] [code generated]
+webpack 5.78.0 compiled successfully in 152 ms
+→ Watching... [2026/7/7 14:49:49]
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10.4 MiB [emitted]
+  assets by path js/*.js 10.3 MiB
+    asset js/app.3acf3394.js 7.64 MiB [emitted] [immutable] (name: app)
+    asset js/taro.3acf3394.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.3acf3394.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 84.9 KiB [hmr]
+    asset app.dee66f7f1912ccefab55.hot-update.js 84 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.dee66f7f1912ccefab55.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.dee66f7f1912ccefab55.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10.4 MiB = js/runtime.3acf3394.js 49.4 KiB runtime.dee66f7f1912ccefab55.hot-update.js 868 bytes js/taro.3acf3394.js 2.62 MiB js/app.3acf3394.js 7.64 MiB app.dee66f7f1912ccefab55.hot-update.js 84 KiB
+cached modules 5.71 MiB [cached] 867 modules
+runtime modules 32.8 KiB 18 modules
+./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/app.scss 33.3 KiB [built] [code generated]
+webpack 5.78.0 compiled successfully in 152 ms
+→ Watching... [2026/7/7 14:50:01]
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10.6 MiB [emitted]
+  assets by path js/*.js 10.3 MiB
+    asset js/app.33deba9c.js 7.64 MiB [emitted] [immutable] (name: app)
+    asset js/taro.33deba9c.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.33deba9c.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 320 KiB [hmr]
+    asset app.3acf33947c994e3491a2.hot-update.js 319 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.3acf33947c994e3491a2.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.3acf33947c994e3491a2.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10.6 MiB = js/runtime.33deba9c.js 49.4 KiB runtime.3acf33947c994e3491a2.hot-update.js 868 bytes js/taro.33deba9c.js 2.62 MiB js/app.33deba9c.js 7.64 MiB app.3acf33947c994e3491a2.hot-update.js 319 KiB
+cached modules 5.61 MiB [cached] 867 modules
+runtime modules 32.8 KiB 18 modules
+./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/pages/evaluation/index.scss 130 KiB [built] [code generated]
+webpack 5.78.0 compiled successfully in 249 ms
+→ Watching... [2026/7/7 14:50:11]
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10.6 MiB [emitted]
+  assets by path js/*.js 10.3 MiB
+    asset js/app.53dd4677.js 7.64 MiB [emitted] [immutable] (name: app)
+    asset js/taro.53dd4677.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.53dd4677.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 321 KiB [hmr]
+    asset app.33deba9c29f32b687a2c.hot-update.js 320 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.33deba9c29f32b687a2c.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.33deba9c29f32b687a2c.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10.6 MiB = js/runtime.53dd4677.js 49.4 KiB runtime.33deba9c29f32b687a2c.hot-update.js 868 bytes js/taro.53dd4677.js 2.62 MiB js/app.53dd4677.js 7.64 MiB app.33deba9c29f32b687a2c.hot-update.js 320 KiB
+cached modules 5.61 MiB [cached] 867 modules
+runtime modules 32.8 KiB 18 modules
+./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/pages/evaluation/index.scss 130 KiB [built] [code generated]
+webpack 5.78.0 compiled successfully in 255 ms
+→ Watching... [2026/7/7 14:54:32]
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10.3 MiB [emitted]
+  assets by path js/*.js 10.3 MiB
+    asset js/app.dd5b681e.js 7.64 MiB [emitted] [immutable] (name: app)
+    asset js/taro.dd5b681e.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.dd5b681e.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 28.5 KiB [hmr]
+    asset app.53dd46777be0dc76e12e.hot-update.js 27.7 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.53dd46777be0dc76e12e.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.53dd46777be0dc76e12e.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10.3 MiB = js/runtime.dd5b681e.js 49.4 KiB runtime.53dd46777be0dc76e12e.hot-update.js 868 bytes js/taro.dd5b681e.js 2.62 MiB js/app.dd5b681e.js 7.64 MiB app.53dd46777be0dc76e12e.hot-update.js 27.7 KiB
+cached modules 5.73 MiB [cached] 867 modules
+runtime modules 32.8 KiB 18 modules
+./src/pages/evaluation/index.tsx 9.25 KiB [built] [code generated]
+webpack 5.78.0 compiled successfully in 227 ms
+✖ Errors: 
+
+SassError: SassError: expected "{".
+     ╷
+1885 │   height: 100%;
+     │               ^
+     ╵
+  src\pages\evaluation\index.scss 1885:15  root stylesheet
+
+→ Watching... [2026/7/7 14:54:51]
+
+SassError: SassError: expected "{".
+     ╷
+1885 │   height: 100%;
+     │               ^
+     ╵
+  src\pages\evaluation\index.scss 1885:15  root stylesheet
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10 MiB [emitted]
+  assets by path js/*.js 9.99 MiB
+    asset js/app.25627b69.js 7.33 MiB [emitted] [immutable] (name: app)
+    asset js/taro.25627b69.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.25627b69.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 2.92 KiB [hmr]
+    asset app.dd5b681ed96206078741.hot-update.js 2.04 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.dd5b681ed96206078741.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.dd5b681ed96206078741.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10 MiB = js/runtime.25627b69.js 49.4 KiB runtime.dd5b681ed96206078741.hot-update.js 868 bytes js/taro.25627b69.js 2.62 MiB js/app.25627b69.js 7.33 MiB app.dd5b681ed96206078741.hot-update.js 2.04 KiB
+cached modules 5.61 MiB [cached] 866 modules
+runtime modules 32.8 KiB 18 modules
+javascript modules 3.04 KiB
+  ./src/pages/evaluation/index.scss 3 KiB [code generated]
+  ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/pages/evaluation/index.scss 39 bytes [built] [code generated] [1 error]
+
+ERROR in ./src/pages/evaluation/index.scss (./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/pages/evaluation/index.scss)
+Module build failed (from ./node_modules/sass-loader/dist/cjs.js):
+SassError: expected "{".
+     ╷
+1885 │   height: 100%;
+     │               ^
+     ╵
+  src\pages\evaluation\index.scss 1885:15  root stylesheet
+SassError: SassError: expected "{".
+     ╷
+1885 │   height: 100%;
+     │               ^
+     ╵
+  src\pages\evaluation\index.scss 1885:15  root stylesheet
+    at C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\sass-loader\dist\index.js:54:16
+    at Function.call$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:99827:16)
+    at render_closure1.call$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:85350:12)
+    at _RootZone.runBinary$3$3 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:29726:18)
+    at _FutureListener.handleError$1 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28240:21)
+    at _Future__propagateToListeners_handleError.call$0 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28547:49)
+    at Object._Future__propagateToListeners (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3936:77)
+    at _Future._completeError$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28393:9)
+    at _AsyncAwaitCompleter.completeError$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28038:12)
+    at Object._asyncRethrow (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3712:17)
+    at C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:19929:20
+    at _wrapJsFunctionForAsync_closure.$protected (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3737:15)
+    at _wrapJsFunctionForAsync_closure.call$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28057:12)
+    at _awaitOnObject_closure0.call$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28051:25)
+    at _RootZone.runBinary$3$3 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:29726:18)
+    at _FutureListener.handleError$1 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28240:21)
+    at _Future__propagateToListeners_handleError.call$0 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28547:49)
+    at Object._Future__propagateToListeners (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3936:77)
+    at _Future._completeError$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28393:9)
+    at _Future__asyncCompleteError_closure.call$0 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28477:18)
+    at Object._microtaskLoop (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3992:24)
+    at StaticClosure._startMicrotaskLoop (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3998:11)
+    at _AsyncRun__scheduleImmediateJsOverride_internalCallback.call$0 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:27958:21)
+    at invokeClosure (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:1455:26)
+    at Immediate._onImmediate (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:1476:18)
+    at processImmediate (node:internal/timers:504:21)
+ @ ./src/pages/evaluation/index.scss 8:6-344 22:17-24 26:7-21 58:25-39 59:36-47 59:50-64 63:6-73:7 64:54-65 64:68-82 70:42-53 70:56-70 72:21-28 83:0-314 83:0-314 84:22-29 84:33-47 84:50-64 61:4-74:5
+ @ ./src/pages/evaluation/index.tsx 24:0-22
+ @ ./src/app.config.ts 46:15-49
+
+webpack 5.78.0 compiled with 1 error in 145 ms
+✖ Errors: 
+
+SassError: SassError: expected "{".
+     ╷
+1884 │   height: 100%;
+     │               ^
+     ╵
+  src\pages\evaluation\index.scss 1884:15  root stylesheet
+
+→ Watching... [2026/7/7 14:55:20]
+
+SassError: SassError: expected "{".
+     ╷
+1884 │   height: 100%;
+     │               ^
+     ╵
+  src\pages\evaluation\index.scss 1884:15  root stylesheet
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10 MiB [emitted]
+  assets by path js/*.js 9.99 MiB
+    asset js/app.cb0b906d.js 7.33 MiB [emitted] [immutable] (name: app)
+    asset js/taro.cb0b906d.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.cb0b906d.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 899 bytes [hmr]
+    asset runtime.25627b69c9e46d70b9d7.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.25627b69c9e46d70b9d7.hot-update.json 31 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 9.99 MiB = js/runtime.cb0b906d.js 49.4 KiB runtime.25627b69c9e46d70b9d7.hot-update.js 868 bytes js/taro.cb0b906d.js 2.62 MiB js/app.cb0b906d.js 7.33 MiB
+cached modules 5.61 MiB [cached] 867 modules
+runtime modules 32.8 KiB 18 modules
+./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/pages/evaluation/index.scss 39 bytes [built] [1 error]
+
+ERROR in ./src/pages/evaluation/index.scss (./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/pages/evaluation/index.scss)
+Module build failed (from ./node_modules/sass-loader/dist/cjs.js):
+SassError: expected "{".
+     ╷
+1884 │   height: 100%;
+     │               ^
+     ╵
+  src\pages\evaluation\index.scss 1884:15  root stylesheet
+SassError: SassError: expected "{".
+     ╷
+1884 │   height: 100%;
+     │               ^
+     ╵
+  src\pages\evaluation\index.scss 1884:15  root stylesheet
+    at C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\sass-loader\dist\index.js:54:16
+    at Function.call$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:99827:16)
+    at render_closure1.call$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:85350:12)
+    at _RootZone.runBinary$3$3 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:29726:18)
+    at _FutureListener.handleError$1 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28240:21)
+    at _Future__propagateToListeners_handleError.call$0 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28547:49)
+    at Object._Future__propagateToListeners (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3936:77)
+    at _Future._completeError$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28393:9)
+    at _AsyncAwaitCompleter.completeError$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28038:12)
+    at Object._asyncRethrow (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3712:17)
+    at C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:19929:20
+    at _wrapJsFunctionForAsync_closure.$protected (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3737:15)
+    at _wrapJsFunctionForAsync_closure.call$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28057:12)
+    at _awaitOnObject_closure0.call$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28051:25)
+    at _RootZone.runBinary$3$3 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:29726:18)
+    at _FutureListener.handleError$1 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28240:21)
+    at _Future__propagateToListeners_handleError.call$0 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28547:49)
+    at Object._Future__propagateToListeners (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3936:77)
+    at _Future._completeError$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28393:9)
+    at _Future__asyncCompleteError_closure.call$0 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28477:18)
+    at Object._microtaskLoop (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3992:24)
+    at StaticClosure._startMicrotaskLoop (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3998:11)
+    at _AsyncRun__scheduleImmediateJsOverride_internalCallback.call$0 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:27958:21)
+    at invokeClosure (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:1455:26)
+    at Immediate._onImmediate (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:1476:18)
+    at processImmediate (node:internal/timers:504:21)
+ @ ./src/pages/evaluation/index.scss 8:6-344 22:17-24 26:7-21 58:25-39 59:36-47 59:50-64 63:6-73:7 64:54-65 64:68-82 70:42-53 70:56-70 72:21-28 83:0-314 83:0-314 84:22-29 84:33-47 84:50-64 61:4-74:5
+ @ ./src/pages/evaluation/index.tsx 24:0-22
+ @ ./src/app.config.ts 46:15-49
+
+webpack 5.78.0 compiled with 1 error in 177 ms
+✖ Errors: 
+
+SassError: SassError: expected "{".
+     ╷
+1895 │   height: 100%;
+     │               ^
+     ╵
+  src\pages\evaluation\index.scss 1895:15  root stylesheet
+
+→ Watching... [2026/7/7 14:55:34]
+
+SassError: SassError: expected "{".
+     ╷
+1895 │   height: 100%;
+     │               ^
+     ╵
+  src\pages\evaluation\index.scss 1895:15  root stylesheet
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10 MiB [emitted]
+  assets by path js/*.js 9.99 MiB
+    asset js/app.f5e100db.js 7.33 MiB [emitted] [immutable] (name: app)
+    asset js/taro.f5e100db.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.f5e100db.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 899 bytes [hmr]
+    asset runtime.cb0b906d50b1b0662f66.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.cb0b906d50b1b0662f66.hot-update.json 31 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 9.99 MiB = js/runtime.f5e100db.js 49.4 KiB runtime.cb0b906d50b1b0662f66.hot-update.js 868 bytes js/taro.f5e100db.js 2.62 MiB js/app.f5e100db.js 7.33 MiB
+cached modules 5.61 MiB [cached] 867 modules
+runtime modules 32.8 KiB 18 modules
+./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/pages/evaluation/index.scss 39 bytes [built] [1 error]
+
+ERROR in ./src/pages/evaluation/index.scss (./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/pages/evaluation/index.scss)
+Module build failed (from ./node_modules/sass-loader/dist/cjs.js):
+SassError: expected "{".
+     ╷
+1895 │   height: 100%;
+     │               ^
+     ╵
+  src\pages\evaluation\index.scss 1895:15  root stylesheet
+SassError: SassError: expected "{".
+     ╷
+1895 │   height: 100%;
+     │               ^
+     ╵
+  src\pages\evaluation\index.scss 1895:15  root stylesheet
+    at C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\sass-loader\dist\index.js:54:16
+    at Function.call$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:99827:16)
+    at render_closure1.call$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:85350:12)
+    at _RootZone.runBinary$3$3 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:29726:18)
+    at _FutureListener.handleError$1 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28240:21)
+    at _Future__propagateToListeners_handleError.call$0 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28547:49)
+    at Object._Future__propagateToListeners (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3936:77)
+    at _Future._completeError$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28393:9)
+    at _AsyncAwaitCompleter.completeError$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28038:12)
+    at Object._asyncRethrow (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3712:17)
+    at C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:19929:20
+    at _wrapJsFunctionForAsync_closure.$protected (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3737:15)
+    at _wrapJsFunctionForAsync_closure.call$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28057:12)
+    at _awaitOnObject_closure0.call$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28051:25)
+    at _RootZone.runBinary$3$3 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:29726:18)
+    at _FutureListener.handleError$1 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28240:21)
+    at _Future__propagateToListeners_handleError.call$0 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28547:49)
+    at Object._Future__propagateToListeners (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3936:77)
+    at _Future._completeError$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28393:9)
+    at _Future__asyncCompleteError_closure.call$0 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28477:18)
+    at Object._microtaskLoop (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3992:24)
+    at StaticClosure._startMicrotaskLoop (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3998:11)
+    at _AsyncRun__scheduleImmediateJsOverride_internalCallback.call$0 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:27958:21)
+    at invokeClosure (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:1455:26)
+    at Immediate._onImmediate (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:1476:18)
+    at processImmediate (node:internal/timers:504:21)
+ @ ./src/pages/evaluation/index.scss 8:6-344 22:17-24 26:7-21 58:25-39 59:36-47 59:50-64 63:6-73:7 64:54-65 64:68-82 70:42-53 70:56-70 72:21-28 83:0-314 83:0-314 84:22-29 84:33-47 84:50-64 61:4-74:5
+ @ ./src/pages/evaluation/index.tsx 24:0-22
+ @ ./src/app.config.ts 46:15-49
+
+webpack 5.78.0 compiled with 1 error in 167 ms
+✖ Errors: 
+
+SassError: SassError: expected "{".
+     ╷
+1895 │   height: 100%;
+     │               ^
+     ╵
+  src\pages\evaluation\index.scss 1895:15  root stylesheet
+
+→ Watching... [2026/7/7 14:55:57]
+
+SassError: SassError: expected "{".
+     ╷
+1895 │   height: 100%;
+     │               ^
+     ╵
+  src\pages\evaluation\index.scss 1895:15  root stylesheet
+
+assets by status 14.2 MiB [cached] 13 assets
+asset index.html 1020 bytes [emitted]
+Entrypoint app 9.99 MiB = js/runtime.f5e100db.js 49.4 KiB js/taro.f5e100db.js 2.62 MiB js/app.f5e100db.js 7.33 MiB
+cached modules 5.61 MiB (javascript) 32.8 KiB (runtime) [cached] 885 modules
+./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/pages/evaluation/index.scss 39 bytes [built] [1 error]
+
+ERROR in ./src/pages/evaluation/index.scss (./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/pages/evaluation/index.scss)
+Module build failed (from ./node_modules/sass-loader/dist/cjs.js):
+SassError: expected "{".
+     ╷
+1895 │   height: 100%;
+     │               ^
+     ╵
+  src\pages\evaluation\index.scss 1895:15  root stylesheet
+SassError: SassError: expected "{".
+     ╷
+1895 │   height: 100%;
+     │               ^
+     ╵
+  src\pages\evaluation\index.scss 1895:15  root stylesheet
+    at C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\sass-loader\dist\index.js:54:16
+    at Function.call$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:99827:16)
+    at render_closure1.call$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:85350:12)
+    at _RootZone.runBinary$3$3 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:29726:18)
+    at _FutureListener.handleError$1 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28240:21)
+    at _Future__propagateToListeners_handleError.call$0 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28547:49)
+    at Object._Future__propagateToListeners (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3936:77)
+    at _Future._completeError$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28393:9)
+    at _AsyncAwaitCompleter.completeError$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28038:12)
+    at Object._asyncRethrow (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3712:17)
+    at C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:19929:20
+    at _wrapJsFunctionForAsync_closure.$protected (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3737:15)
+    at _wrapJsFunctionForAsync_closure.call$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28057:12)
+    at _awaitOnObject_closure0.call$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28051:25)
+    at _RootZone.runBinary$3$3 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:29726:18)
+    at _FutureListener.handleError$1 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28240:21)
+    at _Future__propagateToListeners_handleError.call$0 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28547:49)
+    at Object._Future__propagateToListeners (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3936:77)
+    at _Future._completeError$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28393:9)
+    at _Future__asyncCompleteError_closure.call$0 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28477:18)
+    at Object._microtaskLoop (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3992:24)
+    at StaticClosure._startMicrotaskLoop (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3998:11)
+    at _AsyncRun__scheduleImmediateJsOverride_internalCallback.call$0 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:27958:21)
+    at invokeClosure (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:1455:26)
+    at Immediate._onImmediate (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:1476:18)
+    at processImmediate (node:internal/timers:504:21)
+ @ ./src/pages/evaluation/index.scss 8:6-344 22:17-24 26:7-21 58:25-39 59:36-47 59:50-64 63:6-73:7 64:54-65 64:68-82 70:42-53 70:56-70 72:21-28 83:0-314 83:0-314 84:22-29 84:33-47 84:50-64 61:4-74:5
+ @ ./src/pages/evaluation/index.tsx 24:0-22
+ @ ./src/app.config.ts 46:15-49
+
+webpack 5.78.0 compiled with 1 error in 158 ms
+✖ Errors: 
+
+SassError: SassError: expected "{".
+     ╷
+1895 │   height: 100%;
+     │               ^
+     ╵
+  src\pages\evaluation\index.scss 1895:15  root stylesheet
+
+→ Watching... [2026/7/7 14:56:10]
+
+SassError: SassError: expected "{".
+     ╷
+1895 │   height: 100%;
+     │               ^
+     ╵
+  src\pages\evaluation\index.scss 1895:15  root stylesheet
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10.1 MiB [emitted]
+  assets by path js/*.js 9.99 MiB
+    asset js/app.fc1d968c.js 7.33 MiB [emitted] [immutable] (name: app)
+    asset js/taro.fc1d968c.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.fc1d968c.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 84.9 KiB [hmr]
+    asset app.f5e100db52e87b1a0a35.hot-update.js 84 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.f5e100db52e87b1a0a35.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.f5e100db52e87b1a0a35.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10.1 MiB = js/runtime.fc1d968c.js 49.4 KiB runtime.f5e100db52e87b1a0a35.hot-update.js 868 bytes js/taro.fc1d968c.js 2.62 MiB js/app.fc1d968c.js 7.33 MiB app.f5e100db52e87b1a0a35.hot-update.js 84 KiB
+cached modules 5.58 MiB [cached] 866 modules
+runtime modules 32.8 KiB 18 modules
+javascript modules 33.3 KiB
+  ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/pages/evaluation/index.scss 39 bytes [built] [1 error]
+  ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/app.scss 33.2 KiB [built] [code generated]
+
+ERROR in ./src/pages/evaluation/index.scss (./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/pages/evaluation/index.scss)
+Module build failed (from ./node_modules/sass-loader/dist/cjs.js):
+SassError: expected "{".
+     ╷
+1895 │   height: 100%;
+     │               ^
+     ╵
+  src\pages\evaluation\index.scss 1895:15  root stylesheet
+SassError: SassError: expected "{".
+     ╷
+1895 │   height: 100%;
+     │               ^
+     ╵
+  src\pages\evaluation\index.scss 1895:15  root stylesheet
+    at C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\sass-loader\dist\index.js:54:16
+    at Function.call$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:99827:16)
+    at render_closure1.call$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:85350:12)
+    at _RootZone.runBinary$3$3 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:29726:18)
+    at _FutureListener.handleError$1 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28240:21)
+    at _Future__propagateToListeners_handleError.call$0 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28547:49)
+    at Object._Future__propagateToListeners (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3936:77)
+    at _Future._completeError$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28393:9)
+    at _AsyncAwaitCompleter.completeError$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28038:12)
+    at Object._asyncRethrow (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3712:17)
+    at C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:19929:20
+    at _wrapJsFunctionForAsync_closure.$protected (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3737:15)
+    at _wrapJsFunctionForAsync_closure.call$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28057:12)
+    at _awaitOnObject_closure0.call$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28051:25)
+    at _RootZone.runBinary$3$3 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:29726:18)
+    at _FutureListener.handleError$1 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28240:21)
+    at _Future__propagateToListeners_handleError.call$0 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28547:49)
+    at Object._Future__propagateToListeners (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3936:77)
+    at _Future._completeError$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28393:9)
+    at _Future__asyncCompleteError_closure.call$0 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28477:18)
+    at Object._microtaskLoop (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3992:24)
+    at StaticClosure._startMicrotaskLoop (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3998:11)
+    at _AsyncRun__scheduleImmediateJsOverride_internalCallback.call$0 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:27958:21)
+    at invokeClosure (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:1455:26)
+    at Immediate._onImmediate (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:1476:18)
+    at processImmediate (node:internal/timers:504:21)
+ @ ./src/pages/evaluation/index.scss 8:6-344 22:17-24 26:7-21 58:25-39 59:36-47 59:50-64 63:6-73:7 64:54-65 64:68-82 70:42-53 70:56-70 72:21-28 83:0-314 83:0-314 84:22-29 84:33-47 84:50-64 61:4-74:5
+ @ ./src/pages/evaluation/index.tsx 24:0-22
+ @ ./src/app.config.ts 46:15-49
+
+webpack 5.78.0 compiled with 1 error in 201 ms
+✖ Errors: 
+
+SassError: SassError: expected "{".
+     ╷
+1895 │   height: 100%;
+     │               ^
+     ╵
+  src\pages\evaluation\index.scss 1895:15  root stylesheet
+
+→ Watching... [2026/7/7 14:56:25]
+
+SassError: SassError: expected "{".
+     ╷
+1895 │   height: 100%;
+     │               ^
+     ╵
+  src\pages\evaluation\index.scss 1895:15  root stylesheet
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10 MiB [emitted]
+  assets by path js/*.js 9.99 MiB
+    asset js/app.915bcc0d.js 7.33 MiB [emitted] [immutable] (name: app)
+    asset js/taro.915bcc0d.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.915bcc0d.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 14.3 KiB [hmr]
+    asset app.fc1d968c9e083dc71f0a.hot-update.js 13.4 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.fc1d968c9e083dc71f0a.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.fc1d968c9e083dc71f0a.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10 MiB = js/runtime.915bcc0d.js 49.4 KiB runtime.fc1d968c9e083dc71f0a.hot-update.js 868 bytes js/taro.915bcc0d.js 2.62 MiB js/app.915bcc0d.js 7.33 MiB app.fc1d968c9e083dc71f0a.hot-update.js 13.4 KiB
+cached modules 5.61 MiB [cached] 866 modules
+runtime modules 32.8 KiB 18 modules
+javascript modules 4.38 KiB
+  ./src/pages/evaluation/components/EvaluationStatusBar.tsx 4.34 KiB [built] [code generated]
+  ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/pages/evaluation/index.scss 39 bytes [built] [1 error]
+
+ERROR in ./src/pages/evaluation/index.scss (./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/pages/evaluation/index.scss)
+Module build failed (from ./node_modules/sass-loader/dist/cjs.js):
+SassError: expected "{".
+     ╷
+1895 │   height: 100%;
+     │               ^
+     ╵
+  src\pages\evaluation\index.scss 1895:15  root stylesheet
+SassError: SassError: expected "{".
+     ╷
+1895 │   height: 100%;
+     │               ^
+     ╵
+  src\pages\evaluation\index.scss 1895:15  root stylesheet
+    at C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\sass-loader\dist\index.js:54:16
+    at Function.call$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:99827:16)
+    at render_closure1.call$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:85350:12)
+    at _RootZone.runBinary$3$3 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:29726:18)
+    at _FutureListener.handleError$1 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28240:21)
+    at _Future__propagateToListeners_handleError.call$0 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28547:49)
+    at Object._Future__propagateToListeners (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3936:77)
+    at _Future._completeError$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28393:9)
+    at _AsyncAwaitCompleter.completeError$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28038:12)
+    at Object._asyncRethrow (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3712:17)
+    at C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:19929:20
+    at _wrapJsFunctionForAsync_closure.$protected (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3737:15)
+    at _wrapJsFunctionForAsync_closure.call$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28057:12)
+    at _awaitOnObject_closure0.call$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28051:25)
+    at _RootZone.runBinary$3$3 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:29726:18)
+    at _FutureListener.handleError$1 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28240:21)
+    at _Future__propagateToListeners_handleError.call$0 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28547:49)
+    at Object._Future__propagateToListeners (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3936:77)
+    at _Future._completeError$2 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28393:9)
+    at _Future__asyncCompleteError_closure.call$0 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:28477:18)
+    at Object._microtaskLoop (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3992:24)
+    at StaticClosure._startMicrotaskLoop (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:3998:11)
+    at _AsyncRun__scheduleImmediateJsOverride_internalCallback.call$0 (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:27958:21)
+    at invokeClosure (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:1455:26)
+    at Immediate._onImmediate (C:\Users\39187\Desktop\二课系统\erkexitong\node_modules\@tarojs\webpack5-runner\node_modules\sass\sass.dart.js:1476:18)
+    at processImmediate (node:internal/timers:504:21)
+ @ ./src/pages/evaluation/index.scss 8:6-344 22:17-24 26:7-21 58:25-39 59:36-47 59:50-64 63:6-73:7 64:54-65 64:68-82 70:42-53 70:56-70 72:21-28 83:0-314 83:0-314 84:22-29 84:33-47 84:50-64 61:4-74:5
+ @ ./src/pages/evaluation/index.tsx 24:0-22
+ @ ./src/app.config.ts 46:15-49
+
+webpack 5.78.0 compiled with 1 error in 186 ms
+→ Watching... [2026/7/7 14:59:09]
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10.6 MiB [emitted]
+  assets by path js/*.js 10.3 MiB
+    asset js/app.e6fc64fd.js 7.64 MiB [emitted] [immutable] (name: app)
+    asset js/taro.e6fc64fd.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.e6fc64fd.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 323 KiB [hmr]
+    asset app.915bcc0d3239cc8e67c9.hot-update.js 322 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.915bcc0d3239cc8e67c9.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.915bcc0d3239cc8e67c9.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10.6 MiB = js/runtime.e6fc64fd.js 49.4 KiB runtime.915bcc0d3239cc8e67c9.hot-update.js 868 bytes js/taro.e6fc64fd.js 2.62 MiB js/app.e6fc64fd.js 7.64 MiB app.915bcc0d3239cc8e67c9.hot-update.js 322 KiB
+cached modules 5.61 MiB [cached] 866 modules
+runtime modules 32.8 KiB 18 modules
+javascript modules 134 KiB
+  ./src/pages/evaluation/index.scss 3 KiB [code generated]
+  ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/pages/evaluation/index.scss 131 KiB [built] [code generated]
+webpack 5.78.0 compiled successfully in 394 ms
+→ Watching... [2026/7/7 15:09:32]
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10.3 MiB [emitted]
+  assets by path js/*.js 10.3 MiB
+    asset js/app.76998321.js 7.64 MiB [emitted] [immutable] (name: app)
+    asset js/taro.76998321.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.76998321.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 9.12 KiB [hmr]
+    asset app.e6fc64fdabde5a36771d.hot-update.js 8.23 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.e6fc64fdabde5a36771d.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.e6fc64fdabde5a36771d.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10.3 MiB = js/runtime.76998321.js 49.4 KiB runtime.e6fc64fdabde5a36771d.hot-update.js 868 bytes js/taro.76998321.js 2.62 MiB js/app.76998321.js 7.64 MiB app.e6fc64fdabde5a36771d.hot-update.js 8.23 KiB
+cached modules 5.74 MiB [cached] 867 modules
+runtime modules 32.8 KiB 18 modules
+./src/pages/evaluation/components/EvaluationHero.tsx 2.71 KiB [built] [code generated]
+webpack 5.78.0 compiled successfully in 171 ms
+→ Watching... [2026/7/7 15:09:43]
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10.3 MiB [emitted]
+  assets by path js/*.js 10.3 MiB
+    asset js/app.44aeedc4.js 7.64 MiB [emitted] [immutable] (name: app)
+    asset js/taro.44aeedc4.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.44aeedc4.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 29.4 KiB [hmr]
+    asset app.76998321084553244886.hot-update.js 28.5 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.76998321084553244886.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.76998321084553244886.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10.3 MiB = js/runtime.44aeedc4.js 49.4 KiB runtime.76998321084553244886.hot-update.js 868 bytes js/taro.44aeedc4.js 2.62 MiB js/app.44aeedc4.js 7.64 MiB app.76998321084553244886.hot-update.js 28.5 KiB
+cached modules 5.73 MiB [cached] 867 modules
+runtime modules 32.8 KiB 18 modules
+./src/pages/evaluation/index.tsx 9.58 KiB [built] [code generated]
+webpack 5.78.0 compiled successfully in 199 ms
+→ Watching... [2026/7/7 15:10:17]
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10.3 MiB [emitted]
+  assets by path js/*.js 10.3 MiB
+    asset js/app.97adbea5.js 7.64 MiB [emitted] [immutable] (name: app)
+    asset js/taro.97adbea5.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.97adbea5.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 18.6 KiB [hmr]
+    asset app.44aeedc413a97ee6c7ad.hot-update.js 17.7 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.44aeedc413a97ee6c7ad.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.44aeedc413a97ee6c7ad.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10.3 MiB = js/runtime.97adbea5.js 49.4 KiB runtime.44aeedc413a97ee6c7ad.hot-update.js 868 bytes js/taro.97adbea5.js 2.62 MiB js/app.97adbea5.js 7.64 MiB app.44aeedc413a97ee6c7ad.hot-update.js 17.7 KiB
+cached modules 5.73 MiB [cached] 867 modules
+runtime modules 32.8 KiB 18 modules
+./src/pages/evaluation/components/EvaluationWorkspace.tsx 5.89 KiB [built] [code generated]
+webpack 5.78.0 compiled successfully in 161 ms
+→ Watching... [2026/7/7 15:10:49]
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10.6 MiB [emitted]
+  assets by path js/*.js 10.3 MiB
+    asset js/app.e3dbd063.js 7.65 MiB [emitted] [immutable] (name: app)
+    asset js/taro.e3dbd063.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.e3dbd063.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 335 KiB [hmr]
+    asset app.97adbea5300c04c7fe9f.hot-update.js 334 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.97adbea5300c04c7fe9f.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.97adbea5300c04c7fe9f.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10.6 MiB = js/runtime.e3dbd063.js 49.4 KiB runtime.97adbea5300c04c7fe9f.hot-update.js 868 bytes js/taro.e3dbd063.js 2.62 MiB js/app.e3dbd063.js 7.65 MiB app.97adbea5300c04c7fe9f.hot-update.js 334 KiB
+cached modules 5.61 MiB [cached] 867 modules
+runtime modules 32.8 KiB 18 modules
+./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/pages/evaluation/index.scss 136 KiB [built] [code generated]
+webpack 5.78.0 compiled successfully in 370 ms
+→ Watching... [2026/7/7 15:11:13]
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10.7 MiB [emitted]
+  assets by path js/*.js 10.3 MiB
+    asset js/app.2e9c284e.js 7.66 MiB [emitted] [immutable] (name: app)
+    asset js/taro.2e9c284e.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.2e9c284e.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 341 KiB [hmr]
+    asset app.e3dbd06358b238eb3fb5.hot-update.js 340 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.e3dbd06358b238eb3fb5.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.e3dbd06358b238eb3fb5.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10.7 MiB = js/runtime.2e9c284e.js 49.4 KiB runtime.e3dbd06358b238eb3fb5.hot-update.js 868 bytes js/taro.2e9c284e.js 2.62 MiB js/app.2e9c284e.js 7.66 MiB app.e3dbd06358b238eb3fb5.hot-update.js 340 KiB
+cached modules 5.61 MiB [cached] 867 modules
+runtime modules 32.8 KiB 18 modules
+./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/pages/evaluation/index.scss 138 KiB [built] [code generated]
+webpack 5.78.0 compiled successfully in 296 ms
+→ Watching... [2026/7/7 15:11:30]
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10.4 MiB [emitted]
+  assets by path js/*.js 10.3 MiB
+    asset js/app.0ec94bd8.js 7.65 MiB [emitted] [immutable] (name: app)
+    asset js/taro.0ec94bd8.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.0ec94bd8.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 84.1 KiB [hmr]
+    asset app.2e9c284e521b5c36dec0.hot-update.js 83.2 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.2e9c284e521b5c36dec0.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.2e9c284e521b5c36dec0.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10.4 MiB = js/runtime.0ec94bd8.js 49.4 KiB runtime.2e9c284e521b5c36dec0.hot-update.js 868 bytes js/taro.0ec94bd8.js 2.62 MiB js/app.0ec94bd8.js 7.65 MiB app.2e9c284e521b5c36dec0.hot-update.js 83.2 KiB
+cached modules 5.71 MiB [cached] 867 modules
+runtime modules 32.8 KiB 18 modules
+./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/app.scss 32.9 KiB [built] [code generated]
+webpack 5.78.0 compiled successfully in 187 ms
+→ Watching... [2026/7/7 15:13:30]
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10.3 MiB [emitted]
+  assets by path js/*.js 10.3 MiB
+    asset js/app.9a73b4f7.js 7.65 MiB [emitted] [immutable] (name: app)
+    asset js/taro.9a73b4f7.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.9a73b4f7.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 14.3 KiB [hmr]
+    asset app.0ec94bd8046f470be720.hot-update.js 13.4 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.0ec94bd8046f470be720.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.0ec94bd8046f470be720.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10.3 MiB = js/runtime.9a73b4f7.js 49.4 KiB runtime.0ec94bd8046f470be720.hot-update.js 868 bytes js/taro.9a73b4f7.js 2.62 MiB js/app.9a73b4f7.js 7.65 MiB app.0ec94bd8046f470be720.hot-update.js 13.4 KiB
+cached modules 5.74 MiB [cached] 867 modules
+runtime modules 32.8 KiB 18 modules
+./src/pages/evaluation/components/EvaluationStatusBar.tsx 4.35 KiB [built] [code generated]
+webpack 5.78.0 compiled successfully in 139 ms
+→ Watching... [2026/7/7 15:13:52]
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10.7 MiB [emitted]
+  assets by path js/*.js 10.3 MiB
+    asset js/app.4f888445.js 7.66 MiB [emitted] [immutable] (name: app)
+    asset js/taro.4f888445.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.4f888445.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 343 KiB [hmr]
+    asset app.9a73b4f7565d84d51bf3.hot-update.js 343 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.9a73b4f7565d84d51bf3.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.9a73b4f7565d84d51bf3.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10.7 MiB = js/runtime.4f888445.js 49.4 KiB runtime.9a73b4f7565d84d51bf3.hot-update.js 868 bytes js/taro.4f888445.js 2.62 MiB js/app.4f888445.js 7.66 MiB app.9a73b4f7565d84d51bf3.hot-update.js 343 KiB
+cached modules 5.61 MiB [cached] 867 modules
+runtime modules 32.8 KiB 18 modules
+./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/pages/evaluation/index.scss 139 KiB [built] [code generated]
+webpack 5.78.0 compiled successfully in 429 ms
+→ Watching... [2026/7/7 15:23:55]
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10.4 MiB [emitted]
+  assets by path js/*.js 10.3 MiB
+    asset js/app.96f3db6c.js 7.66 MiB [emitted] [immutable] (name: app)
+    asset js/taro.96f3db6c.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.96f3db6c.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 48.2 KiB [hmr]
+    asset app.4f888445a15b712d62d2.hot-update.js 47.3 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.4f888445a15b712d62d2.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.4f888445a15b712d62d2.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10.4 MiB = js/runtime.96f3db6c.js 49.4 KiB runtime.4f888445a15b712d62d2.hot-update.js 868 bytes js/taro.96f3db6c.js 2.62 MiB js/app.96f3db6c.js 7.66 MiB app.4f888445a15b712d62d2.hot-update.js 47.3 KiB
+cached modules 5.73 MiB [cached] 866 modules
+runtime modules 32.8 KiB 18 modules
+javascript modules 16.1 KiB
+  ./src/pages/evaluation/index.tsx 9.67 KiB [built] [code generated]
+  ./src/pages/evaluation/components/EvaluationWorkspace.tsx 6.39 KiB [built] [code generated]
+webpack 5.78.0 compiled successfully in 249 ms
+→ Watching... [2026/7/7 15:24:50]
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10.7 MiB [emitted]
+  assets by path js/*.js 10.3 MiB
+    asset js/app.d02d9c49.js 7.67 MiB [emitted] [immutable] (name: app)
+    asset js/taro.d02d9c49.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.d02d9c49.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 352 KiB [hmr]
+    asset app.96f3db6c622c558c78e5.hot-update.js 351 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.96f3db6c622c558c78e5.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.96f3db6c622c558c78e5.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10.7 MiB = js/runtime.d02d9c49.js 49.4 KiB runtime.96f3db6c622c558c78e5.hot-update.js 868 bytes js/taro.d02d9c49.js 2.62 MiB js/app.d02d9c49.js 7.67 MiB app.96f3db6c622c558c78e5.hot-update.js 351 KiB
+cached modules 5.61 MiB [cached] 867 modules
+runtime modules 32.8 KiB 18 modules
+./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/pages/evaluation/index.scss 143 KiB [built] [code generated]
+webpack 5.78.0 compiled successfully in 454 ms
+→ Watching... [2026/7/7 15:25:17]
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10.7 MiB [emitted]
+  assets by path js/*.js 10.3 MiB
+    asset js/app.3aad49ac.js 7.68 MiB [emitted] [immutable] (name: app)
+    asset js/taro.3aad49ac.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.3aad49ac.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 365 KiB [hmr]
+    asset app.d02d9c49737c77222095.hot-update.js 364 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.d02d9c49737c77222095.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.d02d9c49737c77222095.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10.7 MiB = js/runtime.3aad49ac.js 49.4 KiB runtime.d02d9c49737c77222095.hot-update.js 868 bytes js/taro.3aad49ac.js 2.62 MiB js/app.3aad49ac.js 7.68 MiB app.d02d9c49737c77222095.hot-update.js 364 KiB
+cached modules 5.61 MiB [cached] 867 modules
+runtime modules 32.8 KiB 18 modules
+./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/pages/evaluation/index.scss 148 KiB [built] [code generated]
+webpack 5.78.0 compiled successfully in 456 ms
+→ Watching... [2026/7/7 15:26:10]
+
+assets by status 4.18 MiB [cached] 10 assets
+assets by status 10.4 MiB [emitted]
+  assets by path js/*.js 10.4 MiB
+    asset js/app.8d2da5db.js 7.69 MiB [emitted] [immutable] (name: app)
+    asset js/taro.8d2da5db.js 2.62 MiB [emitted] [immutable] (name: taro) (id hint: taro)
+    asset js/runtime.8d2da5db.js 49.4 KiB [emitted] [immutable] (name: runtime)
+  assets by info 89.9 KiB [hmr]
+    asset app.3aad49ac4ea7a285b106.hot-update.js 89 KiB [emitted] [immutable] [hmr] (name: app)
+    asset runtime.3aad49ac4ea7a285b106.hot-update.js 868 bytes [emitted] [immutable] [hmr] (name: runtime)
+    asset runtime.3aad49ac4ea7a285b106.hot-update.json 37 bytes [emitted] [immutable] [hmr]
+  asset index.html 1020 bytes [emitted]
+Entrypoint app 10.4 MiB = js/runtime.8d2da5db.js 49.4 KiB runtime.3aad49ac4ea7a285b106.hot-update.js 868 bytes js/taro.8d2da5db.js 2.62 MiB js/app.8d2da5db.js 7.69 MiB app.3aad49ac4ea7a285b106.hot-update.js 89 KiB
+cached modules 5.72 MiB [cached] 867 modules
+runtime modules 32.8 KiB 18 modules
+./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].oneOf[0].use[0]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[0]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[5].use[1]!./src/app.scss 35.3 KiB [built] [code generated]
+webpack 5.78.0 compiled successfully in 207 ms

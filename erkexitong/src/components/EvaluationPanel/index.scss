@@ -1,0 +1,357 @@
+.evaluation-panel {
+  margin: 0 0 16px;
+  overflow: hidden;
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
+  background: var(--app-surface);
+  box-shadow: var(--app-shadow-sm);
+}
+
+.evaluation-panel__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 24px;
+  background:
+    linear-gradient(135deg, rgba(35, 129, 95, 0.08), rgba(255, 255, 255, 0) 58%),
+    var(--app-surface-raised);
+}
+
+.evaluation-panel--expanded .evaluation-panel__summary {
+  border-bottom: 1px solid var(--app-border);
+}
+
+.evaluation-panel__title {
+  display: block;
+  color: var(--app-ink);
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 42px;
+}
+
+.evaluation-panel__meta {
+  display: block;
+  margin-top: 6px;
+  color: var(--app-muted);
+  font-size: 22px;
+  line-height: 30px;
+}
+
+.evaluation-panel__score-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 108px;
+}
+
+.evaluation-panel__score {
+  color: var(--app-brand-2);
+  font-size: 42px;
+  font-weight: 900;
+  line-height: 46px;
+}
+
+.evaluation-panel__toggle {
+  margin-top: 4px;
+  color: var(--app-muted);
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.evaluation-panel__body {
+  padding: 8px 24px 26px;
+}
+
+.evaluation-panel .ui-empty-state {
+  margin-top: 18px;
+}
+
+.evaluation-panel__section {
+  margin-top: 22px;
+}
+
+.evaluation-panel__section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--app-ink);
+}
+
+.evaluation-panel__section-title {
+  color: var(--app-ink);
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.evaluation-panel__section-score {
+  color: var(--app-danger);
+  font-size: 26px;
+  font-weight: 900;
+}
+
+.evaluation-panel__item {
+  padding: 22px 0 12px;
+  border-bottom: 1px solid #e5ece8;
+}
+
+.evaluation-panel__item:last-child {
+  border-bottom: 0;
+}
+
+.evaluation-panel__item-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.evaluation-panel__item-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.evaluation-panel__item-title {
+  display: block;
+  color: var(--app-ink);
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 38px;
+}
+
+.evaluation-panel__item-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid rgba(35, 129, 95, 0.22);
+  border-radius: var(--app-radius-sm);
+  background: var(--app-brand-soft);
+  color: #245844;
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 32px;
+}
+
+.evaluation-panel__item-rule {
+  display: block;
+  margin-top: 6px;
+  color: var(--app-muted);
+  font-size: 22px;
+  line-height: 32px;
+}
+
+.evaluation-panel__item-score {
+  min-width: 90px;
+  padding: 4px 0;
+  color: var(--app-brand-2);
+  font-size: 26px;
+  font-weight: 900;
+  text-align: right;
+}
+
+.evaluation-panel__empty {
+  margin: 18px 0;
+  padding: 22px;
+  border: 1px dashed var(--app-border-strong);
+  border-radius: var(--app-radius-sm);
+  background: #f7fbf8;
+  color: var(--app-muted);
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.evaluation-panel__empty-state {
+  margin-top: 18px;
+  padding: 28px;
+  border: 1px dashed var(--app-border-strong);
+  border-radius: var(--app-radius-sm);
+  background: #f7fbf8;
+}
+
+.evaluation-panel__empty-title {
+  display: block;
+  color: var(--app-ink);
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 38px;
+  text-align: center;
+}
+
+.evaluation-panel__empty-copy {
+  display: block;
+  margin-top: 8px;
+  color: var(--app-muted);
+  font-size: 23px;
+  line-height: 33px;
+  text-align: center;
+}
+
+.evaluation-panel__add {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 60px;
+  margin-top: 14px;
+  border: 1px dashed #81a595;
+  border-radius: var(--app-radius-sm);
+  background: var(--app-brand-soft);
+  color: #245844;
+  font-size: 25px;
+  font-weight: 900;
+  line-height: 58px;
+}
+
+.evaluation-panel__add::before {
+  content: "+";
+  margin-right: 8px;
+  font-size: 27px;
+  line-height: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .evaluation-panel__summary:hover {
+    background:
+      linear-gradient(135deg, rgba(35, 129, 95, 0.11), rgba(255, 255, 255, 0) 60%),
+      var(--app-surface-raised);
+  }
+
+  .evaluation-panel__add:hover {
+    border-color: var(--app-brand-2);
+    box-shadow: var(--app-shadow-sm);
+  }
+}
+
+@media (min-width: 960PX) {
+  .evaluation-panel {
+    margin: 0 0 16PX;
+    border-radius: 8PX;
+  }
+
+  .evaluation-panel__summary {
+    padding: 20PX 24PX;
+  }
+
+  .evaluation-panel__title {
+    font-size: 25PX;
+    line-height: 32PX;
+  }
+
+  .evaluation-panel__meta {
+    margin-top: 4PX;
+    font-size: 14PX;
+    line-height: 21PX;
+  }
+
+  .evaluation-panel__score-wrap {
+    min-width: 76PX;
+  }
+
+  .evaluation-panel__score {
+    font-size: 34PX;
+    line-height: 38PX;
+  }
+
+  .evaluation-panel__toggle {
+    font-size: 13PX;
+    line-height: 18PX;
+  }
+
+  .evaluation-panel__body {
+    padding: 4PX 24PX 18PX;
+  }
+
+  .evaluation-panel .ui-empty-state {
+    margin-top: 14PX;
+  }
+
+  .evaluation-panel__section {
+    margin-top: 18PX;
+  }
+
+  .evaluation-panel__section-head {
+    padding-bottom: 10PX;
+  }
+
+  .evaluation-panel__section-title {
+    font-size: 22PX;
+    line-height: 28PX;
+  }
+
+  .evaluation-panel__section-score {
+    font-size: 20PX;
+    line-height: 26PX;
+  }
+
+  .evaluation-panel__item {
+    padding: 16PX 0 10PX;
+  }
+
+  .evaluation-panel__item-title {
+    font-size: 16PX;
+    line-height: 23PX;
+  }
+
+  .evaluation-panel__item-title-row {
+    gap: 7PX;
+  }
+
+  .evaluation-panel__item-badge {
+    min-height: 22PX;
+    padding: 0 7PX;
+    font-size: 10PX;
+    line-height: 20PX;
+  }
+
+  .evaluation-panel__item-rule {
+    margin-top: 4PX;
+    font-size: 12PX;
+    line-height: 18PX;
+  }
+
+  .evaluation-panel__item-score {
+    min-width: 58PX;
+    font-size: 14PX;
+    line-height: 22PX;
+  }
+
+  .evaluation-panel__empty {
+    margin: 12PX 0;
+    padding: 14PX;
+    font-size: 13PX;
+  }
+
+  .evaluation-panel__empty-state {
+    margin-top: 14PX;
+    padding: 20PX;
+  }
+
+  .evaluation-panel__empty-title {
+    font-size: 16PX;
+    line-height: 23PX;
+  }
+
+  .evaluation-panel__empty-copy {
+    margin-top: 5PX;
+    font-size: 12PX;
+    line-height: 18PX;
+  }
+
+  .evaluation-panel__add {
+    height: 38PX;
+    margin-top: 10PX;
+    font-size: 13PX;
+    line-height: 36PX;
+  }
+
+  .evaluation-panel__add::before {
+    margin-right: 5PX;
+    font-size: 15PX;
+  }
+}

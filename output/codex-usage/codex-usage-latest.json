@@ -1,0 +1,87 @@
+{
+  "fetchedAt": "2026-07-08T05:55:51.090Z",
+  "accounts": [
+    {
+      "name": "刘子琦",
+      "response": {
+        "code": 1,
+        "msg": "success",
+        "data": {
+          "generatedAt": "2026-07-08 13:55:49",
+          "enabled": true,
+          "disabledReason": "",
+          "subscription": {
+            "subscribeId": 1845293,
+            "subTypeId": 201,
+            "subTypeName": "codex 特惠 每日200刀月卡",
+            "dailyLimitUsd": 200,
+            "per": "24h",
+            "billingType": "amount",
+            "expireTime": "2026-08-07 13:08:52",
+            "isLongTerm": false
+          },
+          "rule": {
+            "windowHours": 3,
+            "limitUsd": 50
+          },
+          "window": {
+            "windowStart": "2026-07-08 10:55:49",
+            "windowEnd": "2026-07-08 13:55:49",
+            "windowHours": 3,
+            "limitUsd": 50,
+            "usedUsd": 22.822643,
+            "remainingUsd": 27.177358,
+            "usagePercent": 45.65,
+            "requestCount": 215,
+            "isLimited": false,
+            "releaseAt": null,
+            "retryAfterSeconds": null
+          }
+        }
+      },
+      "quota": null,
+      "error": "quota: 解析 quota 响应失败 (HTTP 429): API calls quota exceeded! maximum admitted 1 per 1s."
+    },
+    {
+      "name": "顾天宇",
+      "response": {
+        "code": 1,
+        "msg": "success",
+        "data": {
+          "generatedAt": "2026-07-08 13:55:49",
+          "enabled": true,
+          "disabledReason": "",
+          "subscription": {
+            "subscribeId": 1845293,
+            "subTypeId": 201,
+            "subTypeName": "codex 特惠 每日200刀月卡",
+            "dailyLimitUsd": 200,
+            "per": "24h",
+            "billingType": "amount",
+            "expireTime": "2026-08-07 13:08:52",
+            "isLongTerm": false
+          },
+          "rule": {
+            "windowHours": 3,
+            "limitUsd": 50
+          },
+          "window": {
+            "windowStart": "2026-07-08 10:55:49",
+            "windowEnd": "2026-07-08 13:55:49",
+            "windowHours": 3,
+            "limitUsd": 50,
+            "usedUsd": 22.822643,
+            "remainingUsd": 27.177358,
+            "usagePercent": 45.65,
+            "requestCount": 215,
+            "isLimited": false,
+            "releaseAt": null,
+            "retryAfterSeconds": null
+          }
+        }
+      },
+      "quota": null,
+      "error": "quota 返回异常"
+    }
+  ]
+}

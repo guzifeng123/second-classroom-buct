@@ -1,0 +1,320 @@
+.submission-history {
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding-bottom: 40px;
+  background:
+    linear-gradient(180deg, rgba(31, 61, 50, 0.08), rgba(31, 61, 50, 0) 340px),
+    var(--app-bg);
+}
+
+.submission-history--gate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.submission-history__gate-title {
+  color: var(--app-ink);
+  font-size: 34px;
+  font-weight: 900;
+}
+
+.submission-history__gate-button,
+.submission-history__back,
+.submission-history__refresh,
+.submission-history__card-button {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--app-radius-sm);
+  font-weight: 900;
+}
+
+.submission-history__hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 30px 28px 24px;
+  background:
+    radial-gradient(circle at 88% 18%, rgba(215, 192, 138, 0.16), rgba(215, 192, 138, 0) 34%),
+    var(--app-brand);
+}
+
+.submission-history__label,
+.submission-history__title,
+.submission-history__sub,
+.submission-history__error,
+.submission-history__empty-title,
+.submission-history__empty-copy,
+.submission-history__card-title,
+.submission-history__card-meta {
+  display: block;
+}
+
+.submission-history__label {
+  color: var(--app-gold);
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 30px;
+}
+
+.submission-history__title {
+  margin-top: 8px;
+  color: #ffffff;
+  font-size: 34px;
+  font-weight: 900;
+  line-height: 42px;
+  word-break: break-word;
+}
+
+.submission-history__sub {
+  margin-top: 8px;
+  color: #c8d8d0;
+  font-size: 22px;
+  line-height: 32px;
+}
+
+.submission-history__back {
+  flex: 0 0 auto;
+  width: 128px;
+  height: 58px;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  font-size: 23px;
+  line-height: 56px;
+}
+
+.submission-history__status {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 118px;
+  align-items: center;
+  gap: 12px;
+  margin: 22px 24px 14px;
+  color: var(--app-muted);
+  font-size: 21px;
+  line-height: 30px;
+}
+
+.submission-history > .ui-status-banner,
+.submission-history > .ui-empty-state {
+  margin-right: 24px;
+  margin-left: 24px;
+}
+
+.submission-history > .ui-status-banner {
+  margin-bottom: 14px;
+}
+
+.submission-history > .ui-empty-state {
+  margin-top: 34px;
+}
+
+.submission-history__refresh {
+  width: 118px;
+  height: 54px;
+  border: 1px solid var(--app-border-strong);
+  background: var(--app-brand-soft);
+  color: #245844;
+  font-size: 21px;
+  line-height: 52px;
+}
+
+.submission-history__error {
+  margin: 0 24px 14px;
+  padding: 14px 16px;
+  border: 1px solid #f0c9c4;
+  border-radius: var(--app-radius-sm);
+  background: var(--app-danger-soft);
+  color: var(--app-danger);
+  font-size: 22px;
+  line-height: 32px;
+}
+
+.submission-history__empty {
+  margin: 34px 24px 0;
+  padding: 44px 26px;
+  border: 1px dashed var(--app-border-strong);
+  border-radius: var(--app-radius);
+  background:
+    linear-gradient(135deg, rgba(35, 129, 95, 0.05), rgba(215, 192, 138, 0.08)),
+    #f8fbf8;
+  text-align: center;
+}
+
+.submission-history__empty-title {
+  color: var(--app-ink);
+  font-size: 31px;
+  font-weight: 900;
+  line-height: 39px;
+}
+
+.submission-history__empty-copy {
+  margin-top: 12px;
+  color: var(--app-muted);
+  font-size: 23px;
+  line-height: 34px;
+}
+
+.submission-history__list {
+  display: grid;
+  gap: 14px;
+  margin: 0 24px;
+}
+
+.submission-history__card {
+  padding: 20px;
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: var(--app-shadow-sm);
+}
+
+.submission-history__card-title {
+  color: var(--app-ink);
+  font-size: 25px;
+  font-weight: 900;
+  line-height: 33px;
+  word-break: break-all;
+}
+
+.submission-history__card-meta {
+  margin-top: 6px;
+  color: var(--app-muted);
+  font-size: 21px;
+  line-height: 30px;
+}
+
+.submission-history__metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+  color: #245844;
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 30px;
+}
+
+.submission-history__card-button {
+  width: 156px;
+  height: 54px;
+  margin-top: 16px;
+  background: var(--app-brand-2);
+  color: #ffffff;
+  font-size: 21px;
+  line-height: 52px;
+}
+
+.submission-history__empty-button {
+  width: 156px;
+  height: 54px;
+  background: var(--app-brand-2);
+  color: #ffffff;
+  font-size: 21px;
+  line-height: 52px;
+}
+
+@media (min-width: 960PX) {
+  .submission-history {
+    padding: 20PX 24PX 40PX;
+  }
+
+  .submission-history__hero,
+  .submission-history__status,
+  .submission-history__error,
+  .submission-history__empty,
+  .submission-history__list,
+  .submission-history > .ui-status-banner,
+  .submission-history > .ui-empty-state {
+    max-width: 1180PX;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .submission-history__hero {
+    min-height: 118PX;
+    padding: 24PX 32PX;
+    border-radius: 8PX;
+  }
+
+  .submission-history__label {
+    font-size: 13PX;
+    line-height: 19PX;
+  }
+
+  .submission-history__title {
+    font-size: 28PX;
+    line-height: 34PX;
+  }
+
+  .submission-history__sub {
+    font-size: 14PX;
+    line-height: 22PX;
+  }
+
+  .submission-history__back {
+    width: 88PX;
+    height: 38PX;
+    font-size: 12PX;
+    line-height: 36PX;
+  }
+
+  .submission-history__status {
+    grid-template-columns: minmax(0, 1fr) auto 84PX;
+    margin-top: 18PX;
+    margin-bottom: 10PX;
+    font-size: 11PX;
+    line-height: 17PX;
+  }
+
+  .submission-history__refresh {
+    width: 84PX;
+    height: 34PX;
+    font-size: 12PX;
+    line-height: 32PX;
+  }
+
+  .submission-history__error {
+    padding: 10PX 12PX;
+    font-size: 12PX;
+    line-height: 18PX;
+  }
+
+  .submission-history__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14PX;
+  }
+
+  .submission-history__card {
+    padding: 18PX;
+  }
+
+  .submission-history__card-title {
+    font-size: 15PX;
+    line-height: 21PX;
+  }
+
+  .submission-history__card-meta,
+  .submission-history__metrics {
+    font-size: 11PX;
+    line-height: 17PX;
+  }
+
+  .submission-history__card-button {
+    width: 88PX;
+    height: 34PX;
+    font-size: 12PX;
+    line-height: 32PX;
+  }
+
+  .submission-history__empty-button {
+    width: 88PX;
+    height: 34PX;
+    font-size: 12PX;
+    line-height: 32PX;
+  }
+}

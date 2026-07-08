@@ -1,0 +1,38 @@
+evaluation-app/
+├── config/
+│   ├── index.ts                 # Taro 编译配置
+│   ├── dev.ts                   # 开发环境配置
+│   └── prod.ts                  # 生产环境配置
+├── src/
+│   ├── app.config.ts            # 全局配置（页面、窗口等）
+│   ├── app.ts                   # 入口组件
+│   ├── app.scss                 # 全局样式
+│   ├── pages/
+│   │   ├── login/
+│   │   │   ├── index.tsx        # 登录页
+│   │   │   └── index.scss
+│   │   └── evaluation/
+│   │       ├── index.tsx        # 评定系统主页（五维面板）
+│   │       └── index.scss
+│   ├── components/
+│   │   ├── EvaluationPanel/     # 单个评定维度的折叠面板
+│   │   │   ├── index.tsx
+│   │   │   └── index.scss
+│   │   ├── ProofItem/           # 证明材料提交项（文字+图片）
+│   │   │   ├── index.tsx
+│   │   │   └── index.scss
+│   │   └── TransferButton/      # 流转按钮（发送当前编辑内容到其他端）
+│   │       ├── index.tsx
+│   │       └── index.scss
+│   ├── stores/
+│   │   ├── useUserStore.ts      # 用户与设备信息
+│   │   ├── useTransferStore.ts  # 跨端流转内容（如正在编辑的文本、图片列表）
+│   │   └── useConnectionStore.ts# WebSocket 连接状态
+│   ├── services/
+│   │   ├── websocket.ts         # WebSocket 核心封装（Taro.connectSocket 封装）
+│   │   └── transferService.ts   # 流转同步逻辑（整合 WebSocket 与 Store）
+│   └── utils/
+│       └── platform.ts          # 平台判定工具
+├── package.json
+├── tsconfig.json
+└── .gitignore

@@ -1,0 +1,177 @@
+这个提示词可直接用于指导AI，生成一个支持 **Android App、微信小程序、Web(H5)** 三端统一，并具备**多端流转（接力编辑）** 功能的学生综合素质评定系统前端项目。
+
+---
+
+# 学生综合素质评定系统 – 跨端流转应用开发提示词
+
+## 1. 项目目标与技术栈
+- 基于 **Taro 3.x + React + TypeScript** 构建，一套代码编译到三端：
+  - Web(H5)
+  - 微信小程序
+  - Android（React Native 模式）
+- 状态管理使用 **Zustand**（跨端无痛共享）
+- 网络请求统一使用 Taro 内置 `Taro.request` 或兼容 axios 封装
+- 实时流转使用 **WebSocket**（基于 Taro.connectSocket 封装），按用户ID建立房间，实现多端状态同步
+- 用户鉴权使用 token，登录后 WebSocket 自动加入个人房间
+- 所有证明材料（文字+可选图片）支持跨端接续填写
+
+## 2. 业务背景与数据模型
+### 2.1 五维评定体系（总分 600 分）
+每个维度作为一个独立的面板，内部再分为“基础评定”和“拓展评定”两个区块。
+
+| 维度 | 满分 | 基础评定占比 | 拓展评定占比 |
+|------|------|--------------|--------------|
+| 道德与思想素质 | 180 | 80% (144) | 20% (36) |
+| 学术与科技创新 | 120 | 80% (96)  | 20% (24) |
+| 体育与身心健康 | 100 | 80% (80)  | 20% (20) |
+| 美学与人文素养 | 100 | 80% (80)  | 20% (20) |
+| 劳动与社会实践 | 100 | 80% (80)  | 20% (20) |
+
+### 2.2 每条评定项的通用结构
+每一打分项（子项）需提供以下信息：
+- 名称（如“班级民主评议”）
+- 满分/计分规则（固定分、累加、扣分等）
+- 是否允许多次添加（如德育活动可添加多条记录）
+- 证明材料要求：**文字说明（必填） + 图片（可选，支持多张）**
+
+### 2.3 多端流转的核心场景
+- **用户登录**后，同一账号可在多设备（手机、平板、电脑）同时在线
+- 当用户在某设备上**编辑某条评定项的文字说明**或**选择/拍摄图片**时，可以主动触发“流转”操作，将当前编辑中的内容推送到其他登录设备
+- 其他设备实时接收并自动填充到对应的输入框/图片区，实现**无缝接力编辑**
+- 同时支持**自动状态同步**：当用户在任一设备提交保存后，其他设备可拉取最新快照刷新页面
+
+## 3. 全局状态 Store 设计（Zustand）
+请按以下结构创建三个 Store，均使用 TypeScript 类型约束。
+
+### 3.1 `useUserStore`
+```ts
+interface UserState {
+  token: string;
+  userId: string;
+  deviceId: string;      // 当前设备的唯一标识
+  deviceName: string;    // 设备类型（如 'android-phone', 'web-pc'）
+  isLoggedIn: boolean;
+  // actions
+  login: (userId: string, token: string) => void;
+  setDeviceInfo: (deviceId: string, deviceName: string) => void;
+  logout: () => void;
+}
+```
+
+### 3.2 `useTransferStore`
+用于保存**当前正在编辑且可被流转的内容**，以及**从其他端接收到的待应用内容**。
+```ts
+interface TransferState {
+  // 当前正在编辑的项目数据（可流转出去）
+  editingItem: {
+    dimensionKey: string;    // 如 'moral'
+    subItemId: string;       // 评定子项ID
+    text: string;
+    images: string[];        // 本地临时路径或远程URL
+  } | null;
+  
+  // 接收到的待应用数据（从其他端流转过来）
+  incomingTransfer: {
+    dimensionKey: string;
+    subItemId: string;
+    text: string;
+    images: string[];
+    fromDevice: string;
+  } | null;
+  
+  // 流转历史（最近5条）
+  transferHistory: Array<{
+    direction: 'sent' | 'received';
+    time: number;
+    payload: any;
+  }>;
+  
+  // actions
+  setEditingItem: (item: TransferState['editingItem']) => void;
+  clearEditingItem: () => void;
+  applyIncomingTransfer: () => void;   // 将 incomingTransfer 应用到编辑区
+  addHistory: (entry: any) => void;
+}
+```
+
+### 3.3 `useConnectionStore`
+```ts
+interface ConnectionState {
+  isConnected: boolean;
+  isReconnecting: boolean;
+  retryCount: number;
+  otherDevices: Array<{ deviceId: string; deviceName: string; online: boolean }>; // 同账号其他在线设备
+  // actions
+  setConnected: (val: boolean) => void;
+  setReconnecting: (val: boolean) => void;
+  addRetry: () => void;
+  resetRetry: () => void;
+  updateDevices: (list: any[]) => void;
+}
+```
+
+## 4. WebSocket 核心封装 (`src/services/websocket.ts`)
+请基于 Taro.connectSocket 进行封装，需实现：
+- 初始化连接时携带 `token` 鉴权（通过 header 或参数）
+- 连接成功后自动发送 `join` 事件，加入以 `userId` 为房间名的房间
+- 监听 `server:stateUpdate` 事件：服务端推送其他端的最新编辑状态，解析后更新 `useTransferStore` 的 `incomingTransfer`
+- 监听 `server:deviceList` 事件：更新 `useConnectionStore` 中的在线设备列表
+- 心跳保活：每 30 秒发送 `ping`，并在 Android 后台模式时给出注释提醒（需原生配置保活，前端仅发送心跳）
+- 断线重连：onClose 时自动重连，最多重试 5 次，更新 `useConnectionStore` 的重连状态
+- 封装 `sendTransfer` 方法：向服务端发送 `client:transfer` 事件，携带 `{ targetDevice, action, payload }`，用于主动流转
+- 导出单例 websocket 实例，供全局使用
+
+## 5. 流转同步服务层 (`src/services/transferService.ts`)
+- 提供 `initTransferSync()` 函数，在登录成功后调用，初始化 WebSocket 连接并监听事件
+- 监听 `server:stateUpdate` 事件后，解析 payload，调用 `useTransferStore.getState().incomingTransfer` 更新，并自动弹窗或提示用户是否应用
+- 提供 `requestLatestSnapshot()` 方法：通过 REST API `GET /snapshot/{userId}` 拉取最新的评定填写快照，并将数据应用到对应页面的 store（可设计一个 `useSnapshotStore` 或直接由页面组件消费）
+- 提供 `sendTransferTo(targetDeviceId, action, payload)` 方法：调用 websocket 的 `sendTransfer`
+
+## 6. 页面设计
+
+### 6.1 登录页 (`src/pages/login/index`)
+- 简单输入框：用户 ID（测试用，无需密码）
+- 登录按钮点击后，模拟后端返回 token，存入 userStore，设置设备信息（使用 `Taro.getSystemInfo` 获取设备基础信息生成 deviceId）
+- 登录成功后初始化 WebSocket 连接和 transferService
+- 页面底部显示“当前在线设备”列表（从 connectionStore 获取）
+
+### 6.2 评定主页 (`src/pages/evaluation/index`)
+- 顶部：总分概览栏，实时计算五个维度的当前得分总和（本地根据已填项模拟计算）
+- 主体：五个可折叠的维度面板，每个面板组件为 `EvaluationPanel`
+- 每个面板的标题显示维度名称、满分、当前获得分数
+- 面板展开后显示内部的两个区块（基础评定、拓展评定），采用列表形式罗列每个子项
+
+### 6.3 评定子项组件 (`src/components/EvaluationPanel` 内部使用 `ProofItem`)
+每个子项结构：
+```
+[子项名称]  [计分规则说明]  [当前计分]
+  文字说明：[文本输入框]  (必填)
+  图片上传：[图片选择器] (可选，最多3张，点击可预览/删除)
+  流转按钮：[发送到其他设备]  (仅当文字或图片非空时激活)
+```
+- 文字输入框绑定本地 state，`onChange` 时同步更新 `useTransferStore.editingItem`
+- 图片上传使用 `Taro.chooseImage` 选择图片，保存临时路径到 `editingItem.images`，并显示缩略图
+- 点击“发送到其他设备”按钮时，弹出设备选择器（显示 `connectionStore.otherDevices`），选择目标设备后调用 `transferService.sendTransferTo(deviceId, 'EDIT_ITEM', { dimensionKey, subItemId, text, images })`
+- 当接收到 `incomingTransfer` 时，如果当前展开的面板和子项ID匹配，则自动填充文字和图片路径（图片需从临时 URL 或 base64 渲染），并震动/提示“来自XX设备的编辑”
+- 所有证明材料暂存本地（通过 Zustand），提交时统一打包发送后端（本次仅关注前端流转，提交接口预留）
+
+## 7. 三端编译与运行说明
+请在代码生成后附带以下运行指引：
+- `npm run dev:h5` 启动 Web 开发服务器
+- `npm run dev:weapp` 编译到微信小程序（需用微信开发者工具打开 dist 目录）
+- `npm run dev:rn` 启动 Android React Native 模式（需 Android Studio 环境），简要说明原生保活配置的注意事项
+
+## 8. 额外要求
+- 所有代码使用 TypeScript，类型严格
+- 使用 Hooks 函数组件
+- 为跨端适配添加必要注释，尤其图片选择、文件上传、存储等方式的平台差异处理
+- 预留后端接口格式：
+  - 登录：`POST /login` → `{ token, userId }`
+  - 状态快照：`GET /snapshot/{userId}` → `{ dimensions: [...] }`
+- WebSocket 事件名：
+  - 客户端→服务端：`auth`（带token）, `join`（房间）, `client:transfer`, `ping`
+  - 服务端→客户端：`server:stateUpdate`, `server:deviceList`, `pong`
+
+---
+
+**请按照以上提示词，生成完整项目代码，包括文件结构和每个文件的详细实现。**

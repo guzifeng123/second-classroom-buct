@@ -1,0 +1,62 @@
+.note-renderer {
+  width: 100%;
+}
+
+.note-renderer__empty {
+  padding: 28px;
+  border: 1px dashed #b7c8bf;
+  border-radius: 6px;
+  color: #77877f;
+  font-size: 24px;
+  text-align: center;
+}
+
+.note-renderer__heading {
+  margin: 18px 0 10px;
+  color: #17231f;
+  font-weight: 900;
+  line-height: 1.35;
+}
+
+.note-renderer__heading--1 {
+  font-size: 38px;
+}
+
+.note-renderer__heading--2 {
+  font-size: 32px;
+}
+
+.note-renderer__heading--3 {
+  font-size: 28px;
+}
+
+.note-renderer__paragraph {
+  margin: 10px 0;
+  color: #25342e;
+  font-size: 26px;
+  line-height: 40px;
+}
+
+.note-renderer__image-wrap {
+  margin: 18px 0;
+  overflow: hidden;
+  border: 1px solid #d6e1dc;
+  border-radius: 6px;
+  background: #edf3f0;
+}
+
+.note-renderer__image {
+  display: block;
+  width: 100%;
+}
+
+.note-renderer__other {
+  margin: 12px 0;
+  padding: 16px;
+  border: 1px solid #d7c08a;
+  border-radius: 6px;
+  background: #fff8e6;
+  color: #775315;
+  font-size: 22px;
+  line-height: 32px;
+}
