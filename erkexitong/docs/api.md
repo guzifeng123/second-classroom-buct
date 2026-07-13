@@ -8,13 +8,13 @@
 | 拉取快照 | `GET /snapshot/{userId}` | JWT Header | `{ "records": {}, "selectedItemIds": [], "savedAt": 1710000000000 }` |
 | 保存草稿 | `PUT /evaluation-drafts/{userId}` | `{ "records": {}, "selectedItemIds": [], "savedAt": 1710000000000 }` | 同请求体 |
 | 提交材料 | `POST /evaluation-submissions` | `{ "records": {} }` | `{ "submissionId": "uuid" }` |
-| 获取提交记录 | `GET /evaluation-submissions?userId=student-001` | JWT Header | `{ "data": [], "total": 10 }` 或数组 |
+| 获取提交记录 | `GET /evaluation-submissions?userId=student-001` | JWT Header | `{ "data": [], "total": 10 }` 或数组，记录项可包含 `records`、`selected_item_ids`、`rule_version`、`review_status`、`review_comment`、`return_reason`、`reviewer_name`、`reviewed_at`、`dimension_summaries`、`validation_issues` |
 | 上传图片 | `POST /upload` | `multipart/form-data file` | `{ "id": "uuid", "original_url": "...", "thumb_url": "...", "width": 800, "height": 600, "size": 204800 }` |
 | 创建图文材料 | `POST /notes` | `{ "title": "...", "content": [] }` | `{ "id": "uuid", "title": "...", "content": [], "plain_text": "..." }` |
 | 查询图文材料 | `GET /notes?query=关键词` | JWT Header | `{ "data": [], "total": 10 }` 或数组 |
 | 获取图文材料 | `GET /notes/{id}` | JWT Header | `{ "id": "uuid", "title": "...", "content": [] }` |
 | 更新图文材料 | `PUT /notes/{id}` | `{ "title": "...", "content": [] }` | 更新后的完整对象 |
-| 获取图片列表 | `GET /images?offset=0&limit=20` | JWT Header | `{ "data": [], "total": 100 }` |
+| 获取图片列表 | `GET /images?offset=0&limit=20` | JWT Header | `{ "data": [], "total": 100 }`，图片项可包含 `used_count`、`recent_used_at` 和最近关联条目 |
 
 所有接口默认携带：
 
@@ -31,7 +31,11 @@ Authorization: Bearer <token>
 - 图文列表、图片库和提交历史优先读取远端；远端失败时回退本地缓存并展示错误信息。
 - 图文保存先写本地图文草稿，再尝试写远端；远端失败时写入本地图文索引。
 - 提交材料只在 `POST /evaluation-submissions` 成功返回后显示成功。
-- 提交前会校验必填文字、空记录、数值有效性和未上传图片；本地证明图片会先通过 `/upload` 上传后再提交。
+- 提交前会校验必填文字、空记录、数值有效性和未上传图片；本地证明图片会先通过 `/upload` 上传后再提交，正式提交 loading 会展示本地证明图片上传序号。若提交前图片上传失败，失败弹窗会优先展示对应维度、条目和第几张证明图片，并可直接定位回对应证明记录、图片上传区域和失败图片缩略图，用户可对失败图片单张重传并替换原本地图片，替换成功后会提示重新提交。图片上传按钮可展示当前图片序号、缩略图、脱敏短文件名、进度、逐张状态和独立失败原因，缩略图加载失败时可降级为统一占位；多图上传中已成功的图片会先保留，失败或取消后可整体重试剩余图片，也可单张重传或从重试队列移除。
+- 提交前本地图片批量上传的前端进度快照会保留 `dimensionKey`、`sectionKey`、`itemId`、`recordId` 和 `imageIndex`，用于后续定位具体证明材料和失败图片。
+- 评定记录可在 `records` 内保存 `noteReferences` 图文引用快照，包含图文 ID、标题、摘要、图片数量、引用时间和可选 `contentSnapshot` 内容块快照，用于提交后只读回看来源；旧数据缺少 `contentSnapshot` 时前端会用摘要生成兜底内容。
+- 提交记录审核状态字段推荐使用 `review_status`，取值为 `draft`、`pending`、`reviewing`、`approved`、`returned`、`archived`；前端也兼容 `reviewStatus`、`status`、`audit_status` 和 `auditStatus`。
+- 审核意见字段推荐使用 `review_comment`，退回原因使用 `return_reason`，审核人使用 `reviewer_name`，审核时间使用 `reviewed_at`；前端兼容对应 camelCase 字段。
 - 前端兼容部分接口响应中的 snake_case 与 camelCase 字段，归一化逻辑集中在 service 层。
 - 真实提交、图片上传、图文远端保存、提交历史远端读取和真实跨端流转都需要后端按本文件接口与事件契约实现。
 
@@ -44,6 +48,7 @@ Authorization: Bearer <token>
 | `erkexitong-note-draft` | 当前图文编辑草稿 |
 | `erkexitong-note-index` | 图文材料本地索引与详情缓存 |
 | `erkexitong-image-library` | 图片库本地缓存 |
+| `erkexitong-image-library-filters` | 图片库筛选和排序偏好 |
 | `erkexitong-submission-history` | 提交摘要历史 |
 
 ## Storage Schema
@@ -67,6 +72,11 @@ create table images (
   width int,
   height int,
   size int,
+  used_count int not null default 0,
+  recent_used_at timestamptz,
+  last_used_dimension_key varchar(64),
+  last_used_section_key varchar(64),
+  last_used_item_id varchar(128),
   uploaded_at timestamptz not null default now()
 );
 
@@ -75,9 +85,11 @@ create table evaluation_submissions (
   user_id uuid not null,
   records jsonb not null default '{}',
   selected_item_ids jsonb not null default '[]',
+  rule_version varchar(32) not null default 'unknown',
   total_score int not null default 0,
   material_count int not null default 0,
   issue_count int not null default 0,
+  validation_issues jsonb not null default '[]',
   dimension_summaries jsonb not null default '[]',
   created_at timestamptz not null default now()
 );

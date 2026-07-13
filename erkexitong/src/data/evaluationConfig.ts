@@ -1,5 +1,7 @@
 import type { EvaluationDimensionConfig, EvaluationItemConfig } from "../types/evaluation";
 
+export const EVALUATION_RULE_VERSION = "2026.07.v1";
+
 export const evaluationConfig: EvaluationDimensionConfig[] = [
   {
     key: "moral",

@@ -1,0 +1,53 @@
+.proof-item {
+  margin-bottom: 12px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  padding: 12px;
+}
+
+.proof-item--focused {
+  border-width: 1px;
+  border-color: #bd3d30;
+  background-color: #fffaf0;
+}
+
+.proof-item__images--focused {
+  border-width: 1px;
+  border-color: #bd3d30;
+  border-radius: 8px;
+  background-color: #fff4eb;
+  padding: 8px;
+}
+
+.proof-item__image-wrap--focused {
+  border-width: 2px;
+  border-color: #bd3d30;
+}
+
+.proof-item__image-retry {
+  background-color: #bd3d30;
+  color: #ffffff;
+}
+
+.proof-item__field--focused {
+  border-width: 1px;
+  border-color: #bd3d30;
+  background-color: #fff4eb;
+}
+
+.proof-item__note--unavailable {
+  border-width: 1px;
+  border-color: #bd3d30;
+  background-color: #fff4eb;
+}
+
+.proof-item__note-status {
+  color: #bd3d30;
+  font-weight: 700;
+}
+
+.proof-item__note-snapshot {
+  border-color: #b0892f;
+  background-color: #fffaf0;
+  color: #775315;
+}

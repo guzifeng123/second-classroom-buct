@@ -90,6 +90,8 @@
 
 业务代码不应散落读取这些变量，应通过 `API_BASE_URL`、`WS_BASE_URL` 或服务层封装使用。
 
+启动和进入评定页时，前端会通过 `src/utils/runtimeEnvironment.ts` 归一化 API、WebSocket 和离线模式状态，并在登录页和评定状态栏展示当前运行环境。
+
 ## 运行命令
 
 在 Windows PowerShell 下运行 npm 命令必须使用 `npm.cmd`。
@@ -105,7 +107,30 @@
 | 微信小程序构建 | `npm.cmd run build:weapp` |
 | Android RN Bundle | `npm.cmd run build:rn` |
 | Taro RN 构建入口 | `npm.cmd run build:rn:taro` |
+| 核心检查聚合 | `npm.cmd run check:core` |
 | 类型检查 | `npm.cmd run typecheck` |
+| 文档索引页面矩阵校验 | `npm.cmd run validate:docs-index` |
+| 评分配置校验 | `npm.cmd run validate:evaluation` |
+| 图文快照路由校验 | `npm.cmd run validate:note-snapshot-routes` |
+| 评分计分测试 | `npm.cmd run test:evaluation` |
+| 评定草稿归一化测试 | `npm.cmd run test:evaluation-draft` |
+| 提交前校验测试 | `npm.cmd run test:evaluation-validation` |
+| 图片库归一化测试 | `npm.cmd run test:image-library-normalization` |
+| 图文材料归一化测试 | `npm.cmd run test:note-normalization` |
+| 图文快照展示测试 | `npm.cmd run test:note-snapshot` |
+| 图文快照服务测试 | `npm.cmd run test:note-snapshot-service` |
+| 页面矩阵测试 | `npm.cmd run test:page-matrix` |
+| 提交记录接口归一化测试 | `npm.cmd run test:submission-normalization` |
+| 上传响应归一化测试 | `npm.cmd run test:upload-normalization` |
+| Smoke 记录模板测试 | `npm.cmd run test:smoke-records` |
+| H5 smoke 记录模板 | `npm.cmd run smoke:h5:record` |
+| H5 smoke runner | `npm.cmd run smoke:h5:run -- --base-url http://localhost:10086 --out output/smoke/h5-results.json` |
+| H5 smoke 结果 JSON 模板 | `npm.cmd run smoke:h5:results` |
+| H5 smoke 校验并生成记录 | `npm.cmd run smoke:h5:finalize -- --results output/smoke/h5-results.json --out output/smoke/h5-smoke.md` |
+| RN smoke 记录模板 | `npm.cmd run smoke:rn:record` |
+| RN smoke 结果 JSON 模板 | `npm.cmd run smoke:rn:results` |
+| RN smoke 校验并生成记录 | `npm.cmd run smoke:rn:finalize -- --results output/smoke/rn-results.json --out output/smoke/rn-smoke.md` |
+| Smoke 结果 JSON 校验 | `npm.cmd run validate:smoke-results -- --target h5 --results output/smoke/h5-results.json` |
 
 当前 README 记录了 Node 24 下 Taro 3.6 RN runner 直接 `spawn('npx.cmd')` 可能失败的问题。RN 相关开发应优先参考 README 中对 `dev:rn`、`build:rn`、`dev:rn:taro` 和 `build:rn:taro` 的说明。
 
@@ -124,6 +149,28 @@ RN 相关入口：
 - `index.js`：React Native 入口。
 - `metro.config.js`：Metro 配置。
 - `scripts/ensure-rn-output.js`：RN bundle 输出目录检查脚本。
+- `scripts/check-core.js`：核心检查聚合脚本，按顺序执行文档索引页面矩阵校验、评分配置校验、计分测试、草稿归一化、提交前校验、图文/图片/提交/上传归一化测试、图文快照展示与服务测试、页面矩阵测试、H5 smoke runner 测试、图文快照路由校验和 TypeScript 类型检查。
+- `scripts/utils/load-ts-module.js`：脚本测试共用的 TypeScript 模块加载器，统一处理 TS 转译、相对模块解析和模块缓存。
+- `scripts/utils/page-matrix.js`：页面矩阵工具，统一维护注册页面名称、页面类型（`shell`、`detail`、`status`）和 smoke 覆盖标记，并提供页面列表、文档入口和 H5 详情白名单解析函数。
+- `scripts/validate-docs-index.js`：文档索引页面矩阵校验脚本，读取 `src/app.config.ts` 的页面列表，检查 `docs/00-index.md` 当前页面入口、`docs/01-framework-architecture.md` 页面结构、H5/RN smoke 清单和 H5 详情路由白名单是否同步，并确认每个注册页面具备 TSX、H5 SCSS 和 RN SCSS 文件。
+- `scripts/validate-evaluation-config.js`：评分配置结构校验脚本，覆盖规则版本、维度总分、分区上限、条目上限和选项分值。
+- `scripts/validate-note-snapshot-routes.js`：图文快照路由校验脚本，覆盖页面注册、H5 详情路由白名单、`snapshotKey` 读取、最近快照兜底和 H5/RN smoke 清单关键词。
+- `scripts/test-evaluation-scoring.js`：评分计分测试脚本，覆盖固定分、选项分、次数分、数值分、条目封顶和维度封顶。
+- `scripts/test-evaluation-draft.js`：评定草稿归一化测试脚本，覆盖旧草稿补齐、默认已选条目、有材料条目自动选中和冲突判断。
+- `scripts/test-evaluation-validation.js`：提交前校验测试脚本，覆盖已选无记录、已选无材料、缺文字、无效数值和本地图片未上传。
+- `scripts/test-image-library-normalization.js`：图片库归一化测试脚本，覆盖图片字段兼容、缺 URL 过滤、本地旧缓存兜底、使用元信息合并和 `ProofImage` 转换。
+- `scripts/test-note-normalization.js`：图文材料归一化测试脚本，覆盖内容块摘要提取、图片数量统计、蛇形/驼峰时间兼容、列表包装格式和搜索过滤。
+- `scripts/test-note-snapshot.js`：图文快照展示测试脚本，覆盖快照摘要去空白、长度截断、空摘要兜底、标题、图片数量、引用时间、内容块快照优先、旧数据摘要兜底、快照路由和本地快照索引合并裁剪。
+- `scripts/test-note-snapshot-service.js`：图文快照服务测试脚本，使用 mock Taro Storage 覆盖快照预览写入、最近快照兜底、索引上限裁剪、旧 key 清理和重复快照覆盖。
+- `scripts/test-submission-normalization.js`：提交记录接口归一化测试脚本，覆盖蛇形/驼峰字段兼容、时间解析、空提交 ID 过滤和本地旧缓存兜底。
+- `scripts/test-upload-normalization.js`：上传响应归一化测试脚本，覆盖图片预检、上传响应字段兼容、缺原图 URL 抛错、本地图片和已上传图片的 `ProofImage` 转换。
+- `scripts/create-h5-smoke-record.js`：H5 smoke 人工验收记录模板生成脚本，默认输出到终端，传 `--out` 时写入指定文件；步骤结果表会带页面类型列，传 `--results` 时可按自动化结果 JSON 回填结果、备注、截图、日志和 Runner 元信息摘要。
+- `scripts/create-rn-smoke-record.js`：RN Android smoke 人工验收记录模板生成脚本，默认输出到终端，传 `--out` 时写入指定文件；步骤结果表会带页面类型列，传 `--results` 时可按自动化结果 JSON 回填结果、备注、截图、日志和 Runner 元信息摘要。
+- `scripts/create-smoke-results-template.js`：Smoke 结果 JSON 模板生成脚本，通过 `--target h5|rn` 读取对应 checklist，输出可被记录生成器 `--results` 消费的完整步骤 JSON。
+- `scripts/run-h5-smoke.js`：H5 smoke runner，检查 `--base-url` 是否可访问并返回 H5 应用壳，输出标准结果 JSON；默认在 `output/smoke/h5-artifacts/<timestamp>/` 保存入口响应状态、正文片段日志和运行元信息，也可通过 `--artifact-dir` 指定目录，后续可逐步接入 Playwright 页面操作。
+- `scripts/validate-smoke-results.js`：Smoke 结果 JSON 校验脚本，检查步骤数量、顺序、`flow`、`type`、`result` 枚举和截图/日志路径，避免自动化结果无法回填到记录模板。
+- `scripts/finalize-smoke-record.js`：Smoke 记录归档脚本，通过 `--target h5|rn` 先校验结果 JSON，再调用对应记录生成器输出 Markdown 报告。
+- `scripts/test-smoke-record-generators.js`：Smoke 记录模板生成测试脚本，覆盖 H5/RN 模板关键字段、checklist 步骤、页面类型、视觉检查、证据项、`PAGE_MATRIX` 中标记为 smoke 覆盖的页面入口、结果 JSON 模板、结果 JSON 校验、`--results` 自动化结果回填和 finalize 归档。
 
 ## 服务模块
 
@@ -135,9 +182,10 @@ RN 相关入口：
 | `src/services/authService.ts` | 登录和离线登录模式判断 |
 | `src/services/evaluationService.ts` | 评定快照、远端草稿和正式提交 |
 | `src/services/noteService.ts` | 图文材料列表、详情、本地索引缓存和搜索 |
+| `src/services/noteSnapshotService.ts` | 图文引用快照预览写入、最近快照兜底、索引维护和旧快照清理 |
 | `src/services/imageLibraryService.ts` | 图片列表、本地图片缓存和远端失败兜底 |
 | `src/services/submissionService.ts` | 提交摘要保存、提交历史和本地结果读取 |
-| `src/services/upload.ts` | 图片选择、上传和证明图片转换 |
+| `src/services/upload.ts` | 图片选择、上传、上传进度回调、取消句柄和证明图片转换 |
 | `src/services/websocket.ts` | WebSocket 连接、认证、入房、心跳、重连和事件分发 |
 | `src/services/transferService.ts` | 跨设备流转发送、接收应用和应用前确认 |
 

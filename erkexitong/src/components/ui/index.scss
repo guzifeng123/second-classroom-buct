@@ -99,6 +99,7 @@
 }
 
 .ui-status-banner__action {
+  align-self: center;
   flex: 0 0 auto;
 }
 
@@ -181,13 +182,19 @@
 }
 
 .ui-feedback-button-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  align-self: stretch;
   min-width: 0;
 }
 
 .ui-feedback-button {
+  box-sizing: border-box;
   display: flex !important;
   align-items: center;
   justify-content: center;
+  width: 100%;
   min-width: 0;
   margin: 0 !important;
   line-height: 1;
@@ -243,6 +250,7 @@
 
 .ui-action-dock__meta {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 18px;
   color: var(--app-muted);
@@ -251,18 +259,28 @@
 }
 
 .ui-action-dock__main {
+  display: flex;
+  align-items: stretch;
   margin-top: 12px;
 }
 
 .ui-action-dock__secondary {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
   gap: 10px;
   margin-top: 10px;
 }
 
 .ui-action-dock__danger {
+  display: flex;
+  align-items: stretch;
   min-width: 0;
+}
+
+.ui-action-dock__main .ui-feedback-button-wrap,
+.ui-action-dock__danger .ui-feedback-button-wrap {
+  width: 100%;
 }
 
 .ui-segment-tabs {
@@ -413,6 +431,7 @@
 
   .ui-action-dock__secondary {
     display: flex;
+    align-items: center;
     justify-content: flex-end;
     gap: 8PX;
     margin-top: 8PX;
@@ -421,6 +440,12 @@
   .ui-action-dock__secondary .ui-feedback-button-wrap,
   .ui-action-dock__danger {
     flex: 0 0 auto;
+    align-self: center;
+    width: auto;
+  }
+
+  .ui-action-dock__danger .ui-feedback-button-wrap {
+    width: auto;
   }
 
   .ui-segment-tabs {

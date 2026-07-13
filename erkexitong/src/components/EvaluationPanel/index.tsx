@@ -1,21 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Text, View } from "@tarojs/components";
 import { EmptyState } from "../ui";
 import ProofItem from "../ProofItem";
 import { makeRecordKey, useEvaluationStore } from "../../stores/useEvaluationStore";
-import type { EvaluationDimensionConfig } from "../../types/evaluation";
+import type { EvaluationDimensionConfig, EvaluationFocusField } from "../../types/evaluation";
 import "./index.scss";
 
 interface EvaluationPanelProps {
   dimension: EvaluationDimensionConfig;
   defaultExpanded?: boolean;
   selectedItemIds: string[];
+  focusItemId?: string;
+  focusRecordId?: string;
+  focusUpload?: boolean;
+  focusField?: EvaluationFocusField;
+  focusImageIndex?: number;
 }
 
 export default function EvaluationPanel({
   dimension,
   defaultExpanded = false,
-  selectedItemIds
+  selectedItemIds,
+  focusItemId,
+  focusRecordId,
+  focusUpload = false,
+  focusField,
+  focusImageIndex
 }: EvaluationPanelProps) {
   const [expanded, setExpanded] = useState(defaultExpanded);
   const records = useEvaluationStore((state) => state.records);
@@ -30,6 +40,12 @@ export default function EvaluationPanel({
       items: section.items.filter((item) => selectedSet.has(makeRecordKey(dimension.key, item.id)))
     }))
     .filter((section) => section.items.length > 0);
+
+  useEffect(() => {
+    if (focusItemId) {
+      setExpanded(true);
+    }
+  }, [focusItemId]);
 
   return (
     <View className={`evaluation-panel ${expanded ? "evaluation-panel--expanded" : ""}`}>
@@ -75,7 +91,13 @@ export default function EvaluationPanel({
                   const itemRecords = records[key] ?? [];
 
                   return (
-                    <View className="evaluation-panel__item" key={item.id}>
+                    <View
+                      className={`evaluation-panel__item ${
+                        focusItemId === item.id ? "evaluation-panel__item--focused" : ""
+                      }`}
+                      id={`evaluation-item-${dimension.key}-${item.id}`}
+                      key={item.id}
+                    >
                       <View className="evaluation-panel__item-head">
                         <View>
                           <View className="evaluation-panel__item-title-row">
@@ -103,6 +125,10 @@ export default function EvaluationPanel({
                           recordIndex={index}
                           canRemove={item.mode === "multi"}
                           showHeader={item.mode === "multi"}
+                          focused={focusRecordId === record.id}
+                          focusUpload={focusUpload && focusRecordId === record.id}
+                          focusField={focusRecordId === record.id ? focusField : undefined}
+                          focusImageIndex={focusRecordId === record.id ? focusImageIndex : undefined}
                         />
                       ))}
 

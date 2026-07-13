@@ -8,6 +8,7 @@ import { initTransferSync } from "../../services/transferService";
 import { useConnectionStore } from "../../stores/useConnectionStore";
 import { useUserStore } from "../../stores/useUserStore";
 import { getDeviceInfo } from "../../utils/platform";
+import { getRuntimeEnvironmentStatus } from "../../utils/runtimeEnvironment";
 import "./index.scss";
 
 export default function LoginPage() {
@@ -24,6 +25,7 @@ export default function LoginPage() {
   const hydrateSession = useUserStore((state) => state.hydrateSession);
   const otherDevices = useConnectionStore((state) => state.otherDevices);
   const updateDevices = useConnectionStore((state) => state.updateDevices);
+  const environmentStatus = getRuntimeEnvironmentStatus();
 
   useEffect(() => {
     const info = getDeviceInfo();
@@ -133,6 +135,11 @@ export default function LoginPage() {
               onInput={(event) => setInputUserId(event.detail.value)}
             />
             {inlineError ? <StatusBanner tone="danger" title="登录未完成" description={inlineError} /> : null}
+            <StatusBanner
+              tone={environmentStatus.mode === "offline-demo" ? "warning" : "success"}
+              title={environmentStatus.title}
+              description={`${environmentStatus.description} ${environmentStatus.apiLabel} · ${environmentStatus.wsLabel}`}
+            />
             <FeedbackButton
               className="login-card__primary"
               disabled={submitting}

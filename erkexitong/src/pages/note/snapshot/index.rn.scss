@@ -1,0 +1,63 @@
+.note-snapshot-page {
+  min-height: 100%;
+  padding: 16px;
+  background-color: #eef3ef;
+}
+
+.note-snapshot-page__top {
+  padding: 16px;
+  border-radius: 8px;
+  background-color: #1f3d32;
+}
+
+.note-snapshot-page__label {
+  color: #d7c08a;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.note-snapshot-page__title {
+  margin-top: 6px;
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.note-snapshot-page__meta {
+  margin-top: 6px;
+  color: #c8d8d0;
+  font-size: 13px;
+}
+
+.note-snapshot-page__back {
+  margin-top: 12px;
+  background-color: #ffffff;
+  color: #1f3d32;
+}
+
+.note-snapshot-page__scroll {
+  margin-top: 14px;
+}
+
+.note-snapshot-page__panel {
+  padding: 14px;
+  border-radius: 8px;
+  background-color: #ffffff;
+}
+
+.note-snapshot-page__section-title {
+  margin-bottom: 10px;
+  color: #17231f;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.note-snapshot-page__fallback {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: #e4f1ea;
+  color: #245844;
+  font-size: 13px;
+  font-weight: 800;
+}

@@ -1,20 +1,85 @@
 import Taro from "@tarojs/taro";
-import { getErrorMessage, hasApiBaseUrl } from "../../../services/api";
+import { EVALUATION_RULE_VERSION, evaluationConfig, findEvaluationItem } from "../../../data/evaluationConfig";
+import { hasApiBaseUrl } from "../../../services/api";
 import { submitEvaluation } from "../../../services/evaluationService";
 import { saveSubmissionRecord } from "../../../services/submissionService";
 import { applyIncomingTransfer } from "../../../services/transferService";
-import { uploadLocalProofImages } from "../../../services/upload";
+import { countLocalProofImages, uploadLocalProofImages, type UploadProgressSnapshot } from "../../../services/upload";
 import { useEvaluationStore } from "../../../stores/useEvaluationStore";
 import { useUserStore } from "../../../stores/useUserStore";
 import type { EvaluationValidationIssue } from "../../../types/evaluation";
 import { openDetailRouteOnce } from "../../../utils/detailNavigation";
+import { buildIssueFocusUrl } from "../../../utils/evaluationIssueFocus";
 import { buildDimensionSummaries, countMaterials } from "../../../utils/evaluationSummary";
+import {
+  buildOfflineSubmitMessage,
+  buildRemoteDraftFailureMessage,
+  buildSaveFailureMessage,
+  buildSubmitFailureMessage,
+  feedbackTitles
+} from "../../../utils/feedbackMessages";
 
 function issueSummary(issues: EvaluationValidationIssue[]): string {
   const visible = issues.slice(0, 4).map((issue) => issue.message);
   const restCount = issues.length - visible.length;
 
   return restCount > 0 ? `${visible.join("\n")}\n等 ${issues.length} 项问题` : visible.join("\n");
+}
+
+function updateSubmitLoadingTitle(title: string, previousTitle: { current: string }) {
+  if (previousTitle.current === title) {
+    return;
+  }
+
+  previousTitle.current = title;
+  void Taro.showLoading({ title });
+}
+
+function findDimensionTitle(snapshot: UploadProgressSnapshot): string {
+  return (
+    evaluationConfig.find((dimension) => dimension.key === snapshot.dimensionKey)?.title ??
+    snapshot.dimensionKey ??
+    "未知维度"
+  );
+}
+
+function buildUploadProgressLocation(snapshot: UploadProgressSnapshot | null): string {
+  if (!snapshot) {
+    return "";
+  }
+
+  const dimensionTitle = findDimensionTitle(snapshot);
+  const itemTitle = snapshot.itemId ? findEvaluationItem(snapshot.itemId)?.title ?? snapshot.itemId : "未知条目";
+  const imageIndex = typeof snapshot.imageIndex === "number" ? snapshot.imageIndex + 1 : snapshot.fileIndex + 1;
+
+  return `失败位置：${dimensionTitle} / ${itemTitle} / 第 ${imageIndex} 张证明图片`;
+}
+
+function buildUploadProgressFocusUrl(snapshot: UploadProgressSnapshot | null): string {
+  if (!snapshot?.dimensionKey || !snapshot.itemId) {
+    return "";
+  }
+
+  const params = new URLSearchParams({
+    mode: "fill",
+    focusDimension: snapshot.dimensionKey,
+    focusItem: snapshot.itemId,
+    focusUpload: "1"
+  });
+
+  if (snapshot.sectionKey) {
+    params.set("focusSection", snapshot.sectionKey);
+  }
+
+  if (snapshot.recordId) {
+    params.set("focusRecord", snapshot.recordId);
+  }
+
+  if (typeof snapshot.imageIndex === "number") {
+    params.set("focusImageIndex", String(snapshot.imageIndex));
+  }
+
+  return `/pages/evaluation/index?${params.toString()}`;
 }
 
 export function useEvaluationActions() {
@@ -24,31 +89,38 @@ export function useEvaluationActions() {
   const getValidationIssues = useEvaluationStore((state) => state.getValidationIssues);
 
   const showValidationIssues = async (issues: EvaluationValidationIssue[]) => {
-    await Taro.showModal({
+    const focusUrl = issues[0] ? buildIssueFocusUrl(issues[0]) : "";
+    const result = await Taro.showModal({
       title: "提交前请完善材料",
       content: issueSummary(issues),
-      showCancel: false
+      showCancel: Boolean(focusUrl),
+      cancelText: "关闭",
+      confirmText: focusUrl ? "定位修改" : "知道了"
     });
+
+    if (result.confirm && focusUrl) {
+      await Taro.redirectTo({ url: focusUrl });
+    }
   };
 
   const handleSave = async () => {
     try {
       const result = await saveDraft(userId);
       await Taro.showToast({
-        title: result.remoteSaved ? "已同步保存" : "已本地暂存",
+        title: result.remoteSaved ? feedbackTitles.draftRemoteSaved : feedbackTitles.draftLocalSaved,
         icon: "success"
       });
 
       if (result.remoteError) {
         await Taro.showModal({
-          title: "远端未同步",
-          content: result.remoteError,
+          title: feedbackTitles.remoteDraftFailed,
+          content: buildRemoteDraftFailureMessage(result.remoteError),
           showCancel: false
         });
       }
     } catch (error) {
       await Taro.showToast({
-        title: getErrorMessage(error, "保存失败"),
+        title: buildSaveFailureMessage(error),
         icon: "none"
       });
     }
@@ -60,13 +132,8 @@ export function useEvaluationActions() {
     if (!hasApiBaseUrl) {
       await saveDraft(userId);
       await Taro.showModal({
-        title: "已本地暂存",
-        content:
-          preUploadIssues.length > 0
-            ? `当前仅完成本地暂存，真实提交需配置后端接口。\n\n提交前还需完善：\n${issueSummary(
-                preUploadIssues
-              )}`
-            : "当前仅完成本地暂存，真实提交需配置后端接口。",
+        title: feedbackTitles.offlineSubmitBlocked,
+        content: buildOfflineSubmitMessage(preUploadIssues.length > 0 ? issueSummary(preUploadIssues) : undefined),
         showCancel: false
       });
       return;
@@ -81,9 +148,30 @@ export function useEvaluationActions() {
       title: "提交中"
     });
 
+    let submitPhase: "uploading-local-images" | "submitting-records" = "uploading-local-images";
+    let lastUploadProgress: UploadProgressSnapshot | null = null;
+
     try {
       const state = useEvaluationStore.getState();
-      const uploadedRecords = await uploadLocalProofImages(state.records);
+      const localImageCount = countLocalProofImages(state.records);
+      const loadingTitleRef = { current: "提交中" };
+      const handleUploadProgress = (snapshot: UploadProgressSnapshot) => {
+        lastUploadProgress = snapshot;
+        const title = `上传证明 ${snapshot.fileIndex + 1}/${snapshot.fileCount}`;
+        updateSubmitLoadingTitle(title, loadingTitleRef);
+      };
+
+      if (localImageCount > 0) {
+        updateSubmitLoadingTitle(`上传证明 1/${localImageCount}`, loadingTitleRef);
+      }
+
+      const uploadedRecords = await uploadLocalProofImages(state.records, {
+        onProgress: (snapshot) => {
+          handleUploadProgress(snapshot);
+        }
+      });
+      updateSubmitLoadingTitle("提交中", loadingTitleRef);
+      submitPhase = "submitting-records";
       await state.applySnapshot({
         records: uploadedRecords,
         selectedItemIds: state.selectedItemIds,
@@ -108,9 +196,12 @@ export function useEvaluationActions() {
         submissionId,
         userId,
         createdAt,
+        ruleVersion: EVALUATION_RULE_VERSION,
         totalScore: finalState.getTotalScore(),
         materialCount: countMaterials(finalState.records),
         issueCount: finalIssuesForSummary.length,
+        reviewStatus: "pending",
+        validationIssues: finalIssuesForSummary,
         records: finalState.records,
         selectedItemIds: finalState.selectedItemIds,
         dimensionSummaries: buildDimensionSummaries(
@@ -125,11 +216,21 @@ export function useEvaluationActions() {
       });
     } catch (error) {
       await Taro.hideLoading();
-      await Taro.showModal({
-        title: "提交失败",
-        content: getErrorMessage(error, "请稍后重试"),
-        showCancel: false
+      const uploadFailureLocation =
+        submitPhase === "uploading-local-images" ? buildUploadProgressLocation(lastUploadProgress) : "";
+      const uploadFailureFocusUrl =
+        submitPhase === "uploading-local-images" ? buildUploadProgressFocusUrl(lastUploadProgress) : "";
+      const modalResult = await Taro.showModal({
+        title: feedbackTitles.submitFailed,
+        content: buildSubmitFailureMessage(error, uploadFailureLocation),
+        showCancel: Boolean(uploadFailureFocusUrl),
+        cancelText: "关闭",
+        confirmText: uploadFailureFocusUrl ? "定位修改" : "知道了"
       });
+
+      if (modalResult.confirm && uploadFailureFocusUrl) {
+        await Taro.redirectTo({ url: uploadFailureFocusUrl });
+      }
     }
   };
 

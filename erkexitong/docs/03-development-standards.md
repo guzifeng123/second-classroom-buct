@@ -38,6 +38,9 @@
 ## 页面开发规范
 
 - 新增页面必须同步注册到 `src/app.config.ts`。
+- 新增页面必须同步更新 `scripts/utils/page-matrix.js`，声明页面名称、页面类型（`shell`、`detail`、`status`）和是否纳入 smoke 覆盖。
+- 新增页面必须同步更新 `docs/00-index.md`、`docs/01-framework-architecture.md`，并按页面类型补充 H5/RN smoke 清单。
+- 新增页面默认需要提供同目录 `index.scss` 和 `index.rn.scss`；确实不需要 RN 样式时，应先调整页面矩阵校验规则并说明原因。
 - 页面组件只保留页面编排、用户交互和必要的生命周期逻辑。
 - 需要跨页面复用的 UI 提取到 `src/components`。
 - 只服务单一复杂页面的局部 UI 可放入该页面目录下的 `components`，例如评定页工作区、概览和操作栏。

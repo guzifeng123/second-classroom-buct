@@ -34,13 +34,17 @@
 
 .image-library__hero {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 18px;
   padding: 30px 28px 24px;
   background:
     radial-gradient(circle at 88% 18%, rgba(215, 192, 138, 0.16), rgba(215, 192, 138, 0) 34%),
     var(--app-brand);
+}
+
+.image-library__hero-copy {
+  min-width: 0;
 }
 
 .image-library__label {
@@ -70,35 +74,43 @@
 }
 
 .image-library__back {
+  box-sizing: border-box;
   flex: 0 0 auto;
+  margin-left: auto !important;
   width: 128px;
   height: 58px;
   border: 1px solid rgba(255, 255, 255, 0.34);
   background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  color: #ffffff !important;
   font-size: 23px;
-  line-height: 56px;
+  line-height: 1;
 }
 
 .image-library__tools {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 132px;
+  align-items: stretch;
   gap: 10px;
   margin: 22px 24px 12px;
 }
 
 .image-library__tools .upload-image-button,
 .image-library__refresh {
+  box-sizing: border-box;
   width: 100%;
   height: 68px;
   padding: 0;
   font-size: 23px;
-  line-height: 66px;
+  line-height: 1;
 }
 
 .image-library__tools .upload-image-button {
   background: var(--app-brand-2);
-  color: #ffffff;
+  color: #ffffff !important;
+}
+
+.image-library__tools .upload-image-button::before {
+  color: #ffffff !important;
 }
 
 .image-library__refresh {
@@ -107,14 +119,103 @@
   color: #245844;
 }
 
+.image-library__refresh .ui-feedback-button__label {
+  color: #245844 !important;
+}
+
 .image-library__status {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
   margin: 0 24px 14px;
   color: var(--app-muted);
   font-size: 21px;
   line-height: 30px;
+}
+
+.image-library__filters {
+  display: grid;
+  gap: 14px;
+  margin: 0 24px 18px;
+  padding: 16px;
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-sm);
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.image-library__filter-group {
+  display: grid;
+  gap: 10px;
+}
+
+.image-library__filter-label {
+  display: block;
+  color: var(--app-muted);
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 28px;
+}
+
+.image-library__filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.image-library__filter-options--scroll {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.image-library__filter {
+  box-sizing: border-box;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  min-width: 104px;
+  height: 48px;
+  padding: 0 16px;
+  border: 1px solid var(--app-border-strong);
+  border-radius: var(--app-radius-sm);
+  background: #ffffff;
+  color: var(--app-muted) !important;
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.image-library__filter--active {
+  border-color: rgba(35, 129, 95, 0.42);
+  background: var(--app-brand-soft);
+  color: #245844 !important;
+}
+
+.image-library__filter-actions {
+  display: flex;
+  align-items: flex-end;
+}
+
+.image-library__filter-reset {
+  box-sizing: border-box;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 50px;
+  border: 1px solid var(--app-border-strong);
+  border-radius: var(--app-radius-sm);
+  background: #ffffff;
+  color: var(--app-muted) !important;
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.image-library__filter-reset[disabled] {
+  opacity: 0.46;
 }
 
 .image-library > .ui-status-banner,
@@ -129,6 +230,32 @@
 
 .image-library > .ui-empty-state {
   margin-top: 34px;
+}
+
+.image-library__empty-upload {
+  position: relative;
+  margin: 34px 24px 0;
+}
+
+.image-library__empty-upload .ui-empty-state {
+  margin: 0;
+}
+
+.image-library__empty-upload-button {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 190px;
+  border: 0;
+  background: transparent !important;
+  color: transparent !important;
+  opacity: 0;
+}
+
+.image-library__empty-upload-button::before {
+  content: none;
 }
 
 .image-library__error {
@@ -218,6 +345,19 @@
   line-height: 27px;
 }
 
+.image-library__asset-tag {
+  display: inline-flex;
+  max-width: 100%;
+  margin-top: 8px;
+  padding: 4px 8px;
+  border-radius: var(--app-radius-sm);
+  background: var(--app-brand-soft);
+  color: #245844;
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 24px;
+}
+
 @media (min-width: 960PX) {
   .image-library {
     padding: 20PX 24PX 40PX;
@@ -226,8 +366,10 @@
   .image-library__hero,
   .image-library__tools,
   .image-library__status,
+  .image-library__filters,
   .image-library__error,
   .image-library__empty,
+  .image-library__empty-upload,
   .image-library__grid,
   .image-library > .ui-status-banner,
   .image-library > .ui-empty-state {
@@ -261,7 +403,6 @@
     width: 88PX;
     height: 38PX;
     font-size: 12PX;
-    line-height: 36PX;
   }
 
   .image-library__tools {
@@ -275,12 +416,44 @@
   .image-library__refresh {
     height: 40PX;
     font-size: 13PX;
-    line-height: 38PX;
+    line-height: 1;
   }
 
   .image-library__status {
     font-size: 11PX;
     line-height: 17PX;
+  }
+
+  .image-library__filters {
+    grid-template-columns: 180PX minmax(0, 1fr) 220PX 220PX 92PX;
+    gap: 12PX;
+    padding: 12PX;
+    margin-bottom: 16PX;
+  }
+
+  .image-library__filter-group {
+    gap: 7PX;
+  }
+
+  .image-library__filter-label {
+    font-size: 11PX;
+    line-height: 16PX;
+  }
+
+  .image-library__filter-options {
+    gap: 6PX;
+  }
+
+  .image-library__filter {
+    min-width: 58PX;
+    height: 30PX;
+    padding: 0 10PX;
+    font-size: 11PX;
+  }
+
+  .image-library__filter-reset {
+    height: 30PX;
+    font-size: 11PX;
   }
 
   .image-library__error {
@@ -312,8 +485,23 @@
     line-height: 16PX;
   }
 
+  .image-library__asset-tag {
+    margin-top: 6PX;
+    padding: 3PX 6PX;
+    font-size: 10PX;
+    line-height: 14PX;
+  }
+
   .image-library__empty {
     padding: 42PX 28PX;
+  }
+
+  .image-library__empty-upload {
+    margin-top: 30PX;
+  }
+
+  .image-library__empty-upload-button {
+    min-height: 136PX;
   }
 
   .image-library__empty-title {

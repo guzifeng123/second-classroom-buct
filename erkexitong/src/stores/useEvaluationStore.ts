@@ -5,17 +5,34 @@ import { fetchEvaluationSnapshot, saveEvaluationDraftRemote } from "../services/
 import type {
   DimensionKey,
   EvaluationDraftSaveResult,
-  EvaluationDimensionConfig,
-  EvaluationItemConfig,
   EvaluationRecordMap,
   EvaluationSnapshot,
+  EvaluationSyncStatus,
   EvaluationValidationIssue,
+  NoteReference,
   ProofImage,
   ProofRecord,
   SectionKey
 } from "../types/evaluation";
 import type { EditingItemPayload } from "../types/transfer";
-import { createId } from "../utils/id";
+import {
+  calculateDimensionScore,
+  calculateItemScore,
+  calculateRecordScore,
+  hasRecordMaterial,
+  makeRecordKey
+} from "../utils/evaluationScoring";
+import {
+  createDefaultSelectedEvaluationItemIds,
+  createEvaluationRecord,
+  createInitialEvaluationRecords,
+  evaluationSnapshotsDiffer,
+  hasMeaningfulEvaluationDraft,
+  normalizeEvaluationSnapshot
+} from "../utils/evaluationDraft";
+import { getEvaluationValidationIssues } from "../utils/evaluationValidation";
+
+export { calculateRecordScore, hasRecordMaterial, makeRecordKey } from "../utils/evaluationScoring";
 
 const DRAFT_KEY = "erkexitong-evaluation-draft";
 
@@ -25,6 +42,7 @@ interface EvaluationState {
   draftSavedAt: number | null;
   hydrated: boolean;
   lastSyncError: string | null;
+  syncStatus: EvaluationSyncStatus;
   addRecord: (dimensionKey: DimensionKey, sectionKey: SectionKey, itemId: string) => string | null;
   removeRecord: (dimensionKey: DimensionKey, itemId: string, recordId: string) => void;
   toggleItemSelection: (
@@ -47,7 +65,21 @@ interface EvaluationState {
     numericValue: number
   ) => void;
   addImages: (dimensionKey: DimensionKey, itemId: string, recordId: string, images: ProofImage[]) => void;
+  replaceImage: (
+    dimensionKey: DimensionKey,
+    itemId: string,
+    recordId: string,
+    imageId: string,
+    image: ProofImage
+  ) => void;
   removeImage: (dimensionKey: DimensionKey, itemId: string, recordId: string, imageId: string) => void;
+  addNoteReference: (
+    dimensionKey: DimensionKey,
+    itemId: string,
+    recordId: string,
+    reference: NoteReference
+  ) => void;
+  removeNoteReference: (dimensionKey: DimensionKey, itemId: string, recordId: string, noteId: string) => void;
   applyTransferPayload: (payload: EditingItemPayload) => Promise<void>;
   hydrateFromStorage: () => Promise<void>;
   hydrateDraft: (userId?: string) => Promise<void>;
@@ -60,78 +92,6 @@ interface EvaluationState {
   getValidationIssues: () => EvaluationValidationIssue[];
 }
 
-export function makeRecordKey(dimensionKey: DimensionKey, itemId: string): string {
-  return `${dimensionKey}:${itemId}`;
-}
-
-export function hasRecordMaterial(record: ProofRecord): boolean {
-  return record.text.trim().length > 0 || record.images.length > 0 || record.numericValue !== undefined;
-}
-
-function createRecord(
-  dimensionKey: DimensionKey,
-  sectionKey: SectionKey,
-  itemId: string,
-  item?: EvaluationItemConfig
-): ProofRecord {
-  const now = Date.now();
-  return {
-    id: createId("record"),
-    dimensionKey,
-    sectionKey,
-    itemId,
-    text: "",
-    images: [],
-    selectedOption: item?.options?.[0]?.value,
-    numericValue: undefined,
-    createdAt: now,
-    updatedAt: now,
-    dirty: false
-  };
-}
-
-function createInitialRecords(): EvaluationRecordMap {
-  const records: EvaluationRecordMap = {};
-
-  evaluationConfig.forEach((dimension) => {
-    dimension.sections.forEach((section) => {
-      section.items.forEach((item) => {
-        const key = makeRecordKey(dimension.key, item.id);
-        records[key] = item.mode === "single" ? [createRecord(dimension.key, section.key, item.id, item)] : [];
-      });
-    });
-  });
-
-  return records;
-}
-
-function createDefaultSelectedItemIds(): string[] {
-  const selected: string[] = [];
-
-  evaluationConfig.forEach((dimension) => {
-    dimension.sections.forEach((section) => {
-      section.items.forEach((item) => {
-        if (item.mode === "single") {
-          selected.push(makeRecordKey(dimension.key, item.id));
-        }
-      });
-    });
-  });
-
-  return selected;
-}
-
-function mergeWithInitialRecords(saved?: EvaluationRecordMap): EvaluationRecordMap {
-  if (!saved) {
-    return createInitialRecords();
-  }
-
-  return {
-    ...createInitialRecords(),
-    ...saved
-  };
-}
-
 function createSnapshotFromState(state: Pick<EvaluationState, "records" | "selectedItemIds">): EvaluationSnapshot {
   return {
     records: state.records,
@@ -141,35 +101,10 @@ function createSnapshotFromState(state: Pick<EvaluationState, "records" | "selec
   };
 }
 
-function normalizeSnapshot(snapshot: EvaluationSnapshot, source: "local" | "remote"): EvaluationSnapshot {
-  const records = mergeWithInitialRecords(snapshot.records);
-
-  return {
-    records,
-    selectedItemIds: mergeSelectedItemIds(records, snapshot.selectedItemIds),
-    savedAt: snapshot.savedAt,
-    source
-  };
-}
-
-function hasMeaningfulDraft(snapshot: EvaluationSnapshot): boolean {
-  return Object.values(snapshot.records).some((records) => records.some(hasRecordMaterial));
-}
-
-function snapshotsDiffer(left: EvaluationSnapshot, right: EvaluationSnapshot): boolean {
-  return JSON.stringify({
-    records: left.records,
-    selectedItemIds: left.selectedItemIds ?? []
-  }) !== JSON.stringify({
-    records: right.records,
-    selectedItemIds: right.selectedItemIds ?? []
-  });
-}
-
 async function readLocalSnapshot(): Promise<EvaluationSnapshot | null> {
   try {
     const result = await Taro.getStorage<EvaluationSnapshot>({ key: DRAFT_KEY });
-    return normalizeSnapshot(result.data, "local");
+    return normalizeEvaluationSnapshot(result.data, "local");
   } catch {
     return null;
   }
@@ -187,34 +122,6 @@ async function persistLocalSnapshot(snapshot: EvaluationSnapshot): Promise<void>
   });
 }
 
-function buildIssue(
-  type: EvaluationValidationIssue["type"],
-  dimensionTitle: string,
-  itemTitle: string,
-  message: string,
-  recordIndex?: number
-): EvaluationValidationIssue {
-  return {
-    type,
-    dimensionTitle,
-    itemTitle,
-    recordIndex,
-    message
-  };
-}
-
-function mergeSelectedItemIds(records: EvaluationRecordMap, saved?: string[]): string[] {
-  const selected = new Set(saved ?? createDefaultSelectedItemIds());
-
-  Object.entries(records).forEach(([key, itemRecords]) => {
-    if (itemRecords.some(hasRecordMaterial)) {
-      selected.add(key);
-    }
-  });
-
-  return Array.from(selected);
-}
-
 function updateRecord(
   records: EvaluationRecordMap,
   dimensionKey: DimensionKey,
@@ -230,62 +137,16 @@ function updateRecord(
   };
 }
 
-export function calculateRecordScore(record: ProofRecord, item: EvaluationItemConfig): number {
-  if (!hasRecordMaterial(record)) {
-    return 0;
-  }
-
-  if (item.scoreType === "fixed") {
-    return item.fixedScore ?? item.maxScore;
-  }
-
-  if (item.scoreType === "select") {
-    const option = item.options?.find((candidate) => candidate.value === record.selectedOption);
-    return option?.score ?? 0;
-  }
-
-  if (item.scoreType === "count") {
-    return item.scorePerRecord ?? 0;
-  }
-
-  if (item.scoreType === "number") {
-    return Math.max(0, record.numericValue ?? 0) * (item.scorePerUnit ?? 0);
-  }
-
-  if (item.scoreType === "deduction") {
-    return Math.max(0, item.maxScore - Math.max(0, record.numericValue ?? 0));
-  }
-
-  return 0;
-}
-
-function calculateItemScore(records: ProofRecord[], item: EvaluationItemConfig): number {
-  const score = records.reduce((sum, record) => sum + calculateRecordScore(record, item), 0);
-  return Math.min(item.maxScore, Math.round(score));
-}
-
-function calculateDimensionScore(records: EvaluationRecordMap, dimension: EvaluationDimensionConfig): number {
-  const score = dimension.sections.reduce((dimensionSum, section) => {
-    const sectionScore = section.items.reduce((sectionSum, item) => {
-      const key = makeRecordKey(dimension.key, item.id);
-      return sectionSum + calculateItemScore(records[key] ?? [], item);
-    }, 0);
-
-    return dimensionSum + Math.min(section.maxScore, sectionScore);
-  }, 0);
-
-  return Math.min(dimension.maxScore, score);
-}
-
 export const useEvaluationStore = create<EvaluationState>((set, get) => ({
-  records: createInitialRecords(),
-  selectedItemIds: createDefaultSelectedItemIds(),
+  records: createInitialEvaluationRecords(),
+  selectedItemIds: createDefaultSelectedEvaluationItemIds(),
   draftSavedAt: null,
   hydrated: false,
   lastSyncError: null,
+  syncStatus: "local-saved",
   addRecord: (dimensionKey, sectionKey, itemId) => {
     const item = findEvaluationItem(itemId);
-    const record = createRecord(dimensionKey, sectionKey, itemId, item);
+    const record = createEvaluationRecord(dimensionKey, sectionKey, itemId, item);
     const key = makeRecordKey(dimensionKey, itemId);
 
     set((state) => ({
@@ -295,7 +156,9 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
       records: {
         ...state.records,
         [key]: [...(state.records[key] ?? []), record]
-      }
+      },
+      syncStatus: "local-unsaved",
+      lastSyncError: null
     }));
 
     return record.id;
@@ -306,7 +169,9 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
       records: {
         ...state.records,
         [key]: (state.records[key] ?? []).filter((record) => record.id !== recordId)
-      }
+      },
+      syncStatus: "local-unsaved",
+      lastSyncError: null
     }));
   },
   toggleItemSelection: (dimensionKey, sectionKey, itemId, selected) => {
@@ -331,9 +196,11 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
         records: shouldCreateEditableRecord
           ? {
               ...state.records,
-              [key]: [createRecord(dimensionKey, sectionKey, itemId, item)]
+              [key]: [createEvaluationRecord(dimensionKey, sectionKey, itemId, item)]
             }
-          : state.records
+          : state.records,
+        syncStatus: "local-unsaved",
+        lastSyncError: null
       };
     });
   },
@@ -344,7 +211,9 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
         text,
         dirty: true,
         updatedAt: Date.now()
-      }))
+      })),
+      syncStatus: "local-unsaved",
+      lastSyncError: null
     })),
   updateOption: (dimensionKey, itemId, recordId, selectedOption) =>
     set((state) => ({
@@ -353,7 +222,9 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
         selectedOption,
         dirty: true,
         updatedAt: Date.now()
-      }))
+      })),
+      syncStatus: "local-unsaved",
+      lastSyncError: null
     })),
   updateNumber: (dimensionKey, itemId, recordId, numericValue) =>
     set((state) => ({
@@ -362,7 +233,9 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
         numericValue,
         dirty: true,
         updatedAt: Date.now()
-      }))
+      })),
+      syncStatus: "local-unsaved",
+      lastSyncError: null
     })),
   addImages: (dimensionKey, itemId, recordId, images) => {
     const item = findEvaluationItem(itemId);
@@ -372,9 +245,22 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
         images: [...record.images, ...images].slice(0, item?.imageLimit ?? 3),
         dirty: true,
         updatedAt: Date.now()
-      }))
+      })),
+      syncStatus: "local-unsaved",
+      lastSyncError: null
     }));
   },
+  replaceImage: (dimensionKey, itemId, recordId, imageId, image) =>
+    set((state) => ({
+      records: updateRecord(state.records, dimensionKey, itemId, recordId, (record) => ({
+        ...record,
+        images: record.images.map((candidate) => (candidate.id === imageId ? image : candidate)),
+        dirty: true,
+        updatedAt: Date.now()
+      })),
+      syncStatus: "local-unsaved",
+      lastSyncError: null
+    })),
   removeImage: (dimensionKey, itemId, recordId, imageId) =>
     set((state) => ({
       records: updateRecord(state.records, dimensionKey, itemId, recordId, (record) => ({
@@ -382,7 +268,39 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
         images: record.images.filter((image) => image.id !== imageId),
         dirty: true,
         updatedAt: Date.now()
-      }))
+      })),
+      syncStatus: "local-unsaved",
+      lastSyncError: null
+    })),
+  addNoteReference: (dimensionKey, itemId, recordId, reference) =>
+    set((state) => ({
+      records: updateRecord(state.records, dimensionKey, itemId, recordId, (record) => {
+        const existingReferences = record.noteReferences ?? [];
+        const references = [
+          reference,
+          ...existingReferences.filter((candidate) => candidate.noteId !== reference.noteId)
+        ].slice(0, 4);
+
+        return {
+          ...record,
+          noteReferences: references,
+          dirty: true,
+          updatedAt: Date.now()
+        };
+      }),
+      syncStatus: "local-unsaved",
+      lastSyncError: null
+    })),
+  removeNoteReference: (dimensionKey, itemId, recordId, noteId) =>
+    set((state) => ({
+      records: updateRecord(state.records, dimensionKey, itemId, recordId, (record) => ({
+        ...record,
+        noteReferences: (record.noteReferences ?? []).filter((reference) => reference.noteId !== noteId),
+        dirty: true,
+        updatedAt: Date.now()
+      })),
+      syncStatus: "local-unsaved",
+      lastSyncError: null
     })),
   applyTransferPayload: async (payload) => {
     const key = makeRecordKey(payload.dimensionKey, payload.itemId);
@@ -393,10 +311,11 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
       const existing = records.find((record) => record.id === payload.recordId);
       const savedAt = Date.now();
       const nextRecord: ProofRecord = {
-        ...(existing ?? createRecord(payload.dimensionKey, payload.sectionKey, payload.itemId)),
+        ...(existing ?? createEvaluationRecord(payload.dimensionKey, payload.sectionKey, payload.itemId)),
         id: payload.recordId,
         text: payload.text,
         images: payload.images,
+        noteReferences: payload.noteReferences ?? existing?.noteReferences ?? [],
         selectedOption: payload.selectedOption,
         numericValue: payload.numericValue,
         dirty: true,
@@ -423,7 +342,8 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
         selectedItemIds: nextSelectedItemIds,
         records: nextRecords,
         draftSavedAt: savedAt,
-        lastSyncError: null
+        lastSyncError: null,
+        syncStatus: "local-saved"
       };
     });
 
@@ -437,19 +357,21 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
     if (snapshot) {
       set({
         records: snapshot.records,
-        selectedItemIds: snapshot.selectedItemIds ?? createDefaultSelectedItemIds(),
+        selectedItemIds: snapshot.selectedItemIds ?? createDefaultSelectedEvaluationItemIds(),
         draftSavedAt: snapshot.savedAt,
         hydrated: true,
-        lastSyncError: null
+        lastSyncError: null,
+        syncStatus: "local-saved"
       });
     } else {
-      const records = createInitialRecords();
+      const records = createInitialEvaluationRecords();
       set({
         records,
-        selectedItemIds: createDefaultSelectedItemIds(),
+        selectedItemIds: createDefaultSelectedEvaluationItemIds(),
         draftSavedAt: null,
         hydrated: true,
-        lastSyncError: null
+        lastSyncError: null,
+        syncStatus: "local-saved"
       });
     }
   },
@@ -466,11 +388,11 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
       }
     }
 
-    const localHasContent = localSnapshot ? hasMeaningfulDraft(localSnapshot) : false;
-    const remoteHasContent = remoteSnapshot ? hasMeaningfulDraft(remoteSnapshot) : false;
+    const localHasContent = localSnapshot ? hasMeaningfulEvaluationDraft(localSnapshot) : false;
+    const remoteHasContent = remoteSnapshot ? hasMeaningfulEvaluationDraft(remoteSnapshot) : false;
     let selectedSnapshot = localSnapshot ?? remoteSnapshot;
 
-    if (localSnapshot && remoteSnapshot && snapshotsDiffer(localSnapshot, remoteSnapshot)) {
+    if (localSnapshot && remoteSnapshot && evaluationSnapshotsDiffer(localSnapshot, remoteSnapshot)) {
       const result = await Taro.showModal({
         title: "发现草稿冲突",
         content: `本机暂存 ${new Date(localSnapshot.savedAt).toLocaleString()}，远端暂存 ${new Date(
@@ -488,32 +410,35 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
       await get().applySnapshot(selectedSnapshot);
       set({
         hydrated: true,
-        lastSyncError: remoteError
+        lastSyncError: remoteError,
+        syncStatus: remoteError ? "sync-failed" : "local-saved"
       });
       return;
     }
 
-    const records = createInitialRecords();
+    const records = createInitialEvaluationRecords();
     set({
       records,
-      selectedItemIds: createDefaultSelectedItemIds(),
+      selectedItemIds: createDefaultSelectedEvaluationItemIds(),
       draftSavedAt: null,
       hydrated: true,
-      lastSyncError: remoteError
+      lastSyncError: remoteError,
+      syncStatus: remoteError ? "sync-failed" : "local-saved"
     });
   },
   applySnapshot: async (snapshot) => {
-    const normalized = normalizeSnapshot(snapshot, snapshot.source ?? "local");
+    const normalized = normalizeEvaluationSnapshot(snapshot, snapshot.source ?? "local");
     await persistLocalSnapshot({
       ...normalized,
       source: "local"
     });
     set({
       records: normalized.records,
-      selectedItemIds: normalized.selectedItemIds ?? createDefaultSelectedItemIds(),
+      selectedItemIds: normalized.selectedItemIds ?? createDefaultSelectedEvaluationItemIds(),
       draftSavedAt: normalized.savedAt,
       hydrated: true,
-      lastSyncError: null
+      lastSyncError: null,
+      syncStatus: "local-saved"
     });
   },
   saveDraft: async (userId) => {
@@ -521,7 +446,8 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
     await persistLocalSnapshot(snapshot);
     set({
       draftSavedAt: snapshot.savedAt,
-      lastSyncError: null
+      lastSyncError: null,
+      syncStatus: userId ? "remote-syncing" : "local-saved"
     });
 
     if (!userId) {
@@ -534,13 +460,17 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
 
     try {
       await saveEvaluationDraftRemote(userId, snapshot);
+      set({
+        lastSyncError: null,
+        syncStatus: "remote-synced"
+      });
       return {
         snapshot,
         remoteSaved: true
       };
     } catch (error) {
       const remoteError = error instanceof Error ? error.message : "远端草稿保存失败";
-      set({ lastSyncError: remoteError });
+      set({ lastSyncError: remoteError, syncStatus: "sync-failed" });
       return {
         snapshot,
         remoteSaved: false,
@@ -555,11 +485,12 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
       // Ignore storage cleanup failures.
     }
     set({
-      records: createInitialRecords(),
-      selectedItemIds: createDefaultSelectedItemIds(),
+      records: createInitialEvaluationRecords(),
+      selectedItemIds: createDefaultSelectedEvaluationItemIds(),
       draftSavedAt: null,
       hydrated: true,
-      lastSyncError: null
+      lastSyncError: null,
+      syncStatus: "local-saved"
     });
   },
   getItemScore: (dimensionKey, itemId) => {
@@ -578,87 +509,5 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
   },
   getTotalScore: () =>
     evaluationConfig.reduce((sum, dimension) => sum + calculateDimensionScore(get().records, dimension), 0),
-  getValidationIssues: () => {
-    const issues: EvaluationValidationIssue[] = [];
-    const records = get().records;
-    const selectedSet = new Set(get().selectedItemIds);
-
-    evaluationConfig.forEach((dimension) => {
-      dimension.sections.forEach((section) => {
-        section.items.forEach((item) => {
-          const key = makeRecordKey(dimension.key, item.id);
-          const itemRecords = records[key] ?? [];
-          const isSelected = selectedSet.has(key);
-
-          if (isSelected && itemRecords.length === 0) {
-            issues.push(
-              buildIssue(
-                "empty_selected_item",
-                dimension.title,
-                item.title,
-                `${dimension.title} - ${item.title} 已勾选但没有记录`
-              )
-            );
-          }
-
-          if (isSelected && itemRecords.length > 0 && !itemRecords.some(hasRecordMaterial)) {
-            issues.push(
-              buildIssue(
-                "empty_selected_item",
-                dimension.title,
-                item.title,
-                `${dimension.title} - ${item.title} 需要补充材料`
-              )
-            );
-          }
-
-          itemRecords.forEach((record, index) => {
-            if (item.requiredText && hasRecordMaterial(record) && !record.text.trim()) {
-              issues.push(
-                buildIssue(
-                  "missing_text",
-                  dimension.title,
-                  item.title,
-                  `${dimension.title} - ${item.title} 第 ${index + 1} 条需要补充文字说明`,
-                  index + 1
-                )
-              );
-            }
-
-            if (
-              hasRecordMaterial(record) &&
-              (item.scoreType === "number" || item.scoreType === "deduction") &&
-              (record.numericValue === undefined || record.numericValue < 0)
-            ) {
-              issues.push(
-                buildIssue(
-                  "invalid_number",
-                  dimension.title,
-                  item.title,
-                  `${dimension.title} - ${item.title} 第 ${index + 1} 条需要填写有效数值`,
-                  index + 1
-                )
-              );
-            }
-
-            record.images.forEach((image) => {
-              if (!image.uploaded) {
-                issues.push(
-                  buildIssue(
-                    "local_image",
-                    dimension.title,
-                    item.title,
-                    `${dimension.title} - ${item.title} 第 ${index + 1} 条包含未上传图片`,
-                    index + 1
-                  )
-                );
-              }
-            });
-          });
-        });
-      });
-    });
-
-    return issues;
-  }
+  getValidationIssues: () => getEvaluationValidationIssues(get().records, get().selectedItemIds)
 }));

@@ -1,4 +1,4 @@
-import type { DimensionKey, ProofImage, SectionKey } from "./evaluation";
+import type { DimensionKey, NoteReference, ProofImage, SectionKey } from "./evaluation";
 import type { ContentBlock } from "./content";
 
 export type TransferAction = "EDIT_ITEM" | "NOTE_CONTENT";
@@ -10,6 +10,7 @@ export interface EditingItemPayload {
   recordId: string;
   text: string;
   images: ProofImage[];
+  noteReferences?: NoteReference[];
   selectedOption?: string;
   numericValue?: number;
 }

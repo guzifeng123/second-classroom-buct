@@ -33,7 +33,7 @@
 
 .evaluation-preview__hero {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 18px;
   padding: 30px 28px 24px;
@@ -144,13 +144,22 @@
 .evaluation-preview__issue,
 .evaluation-preview__issue-more {
   display: block;
+  box-sizing: border-box;
+  width: 100%;
   margin-top: 8px;
   padding: 12px;
+  border: 0;
   border-radius: var(--app-radius-sm);
   background: var(--app-danger-soft);
   color: var(--app-danger);
   font-size: 21px;
+  font-weight: 800;
   line-height: 31px;
+  text-align: left;
+}
+
+.evaluation-preview__issue::after {
+  border: 0;
 }
 
 .evaluation-preview__scroll {
@@ -265,6 +274,7 @@
   z-index: 10;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
   gap: 10px;
   padding: 14px 24px 20px;
   border-top: 1px solid var(--app-border);
@@ -274,11 +284,13 @@
 
 .evaluation-preview__ghost,
 .evaluation-preview__primary {
+  box-sizing: border-box;
   height: 66px;
   width: 100%;
+  margin: 0 !important;
   padding: 0 12px;
   font-size: 24px;
-  line-height: 64px;
+  line-height: 1;
 }
 
 .evaluation-preview__ghost {
@@ -287,15 +299,27 @@
   color: #245844;
 }
 
+.evaluation-preview__ghost .ui-feedback-button__label {
+  color: #245844 !important;
+}
+
 .evaluation-preview__primary {
   background: var(--app-brand-2);
   color: #ffffff;
+}
+
+.evaluation-preview__primary .ui-feedback-button__label {
+  color: #ffffff !important;
 }
 
 .evaluation-preview__primary[disabled] {
   background: #b7c7bf;
   color: #eef4f0;
   opacity: 1;
+}
+
+.evaluation-preview__primary[disabled] .ui-feedback-button__label {
+  color: #eef4f0 !important;
 }
 
 @media (min-width: 960PX) {
@@ -424,6 +448,7 @@
     bottom: 16PX;
     left: 24PX;
     display: flex;
+    align-items: center;
     justify-content: flex-end;
     gap: 8PX;
     padding: 10PX 12PX;
@@ -439,6 +464,5 @@
     height: 34PX;
     padding: 0 14PX;
     font-size: 12PX;
-    line-height: 32PX;
   }
 }

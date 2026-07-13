@@ -1,0 +1,151 @@
+.note-page {
+  min-height: 100%;
+  padding: 16px;
+  background-color: #eef3ef;
+}
+
+.note-page--gate {
+  align-items: center;
+  justify-content: center;
+}
+
+.note-gate__title {
+  margin-bottom: 12px;
+  color: #17231f;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.note-gate__button,
+.note-top__back,
+.note-toolbar__button,
+.note-block__remove,
+.note-actions__ghost,
+.note-actions__secondary,
+.note-actions__primary {
+  min-height: 40px;
+  border-radius: 8px;
+  background-color: #1f3d32;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.note-top,
+.note-status,
+.note-title-box,
+.note-toolbar,
+.note-editor,
+.note-preview,
+.note-actions,
+.note-block {
+  margin-bottom: 12px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  padding: 12px;
+}
+
+.note-top,
+.note-status,
+.note-block__bar,
+.note-actions__buttons,
+.note-actions__meta {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.note-top__label,
+.note-title-box__label,
+.note-block__kind {
+  color: #53645c;
+  font-size: 13px;
+}
+
+.note-top__user,
+.note-status__text,
+.note-status__device,
+.note-actions__meta {
+  color: #17231f;
+  font-size: 13px;
+}
+
+.note-status__dot,
+.note-status__dot--on {
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  border-radius: 4px;
+  background-color: #9c3d36;
+}
+
+.note-status__dot--on {
+  background-color: #23815f;
+}
+
+.note-scroll {
+  min-height: 0;
+}
+
+.note-page__notice,
+.note-page__error {
+  margin-bottom: 12px;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 13px;
+}
+
+.note-page__notice {
+  background-color: #e8f3ed;
+  color: #1f3d32;
+}
+
+.note-page__error {
+  background-color: #fff2ef;
+  color: #9c3d36;
+}
+
+.note-title-box__input,
+.note-block__input,
+.note-block__textarea {
+  min-height: 40px;
+  margin-top: 8px;
+  border-radius: 8px;
+  background-color: #f6f9f6;
+  padding: 8px;
+  color: #17231f;
+  font-size: 14px;
+}
+
+.note-toolbar {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.note-toolbar__button {
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+
+.note-block__image {
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 8px;
+}
+
+.note-block__other,
+.note-editor__empty {
+  color: #708078;
+  font-size: 13px;
+}
+
+.note-bottom-space {
+  height: 96px;
+}
+
+.note-actions {
+  margin-bottom: 0;
+}
+
+.note-actions__buttons {
+  margin-top: 10px;
+}

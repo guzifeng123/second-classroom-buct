@@ -1,0 +1,49 @@
+.note-renderer__empty {
+  color: #708078;
+}
+
+.note-renderer__image-fallback {
+  min-height: 140px;
+  padding: 18px;
+  background-color: #edf3f0;
+}
+
+.note-renderer__image-fallback-title {
+  color: #245844;
+  font-size: 15px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.note-renderer__image-fallback-copy {
+  margin-top: 6px;
+  color: #708078;
+  font-size: 13px;
+  text-align: center;
+}
+
+.note-renderer__preview {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #0c1410;
+}
+
+.note-renderer__preview-body {
+  min-height: 320px;
+  padding: 16px;
+}
+
+.note-renderer__preview-image {
+  width: 100%;
+  height: 300px;
+}
+
+.note-renderer__preview-count {
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 900;
+  text-align: center;
+}

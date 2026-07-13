@@ -5,6 +5,7 @@ export default defineAppConfig({
     "pages/evaluation/preview/index",
     "pages/note/list/index",
     "pages/note/edit/index",
+    "pages/note/snapshot/index",
     "pages/image/library/index",
     "pages/submission/result/index",
     "pages/submission/history/index",

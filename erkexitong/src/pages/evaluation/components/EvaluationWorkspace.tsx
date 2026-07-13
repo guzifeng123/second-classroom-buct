@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button, ScrollView, Text, View } from "@tarojs/components";
 import EvaluationPanel from "../../../components/EvaluationPanel";
 import { evaluationConfig } from "../../../data/evaluationConfig";
+import type { EvaluationFocusField } from "../../../types/evaluation";
 import type { EvaluationDimensionSummary } from "../hooks/useEvaluationPageData";
 import DimensionDropdownList from "./DimensionDropdownList";
 import EvaluationOverview from "./EvaluationOverview";
@@ -11,16 +12,29 @@ interface EvaluationWorkspaceProps {
   missingRequiredCount: number;
   selectedItemIds: string[];
   dimensionSummaries: EvaluationDimensionSummary[];
+  focusDimensionKey?: string;
+  focusItemId?: string;
+  focusRecordId?: string;
+  focusUpload?: boolean;
+  focusField?: EvaluationFocusField;
+  focusImageIndex?: number;
 }
 
 export default function EvaluationWorkspace({
   materialCount,
   missingRequiredCount,
   selectedItemIds,
-  dimensionSummaries
+  dimensionSummaries,
+  focusDimensionKey,
+  focusItemId,
+  focusRecordId,
+  focusUpload = false,
+  focusField,
+  focusImageIndex
 }: EvaluationWorkspaceProps) {
   const [leftCollapsed, setLeftCollapsed] = useState(false);
   const [rightCollapsed, setRightCollapsed] = useState(false);
+  const focusNodeId = focusDimensionKey && focusItemId ? `evaluation-item-${focusDimensionKey}-${focusItemId}` : "";
 
   return (
     <View
@@ -41,14 +55,19 @@ export default function EvaluationWorkspace({
         )}
       </View>
 
-      <ScrollView className="evaluation-scroll" scrollY>
+      <ScrollView className="evaluation-scroll" scrollY scrollIntoView={focusNodeId}>
         <View className="evaluation-list">
           {evaluationConfig.map((dimension, index) => (
             <EvaluationPanel
               key={dimension.key}
               dimension={dimension}
-              defaultExpanded={index === 0}
+              defaultExpanded={index === 0 || dimension.key === focusDimensionKey}
               selectedItemIds={selectedItemIds}
+              focusItemId={dimension.key === focusDimensionKey ? focusItemId : undefined}
+              focusRecordId={dimension.key === focusDimensionKey ? focusRecordId : undefined}
+              focusUpload={dimension.key === focusDimensionKey ? focusUpload : false}
+              focusField={dimension.key === focusDimensionKey ? focusField : undefined}
+              focusImageIndex={dimension.key === focusDimensionKey ? focusImageIndex : undefined}
             />
           ))}
           <View className="evaluation-bottom-space" />

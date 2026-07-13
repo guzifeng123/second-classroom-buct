@@ -5,6 +5,7 @@ import { FeedbackButton } from "../../../components/ui";
 import { evaluationConfig } from "../../../data/evaluationConfig";
 import { hasRecordMaterial, makeRecordKey, useEvaluationStore } from "../../../stores/useEvaluationStore";
 import { useUserStore } from "../../../stores/useUserStore";
+import { buildIssueFocusUrl } from "../../../utils/evaluationIssueFocus";
 import { buildDimensionSummaries, countMaterials } from "../../../utils/evaluationSummary";
 import "./index.scss";
 
@@ -30,6 +31,17 @@ export default function EvaluationPreviewPage() {
   const handleSubmit = async () => {
     await Taro.redirectTo({
       url: "/pages/evaluation/index?submit=1"
+    });
+  };
+
+  const handleLocateIssue = async (issueIndex: number) => {
+    const issue = issues[issueIndex];
+    if (!issue) {
+      return;
+    }
+
+    await Taro.redirectTo({
+      url: buildIssueFocusUrl(issue)
     });
   };
 
@@ -80,9 +92,13 @@ export default function EvaluationPreviewPage() {
         <View className="evaluation-preview__issues">
           <Text className="evaluation-preview__section-title">待完善问题</Text>
           {issues.slice(0, 8).map((issue, index) => (
-            <Text className="evaluation-preview__issue" key={`${issue.message}-${index}`}>
+            <Button
+              className="evaluation-preview__issue"
+              key={`${issue.message}-${index}`}
+              onClick={() => void handleLocateIssue(index)}
+            >
               {issue.message}
-            </Text>
+            </Button>
           ))}
           {issues.length > 8 ? <Text className="evaluation-preview__issue-more">还有 {issues.length - 8} 项</Text> : null}
         </View>

@@ -5,10 +5,19 @@ import { EmptyState, FeedbackButton, StatusBanner } from "../../../components/ui
 import { fetchSubmissionRecords } from "../../../services/submissionService";
 import { useUserStore } from "../../../stores/useUserStore";
 import type { SubmissionRecord } from "../../../types/submission";
+import { getReviewStatusText } from "../../../utils/reviewStatus";
 import "./index.scss";
 
 function formatTime(value: number): string {
   return new Date(value).toLocaleString();
+}
+
+function getReviewMessage(record: SubmissionRecord): string {
+  if (record.reviewStatus === "returned") {
+    return record.returnReason ?? record.reviewComment ?? "审核退回，请根据问题队列补充材料。";
+  }
+
+  return record.reviewComment ?? "";
 }
 
 export default function SubmissionHistoryPage() {
@@ -18,6 +27,7 @@ export default function SubmissionHistoryPage() {
   const [loading, setLoading] = useState(false);
   const [source, setSource] = useState<"local" | "remote">("local");
   const [error, setError] = useState("");
+  const latestReturnedRecord = records.find((record) => record.reviewStatus === "returned");
 
   const loadRecords = async () => {
     setLoading(true);
@@ -56,7 +66,7 @@ export default function SubmissionHistoryPage() {
   return (
     <View className="page-shell submission-history">
       <View className="submission-history__hero">
-        <View>
+        <View className="submission-history__hero-copy">
           <Text className="submission-history__label">提交记录</Text>
           <Text className="submission-history__title">{userId}</Text>
           <Text className="submission-history__sub">查看已提交材料的编号、时间和分数摘要。</Text>
@@ -75,6 +85,22 @@ export default function SubmissionHistoryPage() {
       </View>
 
       {error ? <StatusBanner tone="danger" title="提交记录同步失败" description={error} /> : null}
+      {latestReturnedRecord ? (
+        <StatusBanner
+          tone="warning"
+          title="有材料被退回补充"
+          description={getReviewMessage(latestReturnedRecord)}
+          action={
+            <FeedbackButton
+              className="submission-history__supplement"
+              loadingText="打开中"
+              onClick={() => Taro.redirectTo({ url: "/pages/evaluation/index" })}
+            >
+              去补充
+            </FeedbackButton>
+          }
+        />
+      ) : null}
 
       {records.length === 0 ? (
         <EmptyState
@@ -96,11 +122,26 @@ export default function SubmissionHistoryPage() {
             <View className="submission-history__card" key={record.submissionId}>
               <Text className="submission-history__card-title">{record.submissionId}</Text>
               <Text className="submission-history__card-meta">{formatTime(record.createdAt)}</Text>
+              <Text className={`submission-history__status-badge submission-history__status-badge--${record.reviewStatus}`}>
+                {getReviewStatusText(record.reviewStatus)}
+              </Text>
               <View className="submission-history__metrics">
                 <Text>{record.totalScore} 分</Text>
                 <Text>{record.materialCount} 条材料</Text>
                 <Text>{record.issueCount} 项问题</Text>
               </View>
+              {getReviewMessage(record) ? (
+                <View className="submission-history__review">
+                  <Text className="submission-history__review-title">
+                    {record.reviewStatus === "returned" ? "退回原因" : "审核意见"}
+                  </Text>
+                  <Text className="submission-history__review-copy">{getReviewMessage(record)}</Text>
+                  <Text className="submission-history__review-meta">
+                    {record.reviewerName ? `审核人 ${record.reviewerName}` : "审核人未记录"}
+                    {record.reviewedAt ? ` · ${formatTime(record.reviewedAt)}` : " · 时间未记录"}
+                  </Text>
+                </View>
+              ) : null}
               <Button
                 className="submission-history__card-button"
                 onClick={() =>

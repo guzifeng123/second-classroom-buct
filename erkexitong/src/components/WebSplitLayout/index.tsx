@@ -1,7 +1,8 @@
-import { type ReactNode } from "react";
+import { lazy, Suspense, type ReactNode } from "react";
 import { View } from "@tarojs/components";
-import EvaluationPage from "../../pages/evaluation";
 import { isH5DetailRoutePath } from "../../utils/detailNavigation";
+
+const EvaluationPage = lazy(() => import("../../pages/evaluation"));
 
 export function shouldUseWebSplit(routePath: string): boolean {
   return process.env.TARO_ENV === "h5" && isH5DetailRoutePath(routePath);
@@ -20,7 +21,9 @@ export default function WebSplitLayout({ children, routePath }: WebSplitLayoutPr
   return (
     <View className="web-split-layout">
       <View className="web-split-layout__pane web-split-layout__master">
-        <EvaluationPage />
+        <Suspense fallback={null}>
+          <EvaluationPage />
+        </Suspense>
       </View>
       <View className="web-split-layout__pane web-split-layout__detail">{children}</View>
     </View>

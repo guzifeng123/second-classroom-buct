@@ -94,13 +94,6 @@ taro-textarea-core:focus-within {
   color: var(--app-ink);
 }
 
-@media (hover: hover) and (pointer: fine) {
-  button:not([disabled]):hover,
-  taro-button-core:not([disabled]):hover {
-    transform: translateY(-1px);
-  }
-}
-
 button:not([disabled]):active,
 taro-button-core:not([disabled]):active {
   transform: translateY(1px) scale(0.99);
@@ -183,7 +176,7 @@ taro-button-core[disabled] {
 
   .web-split-layout__master .evaluation-topbar {
     grid-template-columns: 210PX minmax(0, 1fr) !important;
-    align-items: start !important;
+    align-items: stretch !important;
     margin-top: 0 !important;
   }
 
@@ -195,8 +188,8 @@ taro-button-core[disabled] {
 
   .web-split-layout__master .evaluation-status {
     height: 100% !important;
-    min-height: 42PX !important;
-    padding: 0 24PX !important;
+    min-height: 0 !important;
+    padding: 4PX 24PX !important;
     border-left: 0 !important;
     border-right: 0 !important;
   }

@@ -24,6 +24,7 @@
 .submission-history__gate-button,
 .submission-history__back,
 .submission-history__refresh,
+.submission-history__supplement,
 .submission-history__card-button {
   display: flex !important;
   align-items: center;
@@ -34,13 +35,17 @@
 
 .submission-history__hero {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 18px;
   padding: 30px 28px 24px;
   background:
     radial-gradient(circle at 88% 18%, rgba(215, 192, 138, 0.16), rgba(215, 192, 138, 0) 34%),
     var(--app-brand);
+}
+
+.submission-history__hero-copy {
+  min-width: 0;
 }
 
 .submission-history__label,
@@ -78,14 +83,16 @@
 }
 
 .submission-history__back {
+  box-sizing: border-box;
   flex: 0 0 auto;
+  margin-left: auto !important;
   width: 128px;
   height: 58px;
   border: 1px solid rgba(255, 255, 255, 0.34);
   background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  color: #ffffff !important;
   font-size: 23px;
-  line-height: 56px;
+  line-height: 1;
 }
 
 .submission-history__status {
@@ -114,13 +121,31 @@
 }
 
 .submission-history__refresh {
+  box-sizing: border-box;
   width: 118px;
   height: 54px;
   border: 1px solid var(--app-border-strong);
   background: var(--app-brand-soft);
   color: #245844;
   font-size: 21px;
-  line-height: 52px;
+  line-height: 1;
+}
+
+.submission-history__refresh .ui-feedback-button__label {
+  color: #245844 !important;
+}
+
+.submission-history__supplement {
+  width: 136px;
+  height: 50px;
+  background: #775315;
+  color: #ffffff !important;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.submission-history__supplement .ui-feedback-button__label {
+  color: #ffffff !important;
 }
 
 .submission-history__error {
@@ -188,6 +213,47 @@
   line-height: 30px;
 }
 
+.submission-history__status-badge {
+  display: inline-flex;
+  width: fit-content;
+  margin-top: 10px;
+  padding: 0 10px;
+  border-radius: var(--app-radius-sm);
+  font-size: 19px;
+  font-weight: 900;
+  line-height: 30px;
+}
+
+.submission-history__status-badge--pending {
+  background: var(--app-brand-soft);
+  color: #245844;
+}
+
+.submission-history__status-badge--reviewing {
+  background: #edf5fb;
+  color: #214760;
+}
+
+.submission-history__status-badge--approved {
+  background: #eef8ef;
+  color: #276734;
+}
+
+.submission-history__status-badge--archived {
+  background: #edf0f2;
+  color: #52635b;
+}
+
+.submission-history__status-badge--draft {
+  background: #f7f2e4;
+  color: #775315;
+}
+
+.submission-history__status-badge--returned {
+  background: var(--app-danger-soft);
+  color: var(--app-danger);
+}
+
 .submission-history__metrics {
   display: flex;
   flex-wrap: wrap;
@@ -197,6 +263,41 @@
   font-size: 21px;
   font-weight: 800;
   line-height: 30px;
+}
+
+.submission-history__review {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid rgba(119, 83, 21, 0.16);
+  border-radius: var(--app-radius-sm);
+  background: #fffaf0;
+}
+
+.submission-history__review-title,
+.submission-history__review-copy,
+.submission-history__review-meta {
+  display: block;
+}
+
+.submission-history__review-title {
+  color: #775315;
+  font-size: 19px;
+  font-weight: 900;
+  line-height: 27px;
+}
+
+.submission-history__review-copy {
+  margin-top: 4px;
+  color: var(--app-ink-soft);
+  font-size: 21px;
+  line-height: 30px;
+}
+
+.submission-history__review-meta {
+  margin-top: 4px;
+  color: var(--app-muted);
+  font-size: 18px;
+  line-height: 25px;
 }
 
 .submission-history__card-button {
@@ -209,6 +310,10 @@
   line-height: 52px;
 }
 
+.submission-history__card-button .ui-feedback-button__label {
+  color: #ffffff !important;
+}
+
 .submission-history__empty-button {
   width: 156px;
   height: 54px;
@@ -216,6 +321,10 @@
   color: #ffffff;
   font-size: 21px;
   line-height: 52px;
+}
+
+.submission-history__empty-button .ui-feedback-button__label {
+  color: #ffffff !important;
 }
 
 @media (min-width: 960PX) {
@@ -260,7 +369,6 @@
     width: 88PX;
     height: 38PX;
     font-size: 12PX;
-    line-height: 36PX;
   }
 
   .submission-history__status {
@@ -275,7 +383,12 @@
     width: 84PX;
     height: 34PX;
     font-size: 12PX;
-    line-height: 32PX;
+  }
+
+  .submission-history__supplement {
+    width: 78PX;
+    height: 32PX;
+    font-size: 11PX;
   }
 
   .submission-history__error {
@@ -299,9 +412,29 @@
   }
 
   .submission-history__card-meta,
-  .submission-history__metrics {
+  .submission-history__metrics,
+  .submission-history__review-copy {
     font-size: 11PX;
     line-height: 17PX;
+  }
+
+  .submission-history__status-badge {
+    margin-top: 7PX;
+    padding: 0 7PX;
+    font-size: 10PX;
+    line-height: 20PX;
+  }
+
+  .submission-history__review {
+    margin-top: 10PX;
+    padding: 8PX 10PX;
+    border-radius: 6PX;
+  }
+
+  .submission-history__review-title,
+  .submission-history__review-meta {
+    font-size: 10PX;
+    line-height: 15PX;
   }
 
   .submission-history__card-button {

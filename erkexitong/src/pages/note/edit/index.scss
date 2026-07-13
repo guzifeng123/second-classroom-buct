@@ -36,7 +36,7 @@
 
 .note-top {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 18px;
   padding: 30px 28px 20px;
@@ -64,6 +64,7 @@
 }
 
 .note-top__back {
+  box-sizing: border-box;
   display: flex !important;
   align-items: center;
   justify-content: center;
@@ -76,7 +77,7 @@
   color: #ffffff;
   font-size: 24px;
   font-weight: 900;
-  line-height: 56px;
+  line-height: 1;
 }
 
 .note-status {
@@ -183,17 +184,20 @@
 .note-toolbar {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
   gap: 10px;
   margin: 0 24px 18px;
 }
 
 .note-toolbar__button,
 .note-toolbar .upload-image-button {
+  box-sizing: border-box;
   display: flex !important;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 64px;
+  margin: 0 !important;
   padding: 0;
   border: 1px solid var(--app-border-strong);
   border-radius: var(--app-radius-sm);
@@ -201,7 +205,7 @@
   color: #245844;
   font-size: 22px;
   font-weight: 900;
-  line-height: 62px;
+  line-height: 1;
 }
 
 .note-editor,
@@ -321,6 +325,7 @@
 
 .note-actions__meta {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 18px;
   color: var(--app-muted);
@@ -331,6 +336,7 @@
 .note-actions__buttons {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
   gap: 10px;
   margin-top: 12px;
 }
@@ -345,13 +351,18 @@
 .note-actions__primary,
 .note-actions__secondary,
 .note-actions__ghost {
+  box-sizing: border-box;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
   height: 66px;
   min-width: 0;
   padding: 0 12px;
   border-radius: var(--app-radius-sm);
   font-size: 24px;
   font-weight: 900;
-  line-height: 64px;
+  line-height: 1;
 }
 
 .note-actions__primary {
@@ -421,7 +432,6 @@
     width: 88PX;
     height: 38PX;
     font-size: 13PX;
-    line-height: 36PX;
   }
 
   .note-status {
@@ -495,7 +505,6 @@
   .note-toolbar .upload-image-button {
     height: 44PX;
     font-size: 13PX;
-    line-height: 42PX;
   }
 
   .note-editor__empty {
@@ -566,6 +575,7 @@
 
   .note-actions__buttons {
     display: flex;
+    align-items: center;
     justify-content: flex-end;
     gap: 8PX;
     margin-top: 8PX;
@@ -584,6 +594,5 @@
     height: 34PX;
     padding: 0 14PX;
     font-size: 12PX;
-    line-height: 32PX;
   }
 }

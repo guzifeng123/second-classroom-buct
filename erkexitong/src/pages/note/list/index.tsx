@@ -76,7 +76,7 @@ export default function NoteListPage() {
   return (
     <View className="page-shell note-list">
       <View className="note-list__hero">
-        <View>
+        <View className="note-list__hero-copy">
           <Text className="note-list__label">图文材料库</Text>
           <Text className="note-list__title">{userId}</Text>
           <Text className="note-list__sub">统一管理已保存的图文证明，继续编辑或新建材料。</Text>

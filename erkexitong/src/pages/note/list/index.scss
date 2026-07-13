@@ -36,13 +36,17 @@
 
 .note-list__hero {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 18px;
   padding: 30px 28px 24px;
   background:
     radial-gradient(circle at 88% 18%, rgba(215, 192, 138, 0.16), rgba(215, 192, 138, 0) 34%),
     var(--app-brand);
+}
+
+.note-list__hero-copy {
+  min-width: 0;
 }
 
 .note-list__label {
@@ -72,19 +76,22 @@
 }
 
 .note-list__back {
+  box-sizing: border-box;
   flex: 0 0 auto;
+  margin-left: auto !important;
   width: 128px;
   height: 58px;
   border: 1px solid rgba(255, 255, 255, 0.34);
   background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  color: #ffffff !important;
   font-size: 23px;
-  line-height: 56px;
+  line-height: 1;
 }
 
 .note-list__tools {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 118px 118px;
+  align-items: stretch;
   gap: 10px;
   margin: 22px 24px 12px;
 }
@@ -101,16 +108,22 @@
 
 .note-list__tool-button,
 .note-list__primary {
+  box-sizing: border-box;
   height: 68px;
+  width: 100%;
   padding: 0;
   font-size: 23px;
-  line-height: 66px;
+  line-height: 1;
 }
 
 .note-list__tool-button {
   border: 1px solid var(--app-border-strong);
   background: var(--app-brand-soft);
   color: #245844;
+}
+
+.note-list__tool-button .ui-feedback-button__label {
+  color: #245844 !important;
 }
 
 .note-list__primary,
@@ -120,8 +133,14 @@
   color: #ffffff;
 }
 
+.note-list__primary .ui-feedback-button__label,
+.note-list__empty-button .ui-feedback-button__label {
+  color: #ffffff !important;
+}
+
 .note-list__status {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
   margin: 0 24px 14px;
@@ -285,7 +304,6 @@
     width: 88PX;
     height: 38PX;
     font-size: 12PX;
-    line-height: 36PX;
   }
 
   .note-list__tools {
@@ -301,6 +319,11 @@
     height: 40PX;
     font-size: 13PX;
     line-height: 38PX;
+  }
+
+  .note-list__tool-button,
+  .note-list__primary {
+    line-height: 1;
   }
 
   .note-list__search {

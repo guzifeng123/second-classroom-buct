@@ -1,0 +1,86 @@
+.upload-image-button {
+  min-height: 40px;
+  border-radius: 8px;
+  background-color: #1f3d32;
+  color: #ffffff;
+}
+
+.upload-image-button__progress {
+  width: 220px;
+}
+
+.upload-image-button__progress-track {
+  height: 6px;
+  border-radius: 6px;
+  background-color: #dbe6df;
+}
+
+.upload-image-button__progress-value {
+  height: 6px;
+  border-radius: 6px;
+  background-color: #2f7d57;
+}
+
+.upload-image-button__cancel {
+  min-height: 32px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #245844;
+}
+
+.upload-image-button__queue {
+  width: 220px;
+}
+
+.upload-image-button__queue-item {
+  min-height: 28px;
+  border-radius: 8px;
+  background-color: #f8fbf9;
+}
+
+.upload-image-button__queue-thumb {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background-color: #e4ece7;
+}
+
+.upload-image-button__queue-thumb--fallback {
+  background-color: #eef4f1;
+}
+
+.upload-image-button__queue-thumb-text {
+  color: #789086;
+}
+
+.upload-image-button__queue-item--success {
+  background-color: #edf8f1;
+}
+
+.upload-image-button__queue-item--failed,
+.upload-image-button__queue-item--canceled {
+  background-color: #f8e9e7;
+}
+
+.upload-image-button__queue-message {
+  color: #8a4b43;
+}
+
+.upload-image-button__queue-file {
+  color: #718276;
+}
+
+.upload-image-button__queue-retry,
+.upload-image-button__queue-remove {
+  min-height: 26px;
+  border-radius: 8px;
+  background-color: #ffffff;
+}
+
+.upload-image-button__queue-retry {
+  color: #245844;
+}
+
+.upload-image-button__queue-remove {
+  color: #bd3d30;
+}

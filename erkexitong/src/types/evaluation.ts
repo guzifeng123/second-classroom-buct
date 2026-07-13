@@ -1,3 +1,5 @@
+import type { ContentBlock } from "./content";
+
 export type DimensionKey = "moral" | "academic" | "sports" | "aesthetic" | "labor";
 export type SectionKey = "base" | "extension";
 export type ScoreType = "fixed" | "select" | "count" | "number" | "deduction";
@@ -16,6 +18,15 @@ export interface ProofImage {
   height?: number;
   size?: number;
   uploaded: boolean;
+}
+
+export interface NoteReference {
+  noteId: string;
+  title: string;
+  plainText: string;
+  imageCount: number;
+  referencedAt: number;
+  contentSnapshot?: ContentBlock[];
 }
 
 export interface EvaluationItemConfig {
@@ -58,6 +69,7 @@ export interface ProofRecord {
   itemId: string;
   text: string;
   images: ProofImage[];
+  noteReferences?: NoteReference[];
   selectedOption?: string;
   numericValue?: number;
   createdAt: number;
@@ -80,6 +92,13 @@ export interface EvaluationDraftSaveResult {
   remoteError?: string;
 }
 
+export type EvaluationSyncStatus =
+  | "local-unsaved"
+  | "local-saved"
+  | "remote-syncing"
+  | "remote-synced"
+  | "sync-failed";
+
 export interface EvaluationSubmissionRequest {
   records: EvaluationRecordMap;
 }
@@ -94,10 +113,17 @@ export type EvaluationValidationIssueType =
   | "invalid_number"
   | "local_image";
 
+export type EvaluationFocusField = "text" | "number" | "upload";
+
 export interface EvaluationValidationIssue {
   type: EvaluationValidationIssueType;
+  dimensionKey: DimensionKey;
+  sectionKey: SectionKey;
+  itemId: string;
+  recordId?: string;
   dimensionTitle: string;
   itemTitle: string;
   recordIndex?: number;
+  imageIndex?: number;
   message: string;
 }

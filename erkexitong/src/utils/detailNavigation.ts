@@ -4,9 +4,10 @@ const H5_DETAIL_ROUTES = new Set([
   "/pages/evaluation/preview/index",
   "/pages/note/list/index",
   "/pages/note/edit/index",
+  "/pages/note/snapshot/index",
   "/pages/image/library/index",
-  "/pages/submission/history/index",
-  "/pages/submission/result/index"
+  "/pages/submission/result/index",
+  "/pages/submission/history/index"
 ]);
 
 let pendingDetailRouteKey = "";

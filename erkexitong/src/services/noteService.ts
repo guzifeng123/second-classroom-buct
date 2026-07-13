@@ -2,95 +2,24 @@ import Taro from "@tarojs/taro";
 import { getErrorMessage, hasApiBaseUrl, request } from "./api";
 import type { ContentBlock } from "../types/content";
 import { createId } from "../utils/id";
+import {
+  filterNotes,
+  normalizeNote,
+  normalizeNoteList,
+  type NoteApiResponse,
+  type NoteDetail,
+  type NoteListApiResponse,
+  type NoteSummary
+} from "../utils/noteNormalization";
 
 const LOCAL_NOTES_KEY = "erkexitong-note-index";
-
-export interface NoteSummary {
-  id: string;
-  title: string;
-  plainText: string;
-  blockCount: number;
-  imageCount: number;
-  createdAt: number;
-  updatedAt: number;
-}
-
-export interface NoteDetail extends NoteSummary {
-  content: ContentBlock[];
-}
-
-interface NoteApiResponse {
-  id: string;
-  title: string;
-  content?: ContentBlock[];
-  plain_text?: string;
-  plainText?: string;
-  created_at?: string;
-  updated_at?: string;
-  createdAt?: number;
-  updatedAt?: number;
-}
-
-type NoteListApiResponse = NoteApiResponse[] | { data?: NoteApiResponse[]; total?: number };
+export type { NoteDetail, NoteSummary } from "../utils/noteNormalization";
 
 export interface NoteListResult {
   data: NoteSummary[];
   total: number;
   source: "local" | "remote";
   error?: string;
-}
-
-function getBlockText(block: ContentBlock): string {
-  if (block.type === "heading" || block.type === "paragraph") {
-    return block.text;
-  }
-
-  if (block.type === "image") {
-    return block.alt ?? "";
-  }
-
-  return JSON.stringify(block.data);
-}
-
-function getPlainText(content: ContentBlock[]): string {
-  return content.map(getBlockText).join(" ").trim();
-}
-
-function parseTime(value?: string | number): number {
-  if (typeof value === "number" && Number.isFinite(value)) {
-    return value;
-  }
-
-  if (typeof value === "string") {
-    const parsed = Date.parse(value);
-    if (Number.isFinite(parsed)) {
-      return parsed;
-    }
-  }
-
-  return Date.now();
-}
-
-function normalizeNote(raw: NoteApiResponse): NoteDetail {
-  const content = raw.content ?? [];
-  const plainText = raw.plainText ?? raw.plain_text ?? getPlainText(content);
-  const updatedAt = parseTime(raw.updatedAt ?? raw.updated_at);
-
-  return {
-    id: raw.id,
-    title: raw.title || "未命名图文材料",
-    content,
-    plainText,
-    blockCount: content.length,
-    imageCount: content.filter((block) => block.type === "image").length,
-    createdAt: parseTime(raw.createdAt ?? raw.created_at ?? updatedAt),
-    updatedAt
-  };
-}
-
-function normalizeList(raw: NoteListApiResponse): NoteDetail[] {
-  const list = Array.isArray(raw) ? raw : raw.data ?? [];
-  return list.map(normalizeNote);
 }
 
 async function readLocalNotes(): Promise<NoteDetail[]> {
@@ -106,19 +35,6 @@ async function writeLocalNotes(notes: NoteDetail[]): Promise<void> {
   await Taro.setStorage({
     key: LOCAL_NOTES_KEY,
     data: notes
-  });
-}
-
-function filterNotes(notes: NoteDetail[], query: string): NoteDetail[] {
-  const keyword = query.trim().toLowerCase();
-
-  if (!keyword) {
-    return notes;
-  }
-
-  return notes.filter((note) => {
-    const text = `${note.title} ${note.plainText}`.toLowerCase();
-    return text.includes(keyword);
   });
 }
 
@@ -154,7 +70,7 @@ export async function fetchNotes(query = ""): Promise<NoteListResult> {
   if (hasApiBaseUrl) {
     try {
       const separator = query.trim() ? `?query=${encodeURIComponent(query.trim())}` : "";
-      const remoteNotes = normalizeList(await request<NoteListApiResponse>({ url: `/notes${separator}` }));
+      const remoteNotes = normalizeNoteList(await request<NoteListApiResponse>({ url: `/notes${separator}` }));
 
       await writeLocalNotes(remoteNotes);
 

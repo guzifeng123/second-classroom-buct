@@ -9,7 +9,10 @@
 | [01-framework-architecture.md](./01-framework-architecture.md) | 项目框架、模块划分、页面结构、状态管理、服务层和数据流转 |
 | [02-tech-stack-and-languages.md](./02-tech-stack-and-languages.md) | 技术栈版本、目标平台、涉及语言、构建工具和运行命令 |
 | [03-development-standards.md](./03-development-standards.md) | 团队开发规范、目录职责、组件/API/状态管理约定和跨端注意事项 |
+| [04-version-iteration-roadmap.md](./04-version-iteration-roadmap.md) | 当前完成状态、后续优化池、版本节奏和后端/API 配合点 |
 | [api.md](./api.md) | REST API、Storage Schema 和 WebSocket 事件约定 |
+| [h5-smoke-checklist.md](./h5-smoke-checklist.md) | H5 构建通过后的登录、填报、草稿、预览、提交和历史 smoke 验收流程 |
+| [rn-smoke-checklist.md](./rn-smoke-checklist.md) | RN Android Bundle 通过后的人工 smoke 验收流程和记录格式 |
 
 ## 适用范围
 
@@ -36,6 +39,7 @@
 | 提交前预览页 | `pages/evaluation/preview/index` |
 | 图文材料列表页 | `pages/note/list/index` |
 | 图文编辑页 | `pages/note/edit/index` |
+| 图文快照页 | `pages/note/snapshot/index` |
 | 图片库页 | `pages/image/library/index` |
 | 提交结果页 | `pages/submission/result/index` |
 | 提交历史页 | `pages/submission/history/index` |
@@ -46,7 +50,10 @@
 1. 先读 [02-tech-stack-and-languages.md](./02-tech-stack-and-languages.md)，确认项目用到的框架、语言和命令。
 2. 再读 [01-framework-architecture.md](./01-framework-architecture.md)，理解页面、状态、服务和数据流。
 3. 开始开发前读 [03-development-standards.md](./03-development-standards.md)，按团队约定新增代码。
-4. 涉及接口、上传、草稿、流转事件时，配合阅读 [api.md](./api.md)。
+4. 做版本迭代规划或交接时读 [04-version-iteration-roadmap.md](./04-version-iteration-roadmap.md)，确认已完成能力、后续优先级和验收标准。
+5. 涉及接口、上传、草稿、流转事件时，配合阅读 [api.md](./api.md)。
+6. 做 H5 构建验收时读 [h5-smoke-checklist.md](./h5-smoke-checklist.md)，按步骤记录桌面和移动视口结果。
+7. 做 RN 构建验收时读 [rn-smoke-checklist.md](./rn-smoke-checklist.md)，按步骤记录真机或模拟器结果。
 
 ## 维护原则
 

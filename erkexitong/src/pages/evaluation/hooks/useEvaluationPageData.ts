@@ -35,6 +35,7 @@ export function useEvaluationPageData() {
   const hydrated = useEvaluationStore((state) => state.hydrated);
   const hydrateDraft = useEvaluationStore((state) => state.hydrateDraft);
   const lastSyncError = useEvaluationStore((state) => state.lastSyncError);
+  const syncStatus = useEvaluationStore((state) => state.syncStatus);
   const getTotalScore = useEvaluationStore((state) => state.getTotalScore);
   const getDimensionScore = useEvaluationStore((state) => state.getDimensionScore);
   const getItemScore = useEvaluationStore((state) => state.getItemScore);
@@ -90,6 +91,7 @@ export function useEvaluationPageData() {
     hydrated,
     hydrateDraft,
     lastSyncError,
+    syncStatus,
     totalScore,
     validationIssues,
     materialCount,

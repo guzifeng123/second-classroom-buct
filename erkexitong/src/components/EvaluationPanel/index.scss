@@ -97,6 +97,14 @@
   border-bottom: 1px solid #e5ece8;
 }
 
+.evaluation-panel__item--focused {
+  margin: 16px -14px 0;
+  padding: 18px 14px 14px;
+  border: 1px solid rgba(189, 61, 48, 0.32);
+  border-radius: var(--app-radius-sm);
+  background: rgba(255, 244, 229, 0.88);
+}
+
 .evaluation-panel__item:last-child {
   border-bottom: 0;
 }
@@ -193,6 +201,7 @@
 }
 
 .evaluation-panel__add {
+  box-sizing: border-box;
   display: flex !important;
   align-items: center;
   justify-content: center;
@@ -205,7 +214,7 @@
   color: #245844;
   font-size: 25px;
   font-weight: 900;
-  line-height: 58px;
+  line-height: 1;
 }
 
 .evaluation-panel__add::before {
@@ -347,7 +356,6 @@
     height: 38PX;
     margin-top: 10PX;
     font-size: 13PX;
-    line-height: 36PX;
   }
 
   .evaluation-panel__add::before {
