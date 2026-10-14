@@ -2,7 +2,7 @@ import { PropsWithChildren } from "react";
 import { useLaunch } from "@tarojs/taro";
 import WebSplitLayout from "./components/WebSplitLayout";
 import { useUserStore } from "./stores/useUserStore";
-import { getDeviceInfo } from "./utils/platform";
+import { getDeviceInfo } from "./utils/platform/index";
 import "./app.scss";
 
 function getCurrentH5RoutePath(): string {

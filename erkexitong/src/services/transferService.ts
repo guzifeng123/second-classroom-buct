@@ -13,6 +13,7 @@ import type {
   TransferAction,
   TransferPayload
 } from "../types/transfer";
+import { createId } from "../utils/id";
 
 export function initTransferSync(): void {
   const { token, userId, deviceId, deviceName } = useUserStore.getState();
@@ -78,18 +79,73 @@ export async function sendTransferTo(
   const connection = useConnectionStore.getState();
   const target = connection.otherDevices.find((device) => device.deviceId === targetDevice);
   const isOfflineDemo = connection.mode === "offline-demo" || !hasWsBaseUrl;
-
-  if (!isOfflineDemo) {
-    websocketClient.sendTransfer(targetDevice, action, payload);
-  }
+  const messageId = createId("transfer");
+  const sentAt = Date.now();
 
   useTransferStore.getState().addHistory({
+    messageId,
     direction: "sent",
-    time: Date.now(),
+    time: sentAt,
     action,
     deviceName: target?.deviceName ?? "我的其他设备",
-    summary: summarizeTransferPayload(payload)
+    summary: summarizeTransferPayload(payload),
+    status: isOfflineDemo ? "demo" : "pending",
+    targetDevice,
+    payload,
+    attempts: 1
   });
+
+  if (isOfflineDemo) {
+    return;
+  }
+
+  if (!connection.isConnected) {
+    const error = "WebSocket 未连接，内容未发送";
+    useTransferStore.getState().updateDelivery(messageId, "failed", { error });
+    throw new Error(error);
+  }
+
+  const sent = websocketClient.sendTransfer(messageId, targetDevice, action, payload, sentAt);
+
+  if (!sent) {
+    const error = "WebSocket 发送失败，请重试";
+    useTransferStore.getState().updateDelivery(messageId, "failed", { error });
+    throw new Error(error);
+  }
+}
+
+export async function retryTransfer(messageId: string): Promise<void> {
+  const transferStore = useTransferStore.getState();
+  const entry = transferStore.transferHistory.find((candidate) => candidate.messageId === messageId);
+
+  if (!entry || entry.direction !== "sent" || entry.status !== "failed" || !entry.targetDevice || !entry.payload) {
+    throw new Error("当前流转记录不可重试");
+  }
+
+  const connection = useConnectionStore.getState();
+  if (!hasWsBaseUrl || connection.mode === "offline-demo") {
+    throw new Error("离线演示记录无需重试");
+  }
+
+  if (!connection.isConnected) {
+    throw new Error("WebSocket 未连接，请恢复连接后重试");
+  }
+
+  const sentAt = Date.now();
+  transferStore.markRetrying(messageId, sentAt);
+  const sent = websocketClient.sendTransfer(
+    messageId,
+    entry.targetDevice,
+    entry.action,
+    entry.payload,
+    sentAt
+  );
+
+  if (!sent) {
+    const error = "WebSocket 发送失败，请稍后重试";
+    useTransferStore.getState().updateDelivery(messageId, "failed", { error });
+    throw new Error(error);
+  }
 }
 
 export async function applyIncomingTransfer(transfer?: IncomingTransfer): Promise<void> {

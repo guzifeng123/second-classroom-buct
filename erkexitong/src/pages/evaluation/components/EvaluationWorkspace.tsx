@@ -3,6 +3,7 @@ import { Button, ScrollView, Text, View } from "@tarojs/components";
 import EvaluationPanel from "../../../components/EvaluationPanel";
 import { evaluationConfig } from "../../../data/evaluationConfig";
 import type { EvaluationFocusField } from "../../../types/evaluation";
+import type { EvaluationValidationIssue } from "../../../types/evaluation";
 import type { EvaluationDimensionSummary } from "../hooks/useEvaluationPageData";
 import DimensionDropdownList from "./DimensionDropdownList";
 import EvaluationOverview from "./EvaluationOverview";
@@ -18,6 +19,10 @@ interface EvaluationWorkspaceProps {
   focusUpload?: boolean;
   focusField?: EvaluationFocusField;
   focusImageIndex?: number;
+  mobileDimensionKey?: string | null;
+  mobileOnly?: boolean;
+  onlyIncomplete?: boolean;
+  validationIssues?: EvaluationValidationIssue[];
 }
 
 export default function EvaluationWorkspace({
@@ -31,6 +36,10 @@ export default function EvaluationWorkspace({
   focusUpload = false,
   focusField,
   focusImageIndex
+  , mobileDimensionKey
+  , mobileOnly = false
+  , onlyIncomplete = false
+  , validationIssues = []
 }: EvaluationWorkspaceProps) {
   const [leftCollapsed, setLeftCollapsed] = useState(false);
   const [rightCollapsed, setRightCollapsed] = useState(false);
@@ -57,7 +66,7 @@ export default function EvaluationWorkspace({
 
       <ScrollView className="evaluation-scroll" scrollY scrollIntoView={focusNodeId}>
         <View className="evaluation-list">
-          {evaluationConfig.map((dimension, index) => (
+          {evaluationConfig.filter((dimension) => !mobileOnly || dimension.key === mobileDimensionKey).map((dimension, index) => (
             <EvaluationPanel
               key={dimension.key}
               dimension={dimension}
@@ -68,6 +77,8 @@ export default function EvaluationWorkspace({
               focusUpload={dimension.key === focusDimensionKey ? focusUpload : false}
               focusField={dimension.key === focusDimensionKey ? focusField : undefined}
               focusImageIndex={dimension.key === focusDimensionKey ? focusImageIndex : undefined}
+              onlyIncomplete={onlyIncomplete}
+              incompleteItemIds={validationIssues.filter((issue) => issue.dimensionKey === dimension.key).map((issue) => issue.itemId)}
             />
           ))}
           <View className="evaluation-bottom-space" />

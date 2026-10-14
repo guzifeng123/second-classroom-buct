@@ -3,11 +3,13 @@ import { useConnectionStore } from "../stores/useConnectionStore";
 import { useTransferStore } from "../stores/useTransferStore";
 import type {
   IncomingTransfer,
+  TransferAckPayload,
   TransferAction,
   TransferPayload,
   WebSocketDevice,
   WebSocketEnvelope
 } from "../types/transfer";
+import { normalizeTransferAckPayload } from "../utils/transferDelivery";
 import { WS_BASE_URL, hasWsBaseUrl } from "./api";
 
 interface ConnectParams {
@@ -23,16 +25,20 @@ interface DeviceListPayload {
 
 const MAX_RETRY_COUNT = 5;
 const HEARTBEAT_INTERVAL = 30000;
+const TRANSFER_ACK_TIMEOUT = 10000;
 
-class WebSocketClient {
+export class WebSocketClient {
   private socketTask: Taro.SocketTask | null = null;
   private params: ConnectParams | null = null;
   private heartbeatTimer: ReturnType<typeof setInterval> | null = null;
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+  private transferAckTimers = new Map<string, ReturnType<typeof setTimeout>>();
   private manuallyClosed = false;
 
+  constructor(private readonly transferAckTimeout = TRANSFER_ACK_TIMEOUT) {}
+
   connect(params: ConnectParams): void {
-    this.disconnect(false);
+    this.disconnect(true);
 
     if (!hasWsBaseUrl) {
       useConnectionStore.getState().setMode("offline-demo");
@@ -86,6 +92,7 @@ class WebSocketClient {
     socketTask.onClose(() => {
       useConnectionStore.getState().setConnected(false);
       this.stopHeartbeat();
+      this.failPendingTransferAcks("连接已断开，未收到投递确认");
       if (!this.manuallyClosed) {
         this.scheduleReconnect();
       }
@@ -94,12 +101,14 @@ class WebSocketClient {
     socketTask.onError(() => {
       useConnectionStore.getState().setConnected(false);
       this.stopHeartbeat();
+      this.failPendingTransferAcks("连接异常，未收到投递确认");
     });
   }
 
   disconnect(markManual = true): void {
     this.manuallyClosed = markManual;
     this.stopHeartbeat();
+    this.failPendingTransferAcks(markManual ? "连接已关闭，未收到投递确认" : "连接重置，未收到投递确认");
 
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
@@ -114,22 +123,41 @@ class WebSocketClient {
     useConnectionStore.getState().setConnected(false);
   }
 
-  sendTransfer(targetDevice: string, action: TransferAction, payload: TransferPayload): void {
-    this.send("client:transfer", {
+  sendTransfer(
+    messageId: string,
+    targetDevice: string,
+    action: TransferAction,
+    payload: TransferPayload,
+    sentAt: number
+  ): boolean {
+    const sent = this.send("client:transfer", {
+      messageId,
+      sentAt,
       targetDevice,
       action,
       payload
     });
-  }
 
-  private send(event: string, payload: unknown): void {
-    if (!this.socketTask) {
-      return;
+    if (sent) {
+      this.trackTransferAck(messageId);
     }
 
-    this.socketTask.send({
-      data: JSON.stringify({ event, payload } satisfies WebSocketEnvelope)
-    });
+    return sent;
+  }
+
+  private send(event: string, payload: unknown): boolean {
+    if (!this.socketTask) {
+      return false;
+    }
+
+    try {
+      this.socketTask.send({
+        data: JSON.stringify({ event, payload } satisfies WebSocketEnvelope)
+      });
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   private handleMessage(data: string | ArrayBuffer): void {
@@ -146,6 +174,27 @@ class WebSocketClient {
           ...payload,
           time: payload.time || Date.now()
         });
+
+        if (payload.messageId) {
+          this.send("client:transferAck", {
+            messageId: payload.messageId,
+            status: "delivered",
+            receivedAt: Date.now(),
+            deviceId: this.params?.deviceId
+          } satisfies TransferAckPayload & { receivedAt: number; deviceId?: string });
+        }
+      }
+
+      if (message.event === "server:transferAck") {
+        const acknowledgement = normalizeTransferAckPayload(message.payload);
+
+        if (acknowledgement) {
+          this.clearTransferAckTimer(acknowledgement.messageId);
+          useTransferStore.getState().updateDelivery(acknowledgement.messageId, acknowledgement.status, {
+            serverTime: acknowledgement.serverTime,
+            error: acknowledgement.error
+          });
+        }
       }
 
       if (message.event === "server:deviceList") {
@@ -176,6 +225,34 @@ class WebSocketClient {
       clearInterval(this.heartbeatTimer);
       this.heartbeatTimer = null;
     }
+  }
+
+  private trackTransferAck(messageId: string): void {
+    this.clearTransferAckTimer(messageId);
+    const timer = setTimeout(() => {
+      this.transferAckTimers.delete(messageId);
+      useTransferStore.getState().updateDelivery(messageId, "failed", {
+        error: "服务端确认超时，请重试"
+      });
+    }, this.transferAckTimeout);
+    this.transferAckTimers.set(messageId, timer);
+  }
+
+  private clearTransferAckTimer(messageId: string): void {
+    const timer = this.transferAckTimers.get(messageId);
+
+    if (timer) {
+      clearTimeout(timer);
+      this.transferAckTimers.delete(messageId);
+    }
+  }
+
+  private failPendingTransferAcks(error: string): void {
+    for (const [messageId, timer] of this.transferAckTimers) {
+      clearTimeout(timer);
+      useTransferStore.getState().updateDelivery(messageId, "failed", { error });
+    }
+    this.transferAckTimers.clear();
   }
 
   private scheduleReconnect(): void {

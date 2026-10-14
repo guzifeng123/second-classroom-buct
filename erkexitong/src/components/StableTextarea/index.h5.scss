@@ -1,0 +1,21 @@
+.stable-textarea {
+  display: block;
+}
+
+.stable-textarea__control {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  resize: none;
+}
+
+.stable-textarea:not(.stable-textarea--auto-height) .stable-textarea__control {
+  min-height: inherit;
+}

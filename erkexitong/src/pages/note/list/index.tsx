@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Taro from "@tarojs/taro";
 import { Button, Input, Text, View } from "@tarojs/components";
 import { EmptyState, FeedbackButton, StatusBanner } from "../../../components/ui";
+import { evaluationConfig } from "../../../data/evaluationConfig";
 import { fetchNotes, type NoteSummary } from "../../../services/noteService";
 import { useNoteStore } from "../../../stores/useNoteStore";
 import { useUserStore } from "../../../stores/useUserStore";
@@ -10,6 +11,16 @@ import "./index.scss";
 function formatTime(value: number): string {
   return new Date(value).toLocaleString();
 }
+
+const DIMENSION_TITLE_BY_KEY = new Map(
+  evaluationConfig.map((dimension) => [dimension.key, dimension.title] as const)
+);
+
+const NOTE_SOURCE_LABELS: Record<NoteSummary["source"], string> = {
+  local: "本机创建",
+  remote: "远端同步",
+  transfer: "跨设备流转"
+};
 
 export default function NoteListPage() {
   const isLoggedIn = useUserStore((state) => state.isLoggedIn);
@@ -90,7 +101,7 @@ export default function NoteListPage() {
         <Input
           className="note-list__search"
           value={query}
-          placeholder="搜索标题或正文"
+          placeholder="搜索标题、正文、标签或关联维度"
           onInput={(event) => setQuery(event.detail.value)}
           onConfirm={handleSearch}
         />
@@ -126,10 +137,25 @@ export default function NoteListPage() {
               <View className="note-list__card-main">
                 <Text className="note-list__card-title">{note.title}</Text>
                 <Text className="note-list__card-copy">{note.plainText || "暂无正文内容"}</Text>
+                {note.tags.length > 0 || note.dimensionKeys.length > 0 ? (
+                  <View className="note-list__badges">
+                    {note.tags.map((tag) => (
+                      <Text className="note-list__badge" key={`tag-${tag}`}>#{tag}</Text>
+                    ))}
+                    {note.dimensionKeys.map((key) => (
+                      <Text className="note-list__badge note-list__badge--dimension" key={`dimension-${key}`}>
+                        {DIMENSION_TITLE_BY_KEY.get(key) ?? key}
+                      </Text>
+                    ))}
+                  </View>
+                ) : null}
               </View>
               <View className="note-list__card-meta">
                 <Text>{note.blockCount} 块内容</Text>
                 <Text>{note.imageCount} 张图片</Text>
+                <Text>{NOTE_SOURCE_LABELS[note.source]}</Text>
+                <Text>{note.usedCount > 0 ? `已引用 ${note.usedCount} 次` : "尚未引用"}</Text>
+                {note.recentUsedAt ? <Text>最近使用 {formatTime(note.recentUsedAt)}</Text> : null}
                 <Text>{formatTime(note.updatedAt)}</Text>
               </View>
               <Button className="note-list__card-button" onClick={() => handleEdit(note.id)}>

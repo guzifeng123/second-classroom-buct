@@ -53,7 +53,7 @@ export function getPathExtension(filePath: string): string {
 export function getSafeImageFileName(filePath: string, fallback = "本地图片"): string {
   const cleanPath = (filePath.split("?")[0] ?? filePath).split("#")[0] ?? filePath;
   const segments = cleanPath.split(/[\\/]/).filter(Boolean);
-  const rawName = segments.at(-1) ?? "";
+  const rawName = segments[segments.length - 1] ?? "";
   const fileName = rawName.trim() || fallback;
 
   if (fileName.length <= MAX_SAFE_FILE_NAME_LENGTH) {

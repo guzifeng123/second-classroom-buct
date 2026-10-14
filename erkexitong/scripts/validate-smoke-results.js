@@ -44,7 +44,10 @@ const resultsPath = path.isAbsolute(args.results) ? args.results : path.join(pro
 assert(fs.existsSync(resultsPath), `缺少 smoke 结果 JSON：${args.results}`);
 
 const rawResults = JSON.parse(fs.readFileSync(resultsPath, "utf8"));
-const errors = validateSmokeResults(rawResults, readChecklistFlows(checklistByTarget[args.target]));
+const errors = validateSmokeResults(rawResults, readChecklistFlows(checklistByTarget[args.target]), {
+  projectRoot,
+  resultsPath
+});
 
 if (errors.length > 0) {
   errors.forEach((error) => {

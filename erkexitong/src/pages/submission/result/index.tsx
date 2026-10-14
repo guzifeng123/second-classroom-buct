@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import Taro, { useRouter } from "@tarojs/taro";
 import { Button, Text, View } from "@tarojs/components";
-import { EmptyState, FeedbackButton } from "../../../components/ui";
+import { EmptyState, FeedbackButton, StatusBanner } from "../../../components/ui";
 import { evaluationConfig } from "../../../data/evaluationConfig";
 import { persistNoteSnapshotPreview } from "../../../services/noteSnapshotService";
-import { getSubmissionRecord } from "../../../services/submissionService";
+import { getSubmissionRecordDetail } from "../../../services/submissionService";
 import type { NoteReference } from "../../../types/evaluation";
 import type { SubmissionRecord } from "../../../types/submission";
 import { openDetailRouteOnce } from "../../../utils/detailNavigation";
@@ -37,11 +37,16 @@ export default function SubmissionResultPage() {
   const router = useRouter();
   const submissionId = router.params.submissionId ?? "";
   const [record, setRecord] = useState<SubmissionRecord | null>(null);
+  const [detailSource, setDetailSource] = useState<"local" | "remote">("local");
+  const [detailError, setDetailError] = useState("");
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const loadRecord = async () => {
-      setRecord(submissionId ? await getSubmissionRecord(submissionId) : null);
+      const result = await getSubmissionRecordDetail(submissionId);
+      setRecord(result.record);
+      setDetailSource(result.source);
+      setDetailError(result.error ?? "");
       setLoaded(true);
     };
 
@@ -58,8 +63,18 @@ export default function SubmissionResultPage() {
 
       <View className="submission-result__panel">
         {!loaded ? <Text className="submission-result__muted">正在读取提交摘要</Text> : null}
+        {loaded && record ? (
+          <StatusBanner
+            tone={detailError ? "warning" : detailSource === "remote" ? "success" : "neutral"}
+            title={detailSource === "remote" ? "已读取服务端提交详情" : "正在使用本地提交快照"}
+            description={detailError || "提交结果会优先使用服务端不可变快照，离线或接口失败时使用本机缓存。"}
+          />
+        ) : null}
         {loaded && !record ? (
-          <EmptyState title="没有找到本地提交摘要" description="可返回评定页继续查看当前草稿和分数。" />
+          <EmptyState
+            title="没有找到提交详情"
+            description={detailError || "可返回评定页继续查看当前草稿和分数。"}
+          />
         ) : null}
         {record ? (
           <>

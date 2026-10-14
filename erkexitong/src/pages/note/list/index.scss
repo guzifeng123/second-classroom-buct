@@ -243,6 +243,28 @@
   -webkit-line-clamp: 2;
 }
 
+.note-list__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.note-list__badge {
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: #f1f6f2;
+  color: #245844;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 26px;
+}
+
+.note-list__badge--dimension {
+  background: #f7f1e2;
+  color: #775315;
+}
+
 .note-list__card-meta {
   display: flex;
   flex-wrap: wrap;
@@ -358,6 +380,17 @@
   .note-list__card-copy {
     font-size: 12PX;
     line-height: 19PX;
+  }
+
+  .note-list__badges {
+    gap: 5PX;
+    margin-top: 9PX;
+  }
+
+  .note-list__badge {
+    padding: 2PX 6PX;
+    font-size: 10PX;
+    line-height: 16PX;
   }
 
   .note-list__card-meta {

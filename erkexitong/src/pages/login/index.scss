@@ -186,12 +186,18 @@
   line-height: 36px;
 }
 
-.device-strip__mode {
+.device-strip__mode,
+.device-strip__role {
   display: block;
   margin-top: 6px;
   color: var(--app-muted);
   font-size: 21px;
   line-height: 29px;
+}
+
+.device-strip__role {
+  color: #775315;
+  font-weight: 800;
 }
 
 .device-strip__list {
@@ -365,7 +371,8 @@
     line-height: 22PX;
   }
 
-  .device-strip__mode {
+  .device-strip__mode,
+  .device-strip__role {
     margin-top: 4PX;
     font-size: 11PX;
     line-height: 17PX;

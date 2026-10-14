@@ -7,7 +7,8 @@ import { isOfflineAuthMode, loginWithUserId } from "../../services/authService";
 import { initTransferSync } from "../../services/transferService";
 import { useConnectionStore } from "../../stores/useConnectionStore";
 import { useUserStore } from "../../stores/useUserStore";
-import { getDeviceInfo } from "../../utils/platform";
+import { getUserRoleLabel } from "../../utils/authPermissions";
+import { getDeviceInfo } from "../../utils/platform/index";
 import { getRuntimeEnvironmentStatus } from "../../utils/runtimeEnvironment";
 import "./index.scss";
 
@@ -18,6 +19,7 @@ export default function LoginPage() {
   const userId = useUserStore((state) => state.userId);
   const deviceName = useUserStore((state) => state.deviceName);
   const authMode = useUserStore((state) => state.authMode);
+  const role = useUserStore((state) => state.role);
   const isLoggedIn = useUserStore((state) => state.isLoggedIn);
   const login = useUserStore((state) => state.login);
   const logout = useUserStore((state) => state.logout);
@@ -56,7 +58,7 @@ export default function LoginPage() {
     try {
       const result = await loginWithUserId(trimmedUserId);
       const nextMode = isOfflineAuthMode() ? "offline" : "remote";
-      login(result.userId, result.token, nextMode);
+      login(result.userId, result.token, nextMode, result.role);
 
       if (nextMode === "offline") {
         updateDevices([
@@ -164,6 +166,7 @@ export default function LoginPage() {
             <Text className="device-strip__title">当前设备</Text>
             <Text className="device-strip__device">{deviceName || "未识别设备"}</Text>
             <Text className="device-strip__mode">{authMode === "offline" ? "离线会话" : "在线会话"}</Text>
+            <Text className="device-strip__role">当前角色：{getUserRoleLabel(role)}</Text>
             <View className="device-strip__list">
               {otherDevices.map((device) => (
                 <View className="device-strip__pill" key={device.deviceId}>

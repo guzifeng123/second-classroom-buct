@@ -4,8 +4,10 @@ import type {
   IncomingTransfer,
   TransferAction,
   TransferHistoryEntry,
-  TransferPayload
+  TransferPayload,
+  TransferDeliveryStatus
 } from "../types/transfer";
+import { createId } from "../utils/id";
 
 interface TransferState {
   editingItem: EditingItemPayload | null;
@@ -16,6 +18,12 @@ interface TransferState {
   receiveIncoming: (transfer: IncomingTransfer) => void;
   clearIncoming: () => void;
   addHistory: (entry: TransferHistoryEntry) => void;
+  updateDelivery: (
+    messageId: string,
+    status: TransferDeliveryStatus,
+    details?: { serverTime?: number; error?: string }
+  ) => void;
+  markRetrying: (messageId: string, time: number) => void;
 }
 
 function summarizeNoteContent(payload: TransferPayload): string {
@@ -58,21 +66,53 @@ export const useTransferStore = create<TransferState>((set) => ({
   receiveIncoming: (incomingTransfer) =>
     set((state) => {
       const entry: TransferHistoryEntry = {
-          direction: "received",
-          time: incomingTransfer.time,
-          action: incomingTransfer.action,
-          deviceName: incomingTransfer.fromDevice,
-          summary: summarize(incomingTransfer.action, incomingTransfer.payload)
+        messageId: incomingTransfer.messageId ?? createId("received"),
+        direction: "received",
+        time: incomingTransfer.time,
+        action: incomingTransfer.action,
+        deviceName: incomingTransfer.fromDevice,
+        summary: summarize(incomingTransfer.action, incomingTransfer.payload),
+        status: "received",
+        attempts: 1,
+        serverTime: incomingTransfer.serverTime
       };
 
       return {
         incomingTransfer,
-        transferHistory: [entry, ...state.transferHistory].slice(0, 5)
+        transferHistory: [entry, ...state.transferHistory].slice(0, 8)
       };
     }),
   clearIncoming: () => set({ incomingTransfer: null }),
   addHistory: (entry) =>
     set((state) => ({
-      transferHistory: [entry, ...state.transferHistory].slice(0, 5)
+      transferHistory: [entry, ...state.transferHistory].slice(0, 8)
+    })),
+  updateDelivery: (messageId, status, details = {}) =>
+    set((state) => ({
+      transferHistory: state.transferHistory.map((entry) =>
+        entry.messageId === messageId
+          ? {
+              ...entry,
+              status,
+              serverTime: details.serverTime ?? entry.serverTime,
+              error: details.error
+            }
+          : entry
+      )
+    })),
+  markRetrying: (messageId, time) =>
+    set((state) => ({
+      transferHistory: state.transferHistory.map((entry) =>
+        entry.messageId === messageId
+          ? {
+              ...entry,
+              time,
+              status: "pending",
+              attempts: entry.attempts + 1,
+              serverTime: undefined,
+              error: undefined
+            }
+          : entry
+      )
     }))
 }));

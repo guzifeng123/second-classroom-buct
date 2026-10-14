@@ -29,7 +29,7 @@
 }
 
 .upload-image-button__queue {
-  width: 220px;
+  width: 320px;
 }
 
 .upload-image-button__queue-item {
@@ -60,6 +60,10 @@
 .upload-image-button__queue-item--failed,
 .upload-image-button__queue-item--canceled {
   background-color: #f8e9e7;
+}
+
+.upload-image-button__queue-item--waiting-retry {
+  background-color: #faf5e8;
 }
 
 .upload-image-button__queue-message {

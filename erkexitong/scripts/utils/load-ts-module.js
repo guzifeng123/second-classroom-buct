@@ -52,8 +52,12 @@ function loadTsModule(filePath, options = {}) {
     JSON,
     Math,
     Number,
+    clearInterval,
+    clearTimeout,
     exports: module.exports,
     module,
+    setInterval,
+    setTimeout,
     require(request) {
       if (Object.prototype.hasOwnProperty.call(mocks, request)) {
         return mocks[request];

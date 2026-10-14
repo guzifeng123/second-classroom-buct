@@ -1,9 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
+import Taro from "@tarojs/taro";
 import { Button, Input, Text, View } from "@tarojs/components";
+import { EVALUATION_RULE_VERSION } from "../../../data/evaluationConfig";
 import { fetchSubmissionRecords } from "../../../services/submissionService";
 import type { EvaluationValidationIssue } from "../../../types/evaluation";
 import type { ReviewStatus, SubmissionDimensionSummary, SubmissionRecord } from "../../../types/submission";
+import { exportTextFile } from "../../../utils/fileExport";
 import { getReviewStatusText, inferReviewStatus } from "../../../utils/reviewStatus";
+import { buildReviewStatsSummary } from "../../../utils/reviewStats";
+import { buildSubmissionCsv, buildSubmissionCsvFileName } from "../../../utils/submissionExport";
 import type { EvaluationDimensionSummary } from "../hooks/useEvaluationPageData";
 
 type ReviewStatusFilter = "all" | ReviewStatus;
@@ -210,6 +215,49 @@ function getDimensionRows(
   return latestSubmittedSummaries.length > 0 ? latestSubmittedSummaries : dimensionSummaries;
 }
 
+function toSubmissionDimensionSummaries(
+  dimensionSummaries: EvaluationDimensionSummary[],
+  validationIssues: EvaluationValidationIssue[] = []
+): SubmissionDimensionSummary[] {
+  return dimensionSummaries.map((summary) => ({
+    key: summary.key,
+    title: summary.title,
+    score: summary.score,
+    maxScore: summary.maxScore,
+    selectedCount: summary.selectedCount,
+    materialCount: 0,
+    issueCount: validationIssues.filter((issue) => issue.dimensionKey === summary.key).length
+  }));
+}
+
+function buildDraftSubmissionRecord(
+  userId: string,
+  totalScore: number,
+  materialCount: number,
+  validationIssues: EvaluationValidationIssue[],
+  dimensionSummaries: EvaluationDimensionSummary[]
+): SubmissionRecord {
+  const now = Date.now();
+  const submissionDimensionSummaries = toSubmissionDimensionSummaries(dimensionSummaries, validationIssues);
+
+  return {
+    submissionId: userId ? `draft-${userId}` : "draft-current",
+    userId: userId || "current-user",
+    studentName: "当前学生",
+    className: "当前草稿",
+    createdAt: now,
+    ruleVersion: EVALUATION_RULE_VERSION,
+    totalScore,
+    materialCount,
+    issueCount: validationIssues.length,
+    reviewStatus: inferReviewStatus(validationIssues.length, materialCount > 0),
+    validationIssues,
+    records: {},
+    selectedItemIds: [],
+    dimensionSummaries: submissionDimensionSummaries
+  };
+}
+
 export default function EvaluationAdminDashboard({
   userId,
   totalScore,
@@ -258,10 +306,27 @@ export default function EvaluationAdminDashboard({
   const classOptions = getClassOptions(rows);
   const visibleRows = sortRows(filterRows(rows, statusFilter, classFilter, timeRange, keyword), sortMode);
   const dimensionRows = getDimensionRows(submissions, dimensionSummaries);
-  const pendingCount = rows.filter((row) => row.status === "pending" || row.status === "reviewing").length;
-  const returnedCount = rows.filter((row) => row.status === "returned").length;
-  const averageScore = Math.round(rows.reduce((sum, row) => sum + row.score, 0) / rows.length);
+  const stats = buildReviewStatsSummary(rows, submissions, toSubmissionDimensionSummaries(dimensionSummaries, validationIssues));
   const sourceText = submissions.length > 0 ? (submissionSource === "remote" ? "远端提交" : "本地提交") : "当前草稿";
+
+  const handleExportVisibleRows = async () => {
+    const visibleRowIds = new Set(visibleRows.map((row) => row.id));
+    const exportRecords = submissions.length > 0
+      ? submissions.filter((submission) => visibleRowIds.has(submission.submissionId))
+      : [buildDraftSubmissionRecord(userId, totalScore, materialCount, validationIssues, dimensionSummaries)];
+
+    if (exportRecords.length === 0) {
+      await Taro.showToast({ title: "无可导出记录", icon: "none" });
+      return;
+    }
+
+    const fileName = buildSubmissionCsvFileName("evaluation-submissions");
+    const result = await exportTextFile(fileName, buildSubmissionCsv(exportRecords));
+    await Taro.showToast({
+      title: result.method === "download" ? "CSV 已导出" : "CSV 已复制",
+      icon: "success"
+    });
+  };
 
   return (
     <View className="evaluation-admin">
@@ -283,20 +348,32 @@ export default function EvaluationAdminDashboard({
 
       <View className="evaluation-admin__metrics">
         <View className="evaluation-admin__metric">
-          <Text className="evaluation-admin__metric-value">{rows.length}</Text>
-          <Text className="evaluation-admin__metric-label">审核记录</Text>
+          <Text className="evaluation-admin__metric-value">{stats.submissionRate}%</Text>
+          <Text className="evaluation-admin__metric-label">班级提交率</Text>
         </View>
         <View className="evaluation-admin__metric">
-          <Text className="evaluation-admin__metric-value">{pendingCount}</Text>
+          <Text className="evaluation-admin__metric-value">{stats.pendingCount}</Text>
           <Text className="evaluation-admin__metric-label">待处理</Text>
         </View>
         <View className="evaluation-admin__metric">
-          <Text className="evaluation-admin__metric-value">{returnedCount}</Text>
+          <Text className="evaluation-admin__metric-value">{stats.returnedCount}</Text>
           <Text className="evaluation-admin__metric-label">退回补充</Text>
         </View>
         <View className="evaluation-admin__metric">
-          <Text className="evaluation-admin__metric-value">{averageScore}</Text>
+          <Text className="evaluation-admin__metric-value">{stats.averageScore}</Text>
           <Text className="evaluation-admin__metric-label">平均预估分</Text>
+        </View>
+        <View className="evaluation-admin__metric">
+          <Text className="evaluation-admin__metric-value">{stats.materialCompletionRate}%</Text>
+          <Text className="evaluation-admin__metric-label">材料完成度</Text>
+        </View>
+        <View className="evaluation-admin__metric">
+          <Text className="evaluation-admin__metric-value">{stats.highRiskDimension?.title ?? "暂无"}</Text>
+          <Text className="evaluation-admin__metric-label">
+            {stats.highRiskDimension
+              ? `风险维度 · ${stats.highRiskDimension.issueCount} 项问题`
+              : "风险维度"}
+          </Text>
         </View>
       </View>
 
@@ -312,6 +389,9 @@ export default function EvaluationAdminDashboard({
             <View className="evaluation-admin__panel-actions">
               <Button className="evaluation-admin__text-button" onClick={loadSubmissions}>
                 刷新
+              </Button>
+              <Button className="evaluation-admin__text-button" onClick={handleExportVisibleRows}>
+                导出CSV
               </Button>
               <Button className="evaluation-admin__text-button" onClick={onOpenHistory}>
                 提交记录
@@ -445,22 +525,27 @@ export default function EvaluationAdminDashboard({
 
         <View className="evaluation-admin__panel">
           <Text className="evaluation-admin__panel-title">五维分布</Text>
-          {dimensionRows.map((summary) => {
-            const percent = Math.round((summary.score / summary.maxScore) * 100);
-            const level = Math.min(10, Math.max(0, Math.round(percent / 10)));
+          {stats.dimensionStats.map((summary) => {
+            const level = Math.min(10, Math.max(0, Math.round(summary.scoreRate / 10)));
 
             return (
               <View className="evaluation-admin__dimension" key={summary.key}>
                 <View className="evaluation-admin__dimension-head">
                   <Text>{summary.title}</Text>
-                  <Text>{summary.score}/{summary.maxScore}</Text>
+                  <Text>{summary.averageScore}/{summary.maxScore}</Text>
                 </View>
+                <Text className="evaluation-admin__dimension-meta">
+                  缺口 {summary.scoreGap} 分 · 材料 {summary.materialCount} 条 · 问题 {summary.issueCount} 项
+                </Text>
                 <View className="evaluation-admin__bar">
                   <View className={`evaluation-admin__bar-fill evaluation-admin__bar-fill--${level}`} />
                 </View>
               </View>
             );
           })}
+          {stats.dimensionStats.length === 0 && dimensionRows.length === 0 ? (
+            <Text className="evaluation-admin__empty">暂无维度统计。</Text>
+          ) : null}
         </View>
       </View>
     </View>

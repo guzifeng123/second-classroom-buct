@@ -1,6 +1,8 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Image, Text, View } from "@tarojs/components";
 import type { ContentBlock } from "../../types/content";
+import ImagePreview, { type ImagePreviewRequest } from "../ImagePreview";
+import ImagePreviewTrigger from "../ImagePreviewTrigger";
 import "./index.scss";
 
 interface NoteContentRendererProps {
@@ -17,18 +19,26 @@ export default function NoteContentRenderer({
   onError
 }: NoteContentRendererProps) {
   const [failedImageKeys, setFailedImageKeys] = useState<string[]>([]);
-  const [previewUrl, setPreviewUrl] = useState("");
+  const [previewRequest, setPreviewRequest] = useState<ImagePreviewRequest | null>(null);
   const imageUrls = useMemo(
     () =>
-      content.reduce<string[]>((urls, block) => {
-        if (block.type === "image" && block.url) {
-          urls.push(block.url);
-        }
+      Array.from(
+        new Set(
+          content.reduce<string[]>((urls, block) => {
+            if (block.type === "image" && block.url) {
+              urls.push(block.url);
+            }
 
-        return urls;
-      }, []),
+            return urls;
+          }, [])
+        )
+      ),
     [content]
   );
+
+  const handlePreviewClose = useCallback(() => {
+    setPreviewRequest(null);
+  }, []);
 
   if (content.length === 0) {
     return <View className="note-renderer__empty">{emptyText}</View>;
@@ -39,7 +49,10 @@ export default function NoteContentRenderer({
       return;
     }
 
-    setPreviewUrl(url);
+    setPreviewRequest({
+      current: url,
+      urls: imageUrls
+    });
   };
 
   return (
@@ -66,10 +79,12 @@ export default function NoteContentRenderer({
           const failed = failedImageKeys.includes(imageKey);
 
           return (
-            <View
+            <ImagePreviewTrigger
+              ariaLabel={`预览图片 ${block.alt || index + 1}`}
               className={`note-renderer__image-wrap ${enableImagePreview ? "note-renderer__image-wrap--preview" : ""}`}
+              enabled={enableImagePreview}
               key={index}
-              onClick={() => handlePreviewImage(block.url)}
+              onActivate={() => handlePreviewImage(block.url)}
             >
               {failed ? (
                 <View className="note-renderer__image-fallback">
@@ -88,7 +103,7 @@ export default function NoteContentRenderer({
                   }}
                 />
               )}
-            </View>
+            </ImagePreviewTrigger>
           );
         }
 
@@ -98,16 +113,7 @@ export default function NoteContentRenderer({
           </View>
         );
       })}
-      {enableImagePreview && previewUrl ? (
-        <View className="note-renderer__preview" onClick={() => setPreviewUrl("")}>
-          <View className="note-renderer__preview-body">
-            <Image className="note-renderer__preview-image" src={previewUrl} mode="aspectFit" />
-            <Text className="note-renderer__preview-count">
-              {Math.max(imageUrls.indexOf(previewUrl), 0) + 1}/{imageUrls.length || 1}
-            </Text>
-          </View>
-        </View>
-      ) : null}
+      {enableImagePreview ? <ImagePreview request={previewRequest} onClose={handlePreviewClose} /> : null}
     </View>
   );
 }

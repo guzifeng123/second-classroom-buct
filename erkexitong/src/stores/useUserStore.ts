@@ -1,6 +1,7 @@
 import Taro from "@tarojs/taro";
 import { create } from "zustand";
-import type { AuthMode } from "../types/auth";
+import type { AuthMode, UserRole } from "../types/auth";
+import { DEFAULT_USER_ROLE, normalizeUserRole } from "../utils/authPermissions";
 
 const SESSION_KEY = "erkexitong-session";
 
@@ -10,11 +11,12 @@ interface SessionSnapshot {
   deviceId: string;
   deviceName: string;
   authMode: AuthMode;
+  role: UserRole;
 }
 
 interface UserState extends SessionSnapshot {
   isLoggedIn: boolean;
-  login: (userId: string, token: string, authMode?: AuthMode) => void;
+  login: (userId: string, token: string, authMode?: AuthMode, role?: UserRole) => void;
   setDeviceInfo: (deviceId: string, deviceName: string) => void;
   hydrateSession: () => void;
   logout: () => void;
@@ -25,7 +27,8 @@ const emptySession: SessionSnapshot = {
   userId: "",
   deviceId: "",
   deviceName: "",
-  authMode: "offline"
+  authMode: "offline",
+  role: DEFAULT_USER_ROLE
 };
 
 function persistSession(snapshot: SessionSnapshot): void {
@@ -39,13 +42,14 @@ function persistSession(snapshot: SessionSnapshot): void {
 export const useUserStore = create<UserState>((set, get) => ({
   ...emptySession,
   isLoggedIn: false,
-  login: (userId, token, authMode = "remote") => {
+  login: (userId, token, authMode = "remote", role = DEFAULT_USER_ROLE) => {
     const next = {
       token,
       userId,
       deviceId: get().deviceId,
       deviceName: get().deviceName,
-      authMode
+      authMode,
+      role: normalizeUserRole(role)
     };
     persistSession(next);
     set({ ...next, isLoggedIn: true });
@@ -56,7 +60,8 @@ export const useUserStore = create<UserState>((set, get) => ({
       userId: get().userId,
       deviceId,
       deviceName,
-      authMode: get().authMode
+      authMode: get().authMode,
+      role: get().role
     };
     if (next.token || next.userId) {
       persistSession(next);
@@ -67,7 +72,12 @@ export const useUserStore = create<UserState>((set, get) => ({
     try {
       const snapshot = Taro.getStorageSync<SessionSnapshot>(SESSION_KEY);
       if (snapshot?.token && snapshot.userId) {
-        set({ ...snapshot, authMode: snapshot.authMode ?? "offline", isLoggedIn: true });
+        set({
+          ...snapshot,
+          authMode: snapshot.authMode ?? "offline",
+          role: normalizeUserRole(snapshot.role),
+          isLoggedIn: true
+        });
       }
     } catch {
       set({ ...emptySession, isLoggedIn: false });

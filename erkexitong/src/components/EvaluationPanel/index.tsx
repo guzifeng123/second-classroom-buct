@@ -15,6 +15,8 @@ interface EvaluationPanelProps {
   focusUpload?: boolean;
   focusField?: EvaluationFocusField;
   focusImageIndex?: number;
+  onlyIncomplete?: boolean;
+  incompleteItemIds?: string[];
 }
 
 export default function EvaluationPanel({
@@ -26,6 +28,8 @@ export default function EvaluationPanel({
   focusUpload = false,
   focusField,
   focusImageIndex
+  , onlyIncomplete = false
+  , incompleteItemIds = []
 }: EvaluationPanelProps) {
   const [expanded, setExpanded] = useState(defaultExpanded);
   const records = useEvaluationStore((state) => state.records);
@@ -37,7 +41,10 @@ export default function EvaluationPanel({
   const selectedSections = dimension.sections
     .map((section) => ({
       ...section,
-      items: section.items.filter((item) => selectedSet.has(makeRecordKey(dimension.key, item.id)))
+      items: section.items.filter((item) =>
+        selectedSet.has(makeRecordKey(dimension.key, item.id)) &&
+        (!onlyIncomplete || incompleteItemIds.includes(item.id))
+      )
     }))
     .filter((section) => section.items.length > 0);
 

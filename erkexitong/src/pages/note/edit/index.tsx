@@ -1,9 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Taro, { useRouter } from "@tarojs/taro";
-import { Button, Image, Input, ScrollView, Text, Textarea, View } from "@tarojs/components";
+import { Button, Image, Input, ScrollView, Text, View } from "@tarojs/components";
+import { FeedbackButton } from "../../../components/ui";
 import NoteContentRenderer from "../../../components/NoteContentRenderer";
+import StableTextarea from "../../../components/StableTextarea";
 import UploadImageButton from "../../../components/UploadImageButton";
-import { initTransferSync, promptApplyIncomingTransfer, sendTransferTo } from "../../../services/transferService";
+import { evaluationConfig } from "../../../data/evaluationConfig";
+import { hasApiBaseUrl } from "../../../services/api";
+import {
+  initTransferSync,
+  promptApplyIncomingTransfer,
+  retryTransfer,
+  sendTransferTo
+} from "../../../services/transferService";
 import { useConnectionStore } from "../../../stores/useConnectionStore";
 import { useNoteStore } from "../../../stores/useNoteStore";
 import { useTransferStore } from "../../../stores/useTransferStore";
@@ -11,6 +20,18 @@ import { useUserStore } from "../../../stores/useUserStore";
 import type { ProofImage } from "../../../types/evaluation";
 import type { ContentBlock } from "../../../types/content";
 import type { NoteTransferPayload } from "../../../types/transfer";
+import {
+  MAX_NOTE_TAG_LENGTH,
+  MAX_NOTE_TAGS,
+  normalizeNoteTags,
+  type NoteSource
+} from "../../../utils/noteNormalization";
+import { getNoteSaveStatusText } from "../../../utils/noteSaveStatus";
+import {
+  formatTransferTime,
+  getSelectableTransferDevices,
+  getTransferDeliveryLabel
+} from "../../../utils/transferDelivery";
 import "./index.scss";
 
 function blockHasContent(block: ContentBlock): boolean {
@@ -25,20 +46,33 @@ function blockHasContent(block: ContentBlock): boolean {
   return Object.keys(block.data).length > 0;
 }
 
+const NOTE_SOURCE_LABELS: Record<NoteSource, string> = {
+  local: "本机创建",
+  remote: "远端同步",
+  transfer: "跨设备流转"
+};
+
 export default function NoteEditPage() {
   const router = useRouter();
   const promptLockRef = useRef(false);
   const [previewMode, setPreviewMode] = useState(false);
   const [loadingNote, setLoadingNote] = useState(false);
   const [pageError, setPageError] = useState("");
+  const [tagInput, setTagInput] = useState("");
   const isLoggedIn = useUserStore((state) => state.isLoggedIn);
   const userId = useUserStore((state) => state.userId);
   const deviceName = useUserStore((state) => state.deviceName);
   const isConnected = useConnectionStore((state) => state.isConnected);
   const otherDevices = useConnectionStore((state) => state.otherDevices);
+  const latestNoteTransfer = useTransferStore((state) =>
+    state.transferHistory.find((entry) => entry.direction === "sent" && entry.action === "NOTE_CONTENT")
+  );
   const noteId = useNoteStore((state) => state.noteId);
   const title = useNoteStore((state) => state.title);
   const content = useNoteStore((state) => state.content);
+  const tags = useNoteStore((state) => state.tags);
+  const dimensionKeys = useNoteStore((state) => state.dimensionKeys);
+  const source = useNoteStore((state) => state.source);
   const savedAt = useNoteStore((state) => state.savedAt);
   const hydrated = useNoteStore((state) => state.hydrated);
   const isDirty = useNoteStore((state) => state.isDirty);
@@ -46,6 +80,8 @@ export default function NoteEditPage() {
   const loadNote = useNoteStore((state) => state.loadNote);
   const setTitle = useNoteStore((state) => state.setTitle);
   const setContent = useNoteStore((state) => state.setContent);
+  const setTags = useNoteStore((state) => state.setTags);
+  const toggleDimension = useNoteStore((state) => state.toggleDimension);
   const addBlock = useNoteStore((state) => state.addBlock);
   const updateBlock = useNoteStore((state) => state.updateBlock);
   const removeBlock = useNoteStore((state) => state.removeBlock);
@@ -53,7 +89,7 @@ export default function NoteEditPage() {
   const reset = useNoteStore((state) => state.reset);
   const incomingTransfer = useTransferStore((state) => state.incomingTransfer);
   const clearIncoming = useTransferStore((state) => state.clearIncoming);
-  const onlineDevices = otherDevices.filter((device) => device.online && device.deviceId !== "broadcast");
+  const onlineDevices = getSelectableTransferDevices(otherDevices);
   const hasContent = useMemo(() => content.some(blockHasContent), [content]);
 
   useEffect(() => {
@@ -137,6 +173,26 @@ export default function NoteEditPage() {
     }
   };
 
+  const handleAddTag = async () => {
+    const nextTags = normalizeNoteTags([...tags, tagInput]);
+    if (nextTags.length === tags.length) {
+      if (tagInput.trim()) {
+        await Taro.showToast({
+          title: tags.length >= MAX_NOTE_TAGS ? `最多 ${MAX_NOTE_TAGS} 个标签` : "标签已存在",
+          icon: "none"
+        });
+      }
+      return;
+    }
+
+    setTags(nextTags);
+    setTagInput("");
+  };
+
+  const handleRemoveTag = (tag: string) => {
+    setTags(tags.filter((candidate) => candidate !== tag));
+  };
+
   const handleTransfer = async () => {
     if (!hasContent) {
       await Taro.showToast({
@@ -155,30 +211,43 @@ export default function NoteEditPage() {
     }
 
     const itemList = ["我的其他设备", ...onlineDevices.map((device) => device.deviceName)];
+    let targetDevice = "broadcast";
 
     try {
       const result = await Taro.showActionSheet({ itemList });
-      const targetDevice = result.tapIndex === 0 ? "broadcast" : onlineDevices[result.tapIndex - 1]?.deviceId;
-      const payload: NoteTransferPayload = {
-        noteId,
-        title: title.trim() || "未命名图文材料",
-        content
-      };
+      targetDevice =
+        result.tapIndex === 0 ? "broadcast" : onlineDevices[result.tapIndex - 1]?.deviceId ?? "broadcast";
+    } catch {
+      return;
+    }
 
-      await sendTransferTo(targetDevice || "broadcast", "NOTE_CONTENT", payload);
+    const payload: NoteTransferPayload = {
+      noteId,
+      title: title.trim() || "未命名图文材料",
+      content,
+      tags,
+      dimensionKeys,
+      source
+    };
+
+    try {
+      await sendTransferTo(targetDevice, "NOTE_CONTENT", payload);
       await Taro.showToast({
-        title: "内容已发送",
+        title: "已发送，等待确认",
         icon: "success"
       });
     } catch {
-      // User cancelled the device picker.
+      await Taro.showToast({
+        title: "发送失败，可重试",
+        icon: "none"
+      });
     }
   };
 
   const handleReset = async () => {
     const result = await Taro.showModal({
       title: "清空图文草稿",
-      content: "清空后将移除当前标题、文字和图片",
+      content: "清空后将移除当前标题、标签、关联维度、文字和图片",
       confirmText: "清空",
       cancelText: "取消"
     });
@@ -186,6 +255,14 @@ export default function NoteEditPage() {
     if (result.confirm) {
       reset();
     }
+  };
+
+  const handleRetryLatestTransfer = async () => {
+    if (!latestNoteTransfer) {
+      return;
+    }
+
+    await retryTransfer(latestNoteTransfer.messageId);
   };
 
   const renderBlock = (block: ContentBlock, index: number) => {
@@ -223,16 +300,16 @@ export default function NoteEditPage() {
               删除
             </Button>
           </View>
-          <Textarea
+          <StableTextarea
             className="note-block__textarea"
             value={block.text}
             maxlength={2000}
             autoHeight
             placeholder="补充说明、过程记录或证明材料描述"
-            onInput={(event) =>
+            onValueChange={(value) =>
               updateBlock(index, {
                 ...block,
-                text: event.detail.value
+                text: value
               })
             }
           />
@@ -310,6 +387,67 @@ export default function NoteEditPage() {
           />
         </View>
 
+        <View className="note-asset-meta">
+          <View className="note-asset-meta__head">
+            <View>
+              <Text className="note-asset-meta__title">材料属性</Text>
+              <Text className="note-asset-meta__hint">标签用于检索，关联维度用于复用时快速定位。</Text>
+            </View>
+            <Text className="note-asset-meta__source">来源：{NOTE_SOURCE_LABELS[source]}</Text>
+          </View>
+
+          <View className="note-asset-meta__section">
+            <Text className="note-asset-meta__label">标签（{tags.length}/{MAX_NOTE_TAGS}）</Text>
+            <View className="note-asset-meta__tag-entry">
+              <Input
+                className="note-asset-meta__tag-input"
+                value={tagInput}
+                maxlength={MAX_NOTE_TAG_LENGTH}
+                disabled={tags.length >= MAX_NOTE_TAGS}
+                placeholder={tags.length >= MAX_NOTE_TAGS ? "标签数量已满" : "输入标签后确认"}
+                onInput={(event) => setTagInput(event.detail.value)}
+                onConfirm={() => void handleAddTag()}
+              />
+              <Button
+                className="note-asset-meta__tag-add"
+                disabled={!tagInput.trim() || tags.length >= MAX_NOTE_TAGS}
+                onClick={() => void handleAddTag()}
+              >
+                添加
+              </Button>
+            </View>
+            {tags.length > 0 ? (
+              <View className="note-asset-meta__tags">
+                {tags.map((tag) => (
+                  <Button className="note-asset-meta__tag" key={tag} onClick={() => handleRemoveTag(tag)}>
+                    {tag} ×
+                  </Button>
+                ))}
+              </View>
+            ) : (
+              <Text className="note-asset-meta__empty">暂无标签</Text>
+            )}
+          </View>
+
+          <View className="note-asset-meta__section">
+            <Text className="note-asset-meta__label">关联评定维度</Text>
+            <View className="note-asset-meta__dimensions">
+              {evaluationConfig.map((dimension) => {
+                const selected = dimensionKeys.includes(dimension.key);
+                return (
+                  <Button
+                    className={`note-asset-meta__dimension ${selected ? "note-asset-meta__dimension--active" : ""}`}
+                    key={dimension.key}
+                    onClick={() => toggleDimension(dimension.key)}
+                  >
+                    {dimension.title}
+                  </Button>
+                );
+              })}
+            </View>
+          </View>
+        </View>
+
         <View className="note-toolbar">
           <Button className="note-toolbar__button" onClick={() => addBlock({ type: "heading", text: "" })}>
             添加标题
@@ -353,8 +491,30 @@ export default function NoteEditPage() {
       <View className="note-actions">
         <View className="note-actions__meta">
           <Text>{savedAt ? `保存 ${new Date(savedAt).toLocaleTimeString()}` : "尚未保存"}</Text>
-          <Text>{isDirty ? "有修改" : "已同步"}</Text>
+          <Text>{getNoteSaveStatusText(isDirty, hasApiBaseUrl)}</Text>
         </View>
+        {latestNoteTransfer ? (
+          <View className={`note-actions__delivery note-actions__delivery--${latestNoteTransfer.status}`}>
+            <Text className="note-actions__delivery-text">
+              最近流转：{getTransferDeliveryLabel(latestNoteTransfer.status, latestNoteTransfer.attempts)}
+              {latestNoteTransfer.serverTime ? ` · ${formatTransferTime(latestNoteTransfer.serverTime)}` : ""}
+            </Text>
+            {latestNoteTransfer.error ? (
+              <Text className="note-actions__delivery-error">{latestNoteTransfer.error}</Text>
+            ) : null}
+            {latestNoteTransfer.status === "failed" ? (
+              <FeedbackButton
+                className="note-actions__delivery-retry"
+                loadingText="重试中"
+                successText="已重发"
+                errorText="重试失败"
+                onClick={handleRetryLatestTransfer}
+              >
+                重试流转
+              </FeedbackButton>
+            ) : null}
+          </View>
+        ) : null}
         <View className="note-actions__buttons">
           <Button className="note-actions__ghost" onClick={handleReset}>
             清空

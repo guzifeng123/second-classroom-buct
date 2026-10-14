@@ -3,7 +3,7 @@ import { EVALUATION_RULE_VERSION, evaluationConfig, findEvaluationItem } from ".
 import { hasApiBaseUrl } from "../../../services/api";
 import { submitEvaluation } from "../../../services/evaluationService";
 import { saveSubmissionRecord } from "../../../services/submissionService";
-import { applyIncomingTransfer } from "../../../services/transferService";
+import { applyIncomingTransfer, retryTransfer } from "../../../services/transferService";
 import { countLocalProofImages, uploadLocalProofImages, type UploadProgressSnapshot } from "../../../services/upload";
 import { useEvaluationStore } from "../../../stores/useEvaluationStore";
 import { useUserStore } from "../../../stores/useUserStore";
@@ -11,6 +11,7 @@ import type { EvaluationValidationIssue } from "../../../types/evaluation";
 import { openDetailRouteOnce } from "../../../utils/detailNavigation";
 import { buildIssueFocusUrl } from "../../../utils/evaluationIssueFocus";
 import { buildDimensionSummaries, countMaterials } from "../../../utils/evaluationSummary";
+import { getSyncErrorLabel } from "../../../utils/evaluationSyncStatus";
 import {
   buildOfflineSubmitMessage,
   buildRemoteDraftFailureMessage,
@@ -105,7 +106,7 @@ export function useEvaluationActions() {
 
   const handleSave = async () => {
     try {
-      const result = await saveDraft(userId);
+      const result = await saveDraft(hasApiBaseUrl ? userId : undefined);
       await Taro.showToast({
         title: result.remoteSaved ? feedbackTitles.draftRemoteSaved : feedbackTitles.draftLocalSaved,
         icon: "success"
@@ -126,11 +127,68 @@ export function useEvaluationActions() {
     }
   };
 
+  const handleRetrySync = async () => {
+    if (!hasApiBaseUrl) {
+      await Taro.showToast({
+        title: "未配置远端服务",
+        icon: "none"
+      });
+      throw new Error("未配置远端服务");
+    }
+
+    if (!userId) {
+      await Taro.showToast({
+        title: "登录状态无效",
+        icon: "none"
+      });
+      throw new Error("登录状态无效");
+    }
+
+    try {
+      const result = await saveDraft(userId);
+
+      if (!result.remoteSaved) {
+        await Taro.showToast({
+          title: getSyncErrorLabel({
+            message: result.remoteError,
+            code: result.remoteErrorCode,
+            statusCode: result.remoteErrorStatusCode
+          }),
+          icon: "none"
+        });
+        throw new Error(result.remoteError ?? "远端草稿保存失败");
+      }
+
+      await Taro.showToast({
+        title: "远端同步成功",
+        icon: "success"
+      });
+    } catch (error) {
+      if (useEvaluationStore.getState().syncStatus !== "sync-failed") {
+        await Taro.showToast({
+          title: getSyncErrorLabel({
+            message: error instanceof Error ? error.message : null,
+            code:
+              error && typeof error === "object" && "errorCode" in error && typeof error.errorCode === "string"
+                ? error.errorCode
+                : null,
+            statusCode:
+              error && typeof error === "object" && "statusCode" in error && typeof error.statusCode === "number"
+                ? error.statusCode
+                : null
+          }),
+          icon: "none"
+        });
+      }
+      throw error;
+    }
+  };
+
   const handleSubmit = async () => {
     const preUploadIssues = getValidationIssues().filter((issue) => issue.type !== "local_image");
 
     if (!hasApiBaseUrl) {
-      await saveDraft(userId);
+      await saveDraft();
       await Taro.showModal({
         title: feedbackTitles.offlineSubmitBlocked,
         content: buildOfflineSubmitMessage(preUploadIssues.length > 0 ? issueSummary(preUploadIssues) : undefined),
@@ -272,8 +330,25 @@ export function useEvaluationActions() {
     await openDetailRouteOnce("/pages/submission/history/index");
   };
 
+  const handleRetryTransfer = async (messageId: string) => {
+    try {
+      await retryTransfer(messageId);
+      await Taro.showToast({
+        title: "已重发，等待确认",
+        icon: "success"
+      });
+    } catch (error) {
+      await Taro.showToast({
+        title: error instanceof Error ? error.message : "重试发送失败",
+        icon: "none"
+      });
+      throw error;
+    }
+  };
+
   return {
     handleSave,
+    handleRetrySync,
     handleSubmit,
     handleReset,
     handleGoLogin,
@@ -281,6 +356,7 @@ export function useEvaluationActions() {
     handleOpenImages,
     handleOpenPreview,
     handleOpenHistory,
+    handleRetryTransfer,
     handleApplyIncomingTransfer: applyIncomingTransfer
   };
 }

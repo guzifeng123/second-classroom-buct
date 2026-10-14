@@ -1,11 +1,18 @@
 import { useMemo, useState } from "react";
 import Taro from "@tarojs/taro";
-import { Button, Image, Input, Text, Textarea, View } from "@tarojs/components";
+import { Button, Image, Input, Text, View } from "@tarojs/components";
+import StableTextarea from "../StableTextarea";
 import UploadImageButton from "../UploadImageButton";
 import TransferButton from "../TransferButton";
 import { fetchImages, imageAssetToProofImage, markImageAssetUsed } from "../../services/imageLibraryService";
 import { persistNoteSnapshotPreview } from "../../services/noteSnapshotService";
-import { fetchNoteDetail, fetchNotes, type NoteDetail, type NoteSummary } from "../../services/noteService";
+import {
+  fetchNoteDetail,
+  fetchNotes,
+  markNoteUsed,
+  type NoteDetail,
+  type NoteSummary
+} from "../../services/noteService";
 import { calculateRecordScore } from "../../stores/useEvaluationStore";
 import { useEvaluationStore } from "../../stores/useEvaluationStore";
 import { useTransferStore } from "../../stores/useTransferStore";
@@ -52,6 +59,8 @@ function buildNoteReference(note: NoteDetail | NoteSummary): NoteReference {
     title: note.title,
     plainText: note.plainText,
     imageCount: note.imageCount,
+    tags: note.tags,
+    dimensionKeys: note.dimensionKeys,
     referencedAt: Date.now(),
     contentSnapshot: "content" in note ? note.content : undefined
   };
@@ -268,9 +277,13 @@ export default function ProofItem({
           noteReferences: [reference, ...(record.noteReferences ?? [])].slice(0, 4)
         };
 
-        updateText(record.dimensionKey, record.itemId, record.id, nextText);
-        addNoteReference(record.dimensionKey, record.itemId, record.id, reference);
+        addNoteReference(record.dimensionKey, record.itemId, record.id, reference, nextText);
         syncEditing(nextRecord);
+        await markNoteUsed(selectedNote.id, {
+          dimensionKey: record.dimensionKey,
+          sectionKey: record.sectionKey,
+          itemId: record.itemId
+        }).catch(() => undefined);
         await Taro.showToast({
           title: "已引用图文材料",
           icon: "success"
@@ -385,14 +398,14 @@ export default function ProofItem({
         </View>
       ) : null}
 
-      <Textarea
+      <StableTextarea
         className={`proof-item__textarea ${focusField === "text" ? "proof-item__field--focused" : ""}`}
         value={record.text}
         maxlength={800}
         autoHeight
         focus={focusField === "text"}
         placeholder={item.placeholder}
-        onInput={(event) => handleTextChange(event.detail.value)}
+        onValueChange={handleTextChange}
       />
 
       {record.noteReferences && record.noteReferences.length > 0 ? (

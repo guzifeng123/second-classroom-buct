@@ -6,8 +6,10 @@
 
 ## 前置条件
 
-- 已执行 `npm.cmd run build:h5`，并确认 `dist` 中 H5 产物已生成。
+- 已执行 `npm.cmd run build:h5`，并确认 `dist/h5` 中 H5 产物已生成。
+- 已执行 `npm.cmd run validate:h5-preview-bundle`，确认全量 H5 JS 无禁用的 Swiper 标记，且图片库路由 JS raw 小于 `249856` B。
 - 浏览器可访问 H5 页面，建议同时准备桌面宽屏和移动端模拟视口。
+- 自动化 runner 默认通过 `playwright-core` 启动系统 Edge；依赖安装完成且本机 Edge 可启动。
 - 可使用离线演示模式；若配置了后端接口，也需要记录 API 与 WebSocket 状态。
 - 准备至少 2 张 JPG/PNG/WebP 测试图片，其中 1 张可用于模拟上传失败或提交前本地图片失败定位。
 
@@ -20,7 +22,7 @@
 | 3 | 评定页填报 | 选择一个维度条目，填写文字、选择选项或数值，添加一条证明记录。 | 输入、选择、数值和添加记录可操作；分数与材料数量更新；本地未保存/已保存状态变化可见。 |
 | 4 | 保存草稿 | 修改评定内容后触发保存，刷新页面或重新进入评定页。 | 草稿内容可恢复；离线时明确提示只能本地暂存；在线失败时显示同步失败原因且不误导为正式提交。 |
 | 5 | 图片上传区域 | 在证明记录中选择图片、打开图片库、引用图文材料，并测试上传失败或取消后的重试。 | 图片区域不溢出；失败/取消图片可看到原因、缩略图、重试和移除入口；已成功图片不会因后续失败丢失。 |
-| 6 | 图片库页 | 打开图片库页，切换来源、维度、引用状态和排序筛选，再执行重置筛选。 | 筛选和排序控件可操作；筛选数量、空态或图片网格可读；重置筛选恢复默认条件。 |
+| 6 | 图片库页 | 首次直达图片库，切换来源、维度、引用状态和排序筛选并重置；用 Enter 打开第一张图片，切换下一张，按 Escape 关闭后用 Space 再次打开。 | 首次加载的 JS 不含禁用的 Swiper 标记；筛选恢复默认条件；预览入口是带可访问名称的原生按钮；轻量预览显示正确计数和图片，下一张可切换，Escape 可关闭且焦点回到打开预览的图片，Space 可再次打开。 |
 | 7 | 图文材料列表页 | 从评定记录的图文入口打开图文材料列表页，搜索或选择已有材料。 | 列表、搜索、空态和错误兜底可读；选择材料后能返回评定条目引用。 |
 | 8 | 图文编辑页 | 新建或继续编辑一条含文字和图片的图文材料，保存后返回引用。 | 标题、文字块、图片块、预览和保存可操作；保存失败不丢失当前编辑内容。 |
 | 9 | 图文快照页 | 从引用卡片或提交结果打开图文快照页。 | 图文快照页可只读展示内容块，点击快照图片可预览，图片加载失败时有固定占位；原材料不可用时保留快照并给出提示。 |
@@ -37,6 +39,7 @@
 - 桌面双栏布局不应出现横向溢出，评定详情、图片库和预览页内容应能完整滚动。
 - 移动端模拟视口下，按钮文字、标签、进度条和缩略图不应互相遮挡。
 - 上传队列、失败图片定位、高亮态和弹窗操作应保持稳定尺寸，不能导致页面明显跳动。
+- 图片预览在桌面和移动视口均应覆盖页面且不引起底层滚动；预览入口应支持 Enter/Space；关闭、前后切换和重试控件应保持可见焦点，关闭后焦点返回触发图片。
 - 图文快照页的图片预览入口和加载失败占位不应撑破内容面板，也不应遮挡返回按钮。
 - H5 构建若出现已知体积告警，需要记录资源名与大小；新增告警应补充到后续优化方向。
 
@@ -55,14 +58,32 @@ npm.cmd run smoke:h5:results -- --out output/smoke/h5-results.json
 npm.cmd run smoke:h5:finalize -- --results output/smoke/h5-results.json --out output/smoke/h5-smoke-2026-07-11.md
 ```
 
-当前也可以使用 H5 runner 生成入口可达性结果，runner 会检查 `--base-url` 是否返回 2xx/3xx，且正文包含 H5 应用根节点 `id="app"` 或系统标题，将登录页标记为通过或失败，后续未接入的流程标记为跳过：
+H5 runner 会先检查 `--base-url` 是否返回 2xx/3xx 且包含应用壳，再执行源码静态覆盖预检，随后启动真实 Edge 完成登录、填报、本地草稿恢复、图片选择/预览/删除、图片库首次直达 JS 扫描、筛选、Enter 打开预览、双图预览、计数切换、Escape 关闭与焦点恢复、Space 再次打开、图文编辑/保存/刷新/预览、图文快照与引用、预览问题定位、离线提交拦截、fixture 结果/历史、状态页和 390×844 横向溢出检查。静态预检只决定是否具备继续运行的条件，不能替代浏览器交互：
 
 ```bash
 npm.cmd run smoke:h5:run -- --base-url http://localhost:10086 --out output/smoke/h5-results.json
 npm.cmd run smoke:h5:finalize -- --results output/smoke/h5-results.json --out output/smoke/h5-smoke-2026-07-11.md
 ```
 
-runner 默认会在 `output/smoke/h5-artifacts/<timestamp>/` 下写入 `h5-entry-response.txt`，记录入口响应状态和正文片段，并把该相对路径填入登录页步骤的 `log` 字段；同目录还会写入 `h5-run-metadata.json`，记录 base URL、执行时间、timeout、results 路径和响应日志路径。也可通过 `--artifact-dir` 指定目录。
+runner 默认使用 `--browser msedge`，可传 `--headed` 显示浏览器、`--timeout-ms` 调整入口与页面操作超时、`--artifact-dir` 指定证据目录。`--static-only` 只执行入口和源码预检，此模式下所有流程必须标记“跳过”，不能产生“通过”。
+
+多浏览器回归应使用矩阵 runner 包装同一套 H5 checklist。矩阵 runner 会为每个浏览器通道分别调用 `smoke:h5:run`，写入独立 results 与 artifact 目录，并立即执行 `validate:smoke-results`；任一通道 smoke 失败或结果证据不合规，矩阵命令都会返回非零。`--static-only` 可用于验证矩阵编排和严格证据门禁，但不能替代真实浏览器通过记录：
+
+```bash
+npm.cmd run smoke:h5:matrix -- --base-url http://localhost:10086 --browsers msedge,chromium --out-dir output/smoke/h5-matrix --artifact-root output/playwright/h5-smoke-matrix
+```
+
+runner 默认在 `output/playwright/h5-smoke-runner/<timestamp>/` 写入逐步截图、`h5-browser-trace.zip`、`h5-browser-diagnostics.json`、`h5-entry-response.txt`、`h5-static-checks.json` 和 `h5-run-metadata.json`。diagnostics 会给 console/page error 记录实际 `flow` 和页面 URL；未过滤的运行时异常、fatal flow、步骤失败或移动端横向溢出都会让进程返回非零退出码。
+
+结果校验采用严格证据门禁：“通过/失败”必须有非空备注且至少关联截图或日志，“跳过”必须说明原因；所有证据路径必须位于项目内、真实存在且为文件。正式归档前必须通过：
+
+```bash
+npm.cmd run validate:smoke-results -- --target h5 --results output/smoke/h5-results.json
+```
+
+2026-07-14 的正式结果为 15 项通过、0 项失败、1 项跳过；跳过项是未配置真实后端时的正式提交，fixture 结果页仍已验证。结果、报告和证据分别位于 `output/smoke/h5-browser-results-2026-07-14.json`、`output/smoke/h5-browser-smoke-2026-07-14.md` 和 `output/playwright/h5-smoke-runner-2026-07-14/`。
+
+上述归档早于 H5 图片预览拆包与键盘触发断言；Enter/Space 打开、切换、Escape、焦点恢复和首次直达无 Swiper 的结论，应以拆包后的下一次真实浏览器结果与证据为准，不能由 runner 源码或静态 bundle 校验代替。
 
 结果 JSON 最小格式如下，通常由 `smoke:h5:results` 先生成完整步骤后再由人工或自动化脚本填入结果：
 

@@ -1,6 +1,7 @@
-import { lazy, Suspense, useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import Taro from "@tarojs/taro";
 import { Button, Text, View } from "@tarojs/components";
+import ImagePreview, { type ImagePreviewRequest } from "../../../components/ImagePreview";
 import { EmptyState, FeedbackButton, StatusBanner } from "../../../components/ui";
 import { evaluationConfig } from "../../../data/evaluationConfig";
 import { fetchImages, type ImageAsset } from "../../../services/imageLibraryService";
@@ -21,8 +22,12 @@ interface ImageLibraryFilters {
 }
 
 const FILTER_STORAGE_KEY = "erkexitong-image-library-filters";
-const ImageLibraryGrid = lazy(() => import("./components/ImageLibraryGrid"));
-const UploadImageButton = lazy(() => import("../../../components/UploadImageButton"));
+const ImageLibraryGrid = lazy(() =>
+  import(/* webpackChunkName: "lazy-image-library-grid" */ "./components/ImageLibraryGrid")
+);
+const UploadImageButton = lazy(() =>
+  import(/* webpackChunkName: "lazy-upload-image-button" */ "../../../components/UploadImageButton")
+);
 const DEFAULT_FILTERS: ImageLibraryFilters = {
   sourceFilter: "all",
   dimensionFilter: "all",
@@ -69,6 +74,7 @@ export default function ImageLibraryPage() {
   const [dimensionFilter, setDimensionFilter] = useState<DimensionFilter>(DEFAULT_FILTERS.dimensionFilter);
   const [usageFilter, setUsageFilter] = useState<UsageFilter>(DEFAULT_FILTERS.usageFilter);
   const [sortMode, setSortMode] = useState<SortMode>(DEFAULT_FILTERS.sortMode);
+  const [previewRequest, setPreviewRequest] = useState<ImagePreviewRequest | null>(null);
 
   const hasActiveFilters =
     sourceFilter !== DEFAULT_FILTERS.sourceFilter ||
@@ -178,12 +184,22 @@ export default function ImageLibraryPage() {
     void loadImages();
   };
 
-  const handlePreview = async (image: ImageAsset) => {
-    await Taro.previewImage({
-      urls: filteredImages.map((candidate) => candidate.originalUrl),
-      current: image.originalUrl
-    });
-  };
+  const handlePreview = useCallback(
+    (image: ImageAsset) => {
+      const urls = Array.from(
+        new Set(filteredImages.map((candidate) => candidate.originalUrl).filter(Boolean))
+      );
+      setPreviewRequest({
+        urls,
+        current: image.originalUrl
+      });
+    },
+    [filteredImages]
+  );
+
+  const handlePreviewClose = useCallback(() => {
+    setPreviewRequest(null);
+  }, []);
 
   const handleResetFilters = () => {
     setSourceFilter(DEFAULT_FILTERS.sourceFilter);
@@ -371,6 +387,8 @@ export default function ImageLibraryPage() {
           <ImageLibraryGrid images={filteredImages} onPreview={handlePreview} />
         </Suspense>
       )}
+
+      <ImagePreview request={previewRequest} onClose={handlePreviewClose} />
     </View>
   );
 }

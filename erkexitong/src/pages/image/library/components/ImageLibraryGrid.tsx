@@ -1,4 +1,5 @@
 import { Image, Text, View } from "@tarojs/components";
+import ImagePreviewTrigger from "../../../../components/ImagePreviewTrigger";
 import { evaluationConfig, findEvaluationItem } from "../../../../data/evaluationConfig";
 import type { ImageAsset } from "../../../../services/imageLibraryService";
 import type { DimensionKey } from "../../../../types/evaluation";
@@ -43,7 +44,12 @@ export default function ImageLibraryGrid({ images, onPreview }: ImageLibraryGrid
   return (
     <View className="image-library__grid">
       {images.map((image) => (
-        <View className="image-library__asset" key={image.id} onClick={() => onPreview(image)}>
+        <ImagePreviewTrigger
+          ariaLabel={`预览图片 ${image.id}`}
+          className="image-library__asset"
+          key={image.id}
+          onActivate={() => onPreview(image)}
+        >
           <Image className="image-library__thumb" src={image.thumbUrl ?? image.originalUrl} mode="aspectFill" />
           <View className="image-library__asset-meta">
             <Text className="image-library__asset-name">{image.id}</Text>
@@ -55,7 +61,7 @@ export default function ImageLibraryGrid({ images, onPreview }: ImageLibraryGrid
               <Text className="image-library__asset-tag">{getDimensionTitle(image.lastUsedDimensionKey)}</Text>
             ) : null}
           </View>
-        </View>
+        </ImagePreviewTrigger>
       ))}
     </View>
   );

@@ -1,9 +1,16 @@
 import { Button, Text, View } from "@tarojs/components";
+import { FeedbackButton } from "../../../components/ui";
 import type { AuthMode } from "../../../types/auth";
 import type { EvaluationSyncStatus } from "../../../types/evaluation";
 import type { ConnectionMode } from "../../../stores/useConnectionStore";
 import type { TransferHistoryEntry } from "../../../types/transfer";
+import {
+  classifySyncError,
+  getSyncErrorDisplay,
+  getSyncStatusDisplay
+} from "../../../utils/evaluationSyncStatus";
 import { getRuntimeEnvironmentStatus } from "../../../utils/runtimeEnvironment";
+import { formatTransferTime, getTransferDeliveryLabel } from "../../../utils/transferDelivery";
 
 interface EvaluationStatusBarProps {
   isConnected: boolean;
@@ -14,10 +21,16 @@ interface EvaluationStatusBarProps {
   deviceName: string;
   transferHistory: TransferHistoryEntry[];
   syncStatus: EvaluationSyncStatus;
+  draftSavedAt: number | null;
   lastSyncError: string | null;
+  lastSyncErrorCode: string | null;
+  lastSyncErrorStatusCode: number | null;
+  onRetrySync: () => Promise<unknown>;
+  onGoLogin: () => Promise<unknown>;
   onOpenNote: () => void;
   onOpenImages: () => void;
   onOpenHistory: () => void;
+  onRetryTransfer: (messageId: string) => Promise<unknown>;
 }
 
 function getStatusText(
@@ -38,26 +51,6 @@ function getStatusText(
   return isReconnecting ? `重连中 ${retryCount}` : "离线草稿";
 }
 
-function getSyncStatusText(syncStatus: EvaluationSyncStatus): string {
-  if (syncStatus === "local-unsaved") {
-    return "本地未保存";
-  }
-
-  if (syncStatus === "local-saved") {
-    return "本地已保存";
-  }
-
-  if (syncStatus === "remote-syncing") {
-    return "远端同步中";
-  }
-
-  if (syncStatus === "remote-synced") {
-    return "远端已同步";
-  }
-
-  return "同步失败";
-}
-
 export default function EvaluationStatusBar({
   isConnected,
   isReconnecting,
@@ -67,15 +60,27 @@ export default function EvaluationStatusBar({
   deviceName,
   transferHistory,
   syncStatus,
+  draftSavedAt,
   lastSyncError,
+  lastSyncErrorCode,
+  lastSyncErrorStatusCode,
+  onRetrySync,
+  onGoLogin,
   onOpenNote,
   onOpenImages,
-  onOpenHistory
+  onOpenHistory,
+  onRetryTransfer
 }: EvaluationStatusBarProps) {
   const statusText = getStatusText(isConnected, isReconnecting, retryCount, authMode, connectionMode);
   const showHistory = transferHistory.length > 0;
   const environmentStatus = getRuntimeEnvironmentStatus();
-  const syncStatusText = getSyncStatusText(syncStatus);
+  const syncStatusDisplay = getSyncStatusDisplay(syncStatus, draftSavedAt);
+  const syncErrorInput = {
+    message: lastSyncError,
+    code: lastSyncErrorCode,
+    statusCode: lastSyncErrorStatusCode
+  };
+  const canReloginForSync = classifySyncError(syncErrorInput) === "permission";
 
   return (
     <View className="evaluation-status-wrap">
@@ -92,7 +97,7 @@ export default function EvaluationStatusBar({
           />
           <Text className="evaluation-status__text">{statusText}</Text>
           <Text className={`evaluation-status__sync evaluation-status__sync--${syncStatus}`}>
-            {syncStatusText}
+            {syncStatusDisplay}
           </Text>
           <Text className="evaluation-status__device">{deviceName}</Text>
         </View>
@@ -120,18 +125,64 @@ export default function EvaluationStatusBar({
       >
         {environmentStatus.title}：{environmentStatus.apiLabel} · {environmentStatus.wsLabel}
       </Text>
-      {syncStatus === "sync-failed" && lastSyncError ? (
-        <Text className="evaluation-status__hint evaluation-status__hint--danger">同步失败：{lastSyncError}</Text>
+      {syncStatus === "sync-failed" ? (
+        <View className="evaluation-status__sync-error">
+          <Text className="evaluation-status__hint evaluation-status__hint--danger">
+            {getSyncErrorDisplay(syncErrorInput)}
+          </Text>
+          {canReloginForSync ? (
+            <FeedbackButton
+              className="evaluation-status__retry"
+              loadingText="跳转中"
+              onClick={onGoLogin}
+            >
+              重新登录
+            </FeedbackButton>
+          ) : null}
+          <FeedbackButton
+            className="evaluation-status__retry"
+            loadingText="同步中"
+            successText="已同步"
+            errorText="重试失败"
+            onClick={onRetrySync}
+          >
+            重试同步
+          </FeedbackButton>
+        </View>
       ) : null}
 
       {showHistory ? (
         <View className="evaluation-transfer-history">
           <Text className="evaluation-transfer-history__label">最近流转</Text>
-          {transferHistory.map((entry) => (
-            <Text className="evaluation-transfer-history__item" key={`${entry.time}-${entry.direction}`}>
-              {entry.direction === "sent" ? "发往" : "来自"} {entry.deviceName} · {entry.summary}
-            </Text>
-          ))}
+          {transferHistory.map((entry) => {
+            const statusTime = formatTransferTime(entry.serverTime);
+            return (
+              <View
+                className={`evaluation-transfer-history__item evaluation-transfer-history__item--${entry.status}`}
+                key={entry.messageId}
+              >
+                <Text className="evaluation-transfer-history__copy">
+                  {entry.direction === "sent" ? "发往" : "来自"} {entry.deviceName} · {entry.summary}
+                </Text>
+                <Text className="evaluation-transfer-history__status">
+                  {getTransferDeliveryLabel(entry.status, entry.attempts)}
+                  {statusTime ? ` · ${statusTime}` : ""}
+                </Text>
+                {entry.error ? <Text className="evaluation-transfer-history__error">{entry.error}</Text> : null}
+                {entry.direction === "sent" && entry.status === "failed" ? (
+                  <FeedbackButton
+                    className="evaluation-transfer-history__retry"
+                    loadingText="重试中"
+                    successText="已重发"
+                    errorText="重试失败"
+                    onClick={() => onRetryTransfer(entry.messageId)}
+                  >
+                    重试
+                  </FeedbackButton>
+                ) : null}
+              </View>
+            );
+          })}
         </View>
       ) : null}
     </View>

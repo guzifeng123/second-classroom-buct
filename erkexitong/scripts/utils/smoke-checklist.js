@@ -195,6 +195,7 @@ function buildMetadataLines(meta) {
     ["Results", meta.resultsPath],
     ["Metadata", meta.metadataLog],
     ["入口响应", meta.entryResponseLog],
+    ["静态覆盖检查", meta.staticChecksLog],
     ["入口状态", typeof meta.entryStatusCode === "number" ? `HTTP ${meta.entryStatusCode}` : ""],
     ["入口探测", typeof meta.entryOk === "boolean" ? (meta.entryOk ? "通过" : "失败") : ""],
     ["入口错误", meta.entryError]
@@ -231,7 +232,48 @@ function isRelativeEvidencePath(value) {
   return !value || (!path.isAbsolute(value) && !/^[a-zA-Z]+:\/\//.test(value));
 }
 
-function validateSmokeResults(rawResults, flows) {
+function isPathInside(rootPath, candidatePath) {
+  const relativePath = path.relative(rootPath, candidatePath);
+
+  return relativePath === "" || (
+    relativePath !== ".." &&
+    !relativePath.startsWith(`..${path.sep}`) &&
+    !path.isAbsolute(relativePath)
+  );
+}
+
+function resolveEvidenceFile(evidencePath, options = {}) {
+  const evidenceProjectRoot = path.resolve(options.projectRoot ?? projectRoot);
+  const resultPath = options.resultsPath
+    ? (path.isAbsolute(options.resultsPath)
+      ? options.resultsPath
+      : path.resolve(evidenceProjectRoot, options.resultsPath))
+    : "";
+  const candidateRoots = [
+    evidenceProjectRoot,
+    resultPath ? path.dirname(resultPath) : ""
+  ].filter(Boolean);
+
+  for (const candidateRoot of new Set(candidateRoots)) {
+    const candidatePath = path.resolve(candidateRoot, evidencePath);
+
+    if (!isPathInside(evidenceProjectRoot, candidatePath) || !fs.existsSync(candidatePath)) {
+      continue;
+    }
+
+    try {
+      if (fs.statSync(candidatePath).isFile()) {
+        return candidatePath;
+      }
+    } catch {
+      // The evidence may disappear between existsSync and statSync.
+    }
+  }
+
+  return "";
+}
+
+function validateSmokeResults(rawResults, flows, options = {}) {
   const errors = [];
   const steps = Array.isArray(rawResults?.steps) ? rawResults.steps : null;
 
@@ -271,13 +313,39 @@ function validateSmokeResults(rawResults, flows) {
       }
     });
 
-    if (typeof step.screenshot === "string" && !isRelativeEvidencePath(step.screenshot)) {
-      errors.push(`${prefix} screenshot 应使用项目内相对路径`);
+    const note = typeof step.note === "string" ? step.note.trim() : "";
+    const screenshot = typeof step.screenshot === "string" ? step.screenshot.trim() : "";
+    const log = typeof step.log === "string" ? step.log.trim() : "";
+
+    if ((step.result === "通过" || step.result === "失败") && !note) {
+      errors.push(`${prefix} result 为${step.result}时 note 不能为空`);
     }
 
-    if (typeof step.log === "string" && !isRelativeEvidencePath(step.log)) {
-      errors.push(`${prefix} log 应使用项目内相对路径`);
+    if ((step.result === "通过" || step.result === "失败") && !screenshot && !log) {
+      errors.push(`${prefix} result 为${step.result}时至少应提供 screenshot 或 log`);
     }
+
+    if (step.result === "跳过" && !note) {
+      errors.push(`${prefix} result 为跳过时 note 必须说明原因`);
+    }
+
+    [
+      ["screenshot", screenshot],
+      ["log", log]
+    ].forEach(([field, evidencePath]) => {
+      if (!evidencePath) {
+        return;
+      }
+
+      if (!isRelativeEvidencePath(evidencePath)) {
+        errors.push(`${prefix} ${field} 应使用项目内相对路径`);
+        return;
+      }
+
+      if (!resolveEvidenceFile(evidencePath, options)) {
+        errors.push(`${prefix} ${field} 证据文件不存在：${evidencePath}`);
+      }
+    });
   });
 
   return errors;

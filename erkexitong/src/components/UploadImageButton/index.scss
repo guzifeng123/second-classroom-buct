@@ -124,18 +124,18 @@
 
 .upload-image-button__queue {
   display: grid;
-  gap: 5px;
-  width: 260px;
+  gap: 8px;
+  width: 420px;
   max-width: 100%;
 }
 
 .upload-image-button__queue-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 10px;
-  min-height: 30px;
-  padding: 0 10px;
+  min-height: 48px;
+  padding: 8px 10px;
   border: 1px solid #d8e3dd;
   border-radius: var(--app-radius-sm);
   background: #f8fbf9;
@@ -179,6 +179,7 @@
 .upload-image-button__queue-state {
   display: grid;
   justify-items: end;
+  flex: 1 1 140px;
   min-width: 0;
 }
 
@@ -209,22 +210,24 @@
 }
 
 .upload-image-button__queue-message {
-  overflow: hidden;
-  max-width: 124px;
+  max-width: 180px;
   color: #8a4b43;
   font-size: 15px;
   font-weight: 800;
   line-height: 20px;
   text-align: right;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .upload-image-button__queue-meta {
   display: inline-flex;
   align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
   gap: 6px;
-  flex: 0 0 auto;
+  flex: 1 1 220px;
+  min-width: 0;
 }
 
 .upload-image-button__queue-retry,
@@ -270,6 +273,15 @@
 .upload-image-button__queue-item--canceled {
   border-color: rgba(189, 61, 48, 0.22);
   background: var(--app-danger-soft);
+}
+
+.upload-image-button__queue-item--waiting-retry {
+  border-color: rgba(215, 192, 138, 0.42);
+  background: rgba(215, 192, 138, 0.12);
+}
+
+.upload-image-button__queue-item--waiting-retry .upload-image-button__queue-status {
+  color: #775315;
 }
 
 .upload-image-button__queue-item--failed .upload-image-button__queue-status,

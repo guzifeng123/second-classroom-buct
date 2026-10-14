@@ -50,7 +50,7 @@ export default function UploadImageButton({
     resetQueue,
     clearQueue,
     updateQueueStatus,
-    markRemainingQueueStatus,
+    markQueueInterrupted,
     markQueueThumbFailed,
     removeRetryPath
   } = useUploadQueue();
@@ -94,10 +94,11 @@ export default function UploadImageButton({
         const remainingFilePaths = filePaths.slice(index);
         const failedMessage = cancelUploadRef.current ? "已取消上传" : buildUploadFailureMessage(error);
         setRetryFilePaths(remainingFilePaths);
-        markRemainingQueueStatus(
+        markQueueInterrupted(
           remainingFilePaths,
+          filePath,
           cancelUploadRef.current ? "canceled" : "failed",
-          (path) => (path === filePath ? failedMessage : "前序图片未完成，等待重试")
+          failedMessage
         );
         if (uploadedImages.length > 0) {
           onUploaded(uploadedImages);
@@ -197,7 +198,6 @@ export default function UploadImageButton({
       setLastError("");
       cancelUploadRef.current = false;
       partialUploadMessageRef.current = "";
-      clearQueue();
       await uploadSelectedPaths(retryFilePaths);
     } catch (error) {
       setUploadProgress(null);
@@ -364,12 +364,16 @@ export default function UploadImageButton({
               <View className="upload-image-button__queue-meta">
                 <View className="upload-image-button__queue-state">
                   <Text className="upload-image-button__queue-status">{uploadQueueStatusText[item.status]}</Text>
-                  {item.message ? (
+                  {item.filePath === uploadProgress?.filePath ? (
+                    <Text className="upload-image-button__queue-message">进度 {uploadProgress.progress}%</Text>
+                  ) : item.message ? (
                     <Text className="upload-image-button__queue-message">{item.message}</Text>
                   ) : null}
                 </View>
                 {retryFilePathSet.has(item.filePath) &&
-                (item.status === "failed" || item.status === "canceled") ? (
+                (item.status === "failed" ||
+                  item.status === "canceled" ||
+                  item.status === "waiting-retry") ? (
                   <>
                     <Button
                       className="upload-image-button__queue-retry"

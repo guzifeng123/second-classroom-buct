@@ -33,6 +33,7 @@
 .note-top,
 .note-status,
 .note-title-box,
+.note-asset-meta,
 .note-toolbar,
 .note-editor,
 .note-preview,
@@ -105,6 +106,7 @@
 }
 
 .note-title-box__input,
+.note-asset-meta__tag-input,
 .note-block__input,
 .note-block__textarea {
   min-height: 40px;
@@ -114,6 +116,87 @@
   padding: 8px;
   color: #17231f;
   font-size: 14px;
+}
+
+.note-asset-meta__head,
+.note-asset-meta__tag-entry,
+.note-asset-meta__tags,
+.note-asset-meta__dimensions {
+  flex-direction: row;
+}
+
+.note-asset-meta__head {
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.note-asset-meta__title,
+.note-asset-meta__label {
+  color: #17231f;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.note-asset-meta__hint,
+.note-asset-meta__empty {
+  margin-top: 4px;
+  color: #708078;
+  font-size: 12px;
+}
+
+.note-asset-meta__source {
+  border-radius: 12px;
+  background-color: #e8f3ed;
+  padding: 4px 8px;
+  color: #245844;
+  font-size: 11px;
+}
+
+.note-asset-meta__section {
+  margin-top: 14px;
+}
+
+.note-asset-meta__tag-entry,
+.note-asset-meta__tags,
+.note-asset-meta__dimensions {
+  flex-wrap: wrap;
+}
+
+.note-asset-meta__tag-input {
+  flex: 1;
+  min-width: 160px;
+  margin-right: 8px;
+}
+
+.note-asset-meta__tag-add,
+.note-asset-meta__tag,
+.note-asset-meta__dimension {
+  min-height: 36px;
+  border-width: 1px;
+  border-color: #c8d7ce;
+  border-radius: 8px;
+  background-color: #f6f9f6;
+  color: #245844;
+  font-size: 12px;
+}
+
+.note-asset-meta__tag-add {
+  width: 72px;
+  background-color: #23815f;
+  color: #ffffff;
+}
+
+.note-asset-meta__tag,
+.note-asset-meta__dimension {
+  margin-top: 8px;
+  margin-right: 8px;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.note-asset-meta__dimension--active {
+  border-color: #23815f;
+  background-color: #e8f3ed;
 }
 
 .note-toolbar {
@@ -148,4 +231,47 @@
 
 .note-actions__buttons {
   margin-top: 10px;
+}
+
+.note-actions__delivery {
+  margin-top: 8px;
+  padding: 8px;
+  border-width: 1px;
+  border-color: #d8e3dc;
+  border-radius: 8px;
+  background-color: #edf7f1;
+}
+
+.note-actions__delivery--pending {
+  border-color: #dfc98f;
+  background-color: #faf5e8;
+}
+
+.note-actions__delivery--failed {
+  border-color: #e5bcbc;
+  background-color: #fff1f1;
+}
+
+.note-actions__delivery-text {
+  color: #245844;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.note-actions__delivery-error {
+  margin-top: 4px;
+  color: #b54747;
+  font-size: 11px;
+}
+
+.note-actions__delivery-retry {
+  height: 32px;
+  margin-top: 6px;
+  border-width: 1px;
+  border-color: #e5bcbc;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #b54747;
+  font-size: 12px;
+  font-weight: 700;
 }

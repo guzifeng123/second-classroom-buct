@@ -24,10 +24,13 @@ npm.cmd run dev:rn
 验收命令：
 
 ```powershell
-npm.cmd run typecheck
-npm.cmd run build:h5
-npm.cmd run build:weapp
+npm.cmd run check:core
+npm.cmd run check:builds
 ```
+
+`check:builds` 会依次生成 H5、微信小程序和 RN Android Bundle；H5 构建同时生成 raw/gzip/Brotli 当前报告，并严格对比受版本控制的 `scripts/baselines/h5-size.json`。确认体积变化符合预期后，使用 `npm.cmd run update:h5-size-baseline` 从全新、无 API、无 sourcemap 的 production 构建显式更新基线；普通分析不会改写基线。
+
+Taro CLI 可能提示 `C:\Users\<用户>\.taro-global-config\index.json` 不存在，这是用户级全局配置缺省提示；当前项目不依赖该文件。是否通过以命令退出码、`check:core`、`check:builds` 和相关校验脚本为准。
 
 H5 开发验收：
 
@@ -35,7 +38,7 @@ H5 开发验收：
 npm.cmd run dev:h5
 ```
 
-启动后打开终端输出的 `http://localhost:10086/` 或局域网地址。微信小程序验收使用微信开发者工具打开 `dist/`。
+启动后打开终端输出的 `http://localhost:10086/` 或局域网地址。生产构建按目标隔离到 `dist/h5/`、`dist/weapp/` 和 `dist/rn/`；微信小程序验收使用微信开发者工具打开 `dist/weapp/`。
 
 ## 当前实现
 

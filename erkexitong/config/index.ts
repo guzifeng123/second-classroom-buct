@@ -3,6 +3,11 @@ import devConfig from "./dev";
 import prodConfig from "./prod";
 
 export default defineConfig(async (merge) => {
+  const outputRootByTarget: Record<string, string> = {
+    h5: "dist/h5",
+    weapp: "dist/weapp",
+    rn: "dist/rn/taro"
+  };
   const baseConfig = {
     projectName: "erkexitong",
     date: "2026-06-07",
@@ -13,7 +18,7 @@ export default defineConfig(async (merge) => {
       828: 1.81 / 2
     },
     sourceRoot: "src",
-    outputRoot: "dist",
+    outputRoot: outputRootByTarget[process.env.TARO_ENV ?? ""] ?? "dist",
     framework: "react",
     compiler: {
       type: "webpack5",

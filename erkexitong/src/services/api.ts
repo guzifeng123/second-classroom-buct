@@ -1,5 +1,6 @@
 import Taro from "@tarojs/taro";
 import { useUserStore } from "../stores/useUserStore";
+import { recordApiFailure } from "../utils/monitoring";
 
 const runtimeEnv = typeof process !== "undefined" && process.env ? process.env : {};
 
@@ -20,15 +21,20 @@ interface RequestOptions<TBody> {
 interface ErrorResponseShape {
   message?: string;
   error?: string;
+  code?: string;
+  errorCode?: string;
+  error_code?: string;
 }
 
 export class ApiError extends Error {
   statusCode?: number;
+  errorCode?: string;
 
-  constructor(message: string, statusCode?: number) {
+  constructor(message: string, statusCode?: number, errorCode?: string) {
     super(message);
     this.name = "ApiError";
     this.statusCode = statusCode;
+    this.errorCode = errorCode;
   }
 }
 
@@ -48,6 +54,15 @@ function getResponseMessage(data: unknown, statusCode: number): string {
   }
 
   return `请求失败：${statusCode}`;
+}
+
+function getResponseErrorCode(data: unknown): string | undefined {
+  if (!data || typeof data !== "object") {
+    return undefined;
+  }
+
+  const shape = data as ErrorResponseShape;
+  return shape.code ?? shape.errorCode ?? shape.error_code;
 }
 
 export async function request<TResponse, TBody = unknown>({
@@ -75,11 +90,24 @@ export async function request<TResponse, TBody = unknown>({
     });
   } catch (error) {
     const message = error instanceof Error && error.message ? error.message : "网络请求失败";
-    throw new ApiError(message);
+    recordApiFailure({
+      url,
+      method,
+      message
+    });
+    throw new ApiError(message, undefined, "NETWORK_ERROR");
   }
 
   if (response.statusCode < 200 || response.statusCode >= 300) {
-    throw new ApiError(getResponseMessage(response.data, response.statusCode), response.statusCode);
+    const message = getResponseMessage(response.data, response.statusCode);
+    const errorCode = getResponseErrorCode(response.data);
+    recordApiFailure({
+      url,
+      method,
+      statusCode: response.statusCode,
+      message
+    });
+    throw new ApiError(message, response.statusCode, errorCode);
   }
 
   return response.data;

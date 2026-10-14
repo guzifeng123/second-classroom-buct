@@ -15,6 +15,25 @@ const rnTemplatePath = path.join(tempDir, "rn-results.json");
 const h5FinalRecordPath = path.join(tempDir, "h5-record.md");
 const rnFinalRecordPath = path.join(tempDir, "rn-record.md");
 const invalidResultPath = path.join(tempDir, "invalid-results.json");
+const strictInvalidResultPath = path.join(tempDir, "strict-invalid-results.json");
+const evidenceFixtureRelativeDir = path.join(
+  "output",
+  "smoke",
+  `smoke-record-test-${process.pid}-${Date.now()}`
+);
+const evidenceFixtureDir = path.join(projectRoot, evidenceFixtureRelativeDir);
+const relativeResultPath = path.join(evidenceFixtureDir, "relative-results.json");
+
+function toProjectPath(filePath) {
+  return path.relative(projectRoot, filePath).split(path.sep).join("/");
+}
+
+function cleanupFixtures() {
+  fs.rmSync(tempDir, { force: true, recursive: true });
+  fs.rmSync(evidenceFixtureDir, { force: true, recursive: true });
+}
+
+process.once("exit", cleanupFixtures);
 
 function assert(condition, message) {
   if (!condition) {
@@ -178,6 +197,10 @@ assertIncludes(
 );
 
 const h5FinalizeResults = JSON.parse(fs.readFileSync(h5TemplatePath, "utf8"));
+const h5FinalizeEvidencePath = path.join(evidenceFixtureDir, "h5-entry-response.txt");
+fs.mkdirSync(path.dirname(h5FinalizeEvidencePath), { recursive: true });
+fs.writeFileSync(h5FinalizeEvidencePath, "statusCode=200\n", "utf8");
+const h5FinalizeEvidence = toProjectPath(h5FinalizeEvidencePath);
 h5FinalizeResults.meta = {
   runner: "h5-smoke-runner",
   baseUrl: "http://localhost:10086",
@@ -187,7 +210,7 @@ h5FinalizeResults.meta = {
   artifactDir: "output/smoke/h5-artifacts/test",
   resultsPath: "output/smoke/h5-results.json",
   metadataLog: "output/smoke/h5-artifacts/test/h5-run-metadata.json",
-  entryResponseLog: "output/smoke/h5-artifacts/test/h5-entry-response.txt",
+  entryResponseLog: h5FinalizeEvidence,
   entryStatusCode: 200,
   entryOk: true
 };
@@ -195,7 +218,7 @@ h5FinalizeResults.steps[0] = {
   ...h5FinalizeResults.steps[0],
   result: "通过",
   note: "登录入口正常",
-  log: "output/smoke/h5-artifacts/test/h5-entry-response.txt"
+  log: h5FinalizeEvidence
 };
 fs.writeFileSync(h5FinalizeResultsPath, JSON.stringify(h5FinalizeResults, null, 2), "utf8");
 
@@ -217,7 +240,7 @@ assertIncludes(h5FinalRecord, "浏览器/视口：Chrome desktop", "H5 finalize 
 assertIncludes(h5FinalRecord, "## Runner 元信息", "H5 finalize 记录");
 assertIncludes(h5FinalRecord, "| Runner | h5-smoke-runner |", "H5 finalize 记录");
 assertIncludes(h5FinalRecord, "| Results | output/smoke/h5-results.json |", "H5 finalize 记录");
-assertIncludes(h5FinalRecord, "| 入口响应 | output/smoke/h5-artifacts/test/h5-entry-response.txt |", "H5 finalize 记录");
+assertIncludes(h5FinalRecord, `| 入口响应 | ${h5FinalizeEvidence} |`, "H5 finalize 记录");
 
 const rnRecord = runScript("scripts/create-rn-smoke-record.js", [
   "--date",
@@ -279,6 +302,80 @@ runScript("scripts/finalize-smoke-record.js", [
 assert(fs.existsSync(rnFinalRecordPath), "RN finalize 应生成记录文件");
 assertIncludes(fs.readFileSync(rnFinalRecordPath, "utf8"), "设备/模拟器：Android emulator", "RN finalize 记录");
 
+const relativeEvidenceDir = path.join(evidenceFixtureDir, "artifacts");
+const relativeScreenshotPath = path.join(relativeEvidenceDir, "login.png");
+const relativeLogPath = path.join(relativeEvidenceDir, "evaluation.log");
+fs.mkdirSync(relativeEvidenceDir, { recursive: true });
+fs.writeFileSync(relativeScreenshotPath, "smoke screenshot fixture", "utf8");
+fs.writeFileSync(relativeLogPath, "smoke log fixture", "utf8");
+
+const relativeResults = JSON.parse(fs.readFileSync(h5TemplatePath, "utf8"));
+relativeResults.steps[0] = {
+  ...relativeResults.steps[0],
+  result: "通过",
+  note: "登录流程已在真实浏览器完成",
+  screenshot: "artifacts/login.png"
+};
+relativeResults.steps[1] = {
+  ...relativeResults.steps[1],
+  result: "失败",
+  note: "评定页断言失败",
+  log: "artifacts/evaluation.log"
+};
+relativeResults.steps[2] = {
+  ...relativeResults.steps[2],
+  result: "跳过",
+  note: "依赖真实后端，本轮环境不可用"
+};
+fs.writeFileSync(relativeResultPath, JSON.stringify(relativeResults, null, 2), "utf8");
+
+assertIncludes(
+  runScript("scripts/validate-smoke-results.js", [
+    "--target",
+    "h5",
+    "--results",
+    toProjectPath(relativeResultPath)
+  ]),
+  "H5 smoke 结果 JSON 校验通过。",
+  "相对 results 路径和相对证据路径校验"
+);
+
+const strictInvalidResults = JSON.parse(fs.readFileSync(h5TemplatePath, "utf8"));
+strictInvalidResults.steps[0] = {
+  ...strictInvalidResults.steps[0],
+  result: "通过",
+  note: "   ",
+  log: "artifacts/evaluation.log"
+};
+strictInvalidResults.steps[1] = {
+  ...strictInvalidResults.steps[1],
+  result: "失败",
+  note: "断言失败"
+};
+strictInvalidResults.steps[2] = {
+  ...strictInvalidResults.steps[2],
+  result: "跳过",
+  note: "  "
+};
+strictInvalidResults.steps[3] = {
+  ...strictInvalidResults.steps[3],
+  result: "通过",
+  note: "已执行",
+  screenshot: "artifacts/missing.png"
+};
+fs.writeFileSync(strictInvalidResultPath, JSON.stringify(strictInvalidResults, null, 2), "utf8");
+
+const strictInvalidOutput = runScriptExpectFailure("scripts/validate-smoke-results.js", [
+  "--target",
+  "h5",
+  "--results",
+  strictInvalidResultPath
+]);
+assertIncludes(strictInvalidOutput, "result 为通过时 note 不能为空", "通过结果证据门禁");
+assertIncludes(strictInvalidOutput, "result 为失败时至少应提供 screenshot 或 log", "失败结果证据门禁");
+assertIncludes(strictInvalidOutput, "result 为跳过时 note 必须说明原因", "跳过结果证据门禁");
+assertIncludes(strictInvalidOutput, "screenshot 证据文件不存在：artifacts/missing.png", "证据文件存在性门禁");
+
 fs.writeFileSync(
   invalidResultPath,
   JSON.stringify({
@@ -307,3 +404,4 @@ assertIncludes(invalidOutput, "result 应为", "错误 smoke 结果校验");
 assertIncludes(invalidOutput, "screenshot 应使用项目内相对路径", "错误 smoke 结果校验");
 
 console.log("Smoke 记录模板生成测试通过。");
+cleanupFixtures();

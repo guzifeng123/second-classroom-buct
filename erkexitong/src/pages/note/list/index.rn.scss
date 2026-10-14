@@ -3,3 +3,24 @@
   padding: 16px;
   background-color: #eef3ef;
 }
+
+.note-list__badges,
+.note-list__card-meta {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.note-list__badge {
+  margin-top: 6px;
+  margin-right: 6px;
+  border-radius: 10px;
+  background-color: #eef5f0;
+  padding: 3px 7px;
+  color: #245844;
+  font-size: 11px;
+}
+
+.note-list__badge--dimension {
+  background-color: #f7f1e2;
+  color: #775315;
+}

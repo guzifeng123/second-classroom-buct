@@ -1,4 +1,4 @@
-import type { EvaluationValidationIssue } from "../types/evaluation";
+import type { EvaluationRecordMap, EvaluationValidationIssue } from "../types/evaluation";
 import type { SubmissionDimensionSummary, SubmissionRecord } from "../types/submission";
 import { inferReviewStatus, normalizeReviewStatus } from "./reviewStatus";
 
@@ -40,6 +40,9 @@ export interface SubmissionApiResponse {
   validationIssues?: EvaluationValidationIssue[];
   validation_issues?: EvaluationValidationIssue[];
   issues?: EvaluationValidationIssue[];
+  records?: EvaluationRecordMap;
+  selectedItemIds?: string[];
+  selected_item_ids?: string[];
   dimensionSummaries?: SubmissionDimensionSummary[];
   dimension_summaries?: SubmissionDimensionSummary[];
 }
@@ -82,8 +85,8 @@ export function normalizeRemoteSubmission(raw: SubmissionApiResponse): Submissio
     reviewerName: raw.reviewerName ?? raw.reviewer_name,
     reviewedAt: raw.reviewedAt ?? (raw.reviewed_at ? parseSubmissionTime(raw.reviewed_at) : undefined),
     validationIssues: raw.validationIssues ?? raw.validation_issues ?? raw.issues ?? [],
-    records: {},
-    selectedItemIds: [],
+    records: raw.records ?? {},
+    selectedItemIds: raw.selectedItemIds ?? raw.selected_item_ids ?? [],
     dimensionSummaries: raw.dimensionSummaries ?? raw.dimension_summaries ?? []
   };
 }

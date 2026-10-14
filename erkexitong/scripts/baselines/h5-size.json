@@ -1,0 +1,500 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-17T02:26:34.918Z",
+  "build": {
+    "target": "h5",
+    "mode": "production",
+    "outputRoot": "dist/h5",
+    "sourceMaps": false,
+    "environmentProfile": "default-no-api"
+  },
+  "compression": {
+    "aggregation": "sum-of-assets",
+    "runtime": {
+      "node": "v24.14.1",
+      "zlib": "1.3.1-e00f703",
+      "brotli": "1.2.0"
+    },
+    "gzip": {
+      "algorithm": "gzip",
+      "level": 9
+    },
+    "brotli": {
+      "algorithm": "brotli",
+      "quality": 11,
+      "mode": "generic"
+    }
+  },
+  "recommendedLimitBytes": 249856,
+  "totals": {
+    "entrypoint": {
+      "rawBytes": 367032,
+      "gzipBytes": 114845,
+      "brotliBytes": 99103
+    },
+    "js": {
+      "rawBytes": 1387509,
+      "gzipBytes": 412975,
+      "brotliBytes": 350252
+    },
+    "css": {
+      "rawBytes": 261905,
+      "gzipBytes": 44989,
+      "brotliBytes": 39112
+    }
+  },
+  "entrypointAssets": [
+    {
+      "path": "js/788.2daf9c21.js",
+      "logicalKey": "js/788.js",
+      "type": "js",
+      "rawBytes": 130943,
+      "gzipBytes": 36944,
+      "brotliBytes": 31655,
+      "hints": []
+    },
+    {
+      "path": "js/app.2daf9c21.js",
+      "logicalKey": "js/app.js",
+      "type": "js",
+      "rawBytes": 226601,
+      "gzipBytes": 75926,
+      "brotliBytes": 65726,
+      "hints": [
+        "图片库页"
+      ]
+    },
+    {
+      "path": "css/app.2daf9c21ee80874c3561.css",
+      "logicalKey": "css/app.css",
+      "type": "css",
+      "rawBytes": 9488,
+      "gzipBytes": 1975,
+      "brotliBytes": 1722,
+      "hints": []
+    }
+  ],
+  "assets": [
+    {
+      "path": "js/921.d312fb4b.js",
+      "logicalKey": "route/pages/evaluation/index.js",
+      "type": "js",
+      "rawBytes": 238792,
+      "gzipBytes": 66779,
+      "brotliBytes": 55239,
+      "hints": [
+        "评定页",
+        "图片库页",
+        "图文编辑页",
+        "图文列表页",
+        "提交历史页",
+        "证明材料编辑器"
+      ],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "js/app.2daf9c21.js",
+      "logicalKey": "js/app.js",
+      "type": "js",
+      "rawBytes": 226601,
+      "gzipBytes": 75926,
+      "brotliBytes": 65726,
+      "hints": [
+        "图片库页"
+      ],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "js/275.e276d803.js",
+      "logicalKey": "route/pages/note/edit/index.js",
+      "type": "js",
+      "rawBytes": 198801,
+      "gzipBytes": 57412,
+      "brotliBytes": 47938,
+      "hints": [
+        "图片库页",
+        "图文编辑页",
+        "图文列表页",
+        "证明材料编辑器"
+      ],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "js/762.cdf196dc.js",
+      "logicalKey": "route/pages/login/index.js",
+      "type": "js",
+      "rawBytes": 133426,
+      "gzipBytes": 36944,
+      "brotliBytes": 31021,
+      "hints": [
+        "图文编辑页",
+        "图文列表页",
+        "登录页"
+      ],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "js/788.2daf9c21.js",
+      "logicalKey": "js/788.js",
+      "type": "js",
+      "rawBytes": 130943,
+      "gzipBytes": 36944,
+      "brotliBytes": 31655,
+      "hints": [],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "js/985.58799589.js",
+      "logicalKey": "route/pages/evaluation/preview/index.js",
+      "type": "js",
+      "rawBytes": 101736,
+      "gzipBytes": 28643,
+      "brotliBytes": 23962,
+      "hints": [],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "css/921.d312fb4bb55291381303.css",
+      "logicalKey": "route/pages/evaluation/index.css",
+      "type": "css",
+      "rawBytes": 85676,
+      "gzipBytes": 11822,
+      "brotliBytes": 10143,
+      "hints": [],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "js/lazy-upload-image-button.bced7e83.js",
+      "logicalKey": "js/lazy-upload-image-button.js",
+      "type": "js",
+      "rawBytes": 70886,
+      "gzipBytes": 22694,
+      "brotliBytes": 19888,
+      "hints": [
+        "证明材料编辑器"
+      ],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "js/17.877d525c.js",
+      "logicalKey": "route/pages/note/list/index.js",
+      "type": "js",
+      "rawBytes": 64297,
+      "gzipBytes": 19030,
+      "brotliBytes": 16252,
+      "hints": [
+        "图文编辑页",
+        "图文列表页"
+      ],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "js/643.addf322f.js",
+      "logicalKey": "route/pages/image/library/index.js",
+      "type": "js",
+      "rawBytes": 62095,
+      "gzipBytes": 18909,
+      "brotliBytes": 16007,
+      "hints": [
+        "图片库页",
+        "证明材料编辑器"
+      ],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "js/361.a75964f2.js",
+      "logicalKey": "route/pages/submission/result/index.js",
+      "type": "js",
+      "rawBytes": 62067,
+      "gzipBytes": 18545,
+      "brotliBytes": 15751,
+      "hints": [
+        "图文编辑页",
+        "提交历史页",
+        "提交结果页"
+      ],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "js/505.23f2f283.js",
+      "logicalKey": "route/pages/submission/history/index.js",
+      "type": "js",
+      "rawBytes": 46983,
+      "gzipBytes": 14668,
+      "brotliBytes": 12748,
+      "hints": [
+        "提交历史页"
+      ],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "css/275.e276d803bf9b162d4ac4.css",
+      "logicalKey": "route/pages/note/edit/index.css",
+      "type": "css",
+      "rawBytes": 36549,
+      "gzipBytes": 6071,
+      "brotliBytes": 5360,
+      "hints": [],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "css/643.addf322fa43846092c9b.css",
+      "logicalKey": "route/pages/image/library/index.css",
+      "type": "css",
+      "rawBytes": 19783,
+      "gzipBytes": 3775,
+      "brotliBytes": 3285,
+      "hints": [],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "js/358.a7b0dbd8.js",
+      "logicalKey": "js/358.js",
+      "type": "js",
+      "rawBytes": 19487,
+      "gzipBytes": 5370,
+      "brotliBytes": 4604,
+      "hints": [
+        "评定页",
+        "提交历史页"
+      ],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "css/505.23f2f28318f7f36734d6.css",
+      "logicalKey": "route/pages/submission/history/index.css",
+      "type": "css",
+      "rawBytes": 15990,
+      "gzipBytes": 2970,
+      "brotliBytes": 2596,
+      "hints": [],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "css/985.58799589e01ca02afa2b.css",
+      "logicalKey": "route/pages/evaluation/preview/index.css",
+      "type": "css",
+      "rawBytes": 15988,
+      "gzipBytes": 2845,
+      "brotliBytes": 2475,
+      "hints": [],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "css/361.a75964f2b31888627419.css",
+      "logicalKey": "route/pages/submission/result/index.css",
+      "type": "css",
+      "rawBytes": 15610,
+      "gzipBytes": 2767,
+      "brotliBytes": 2416,
+      "hints": [],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "css/445.8711bfade4850a4f80b8.css",
+      "logicalKey": "route/pages/note/snapshot/index.css",
+      "type": "css",
+      "rawBytes": 15426,
+      "gzipBytes": 3240,
+      "brotliBytes": 2834,
+      "hints": [],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "css/17.877d525cae13e3b99590.css",
+      "logicalKey": "route/pages/note/list/index.css",
+      "type": "css",
+      "rawBytes": 14714,
+      "gzipBytes": 2843,
+      "brotliBytes": 2487,
+      "hints": [],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "js/445.8711bfad.js",
+      "logicalKey": "route/pages/note/snapshot/index.js",
+      "type": "js",
+      "rawBytes": 14358,
+      "gzipBytes": 4730,
+      "brotliBytes": 4029,
+      "hints": [
+        "图文编辑页",
+        "图文列表页",
+        "提交结果页"
+      ],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "css/762.cdf196dc7f1477ab54e2.css",
+      "logicalKey": "route/pages/login/index.css",
+      "type": "css",
+      "rawBytes": 14340,
+      "gzipBytes": 2813,
+      "brotliBytes": 2455,
+      "hints": [],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "css/262.2e3858b93c9b7195238b.css",
+      "logicalKey": "route/pages/error/index.css",
+      "type": "css",
+      "rawBytes": 9956,
+      "gzipBytes": 2115,
+      "brotliBytes": 1822,
+      "hints": [],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "css/app.2daf9c21ee80874c3561.css",
+      "logicalKey": "css/app.css",
+      "type": "css",
+      "rawBytes": 9488,
+      "gzipBytes": 1975,
+      "brotliBytes": 1722,
+      "hints": [],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "css/lazy-upload-image-button.bced7e831c985e034414.css",
+      "logicalKey": "css/lazy-upload-image-button.css",
+      "type": "css",
+      "rawBytes": 8385,
+      "gzipBytes": 1753,
+      "brotliBytes": 1517,
+      "hints": [],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "js/305.43240517.js",
+      "logicalKey": "js/305.js",
+      "type": "js",
+      "rawBytes": 5619,
+      "gzipBytes": 1562,
+      "brotliBytes": 1270,
+      "hints": [
+        "提交历史页"
+      ],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "js/576.023c82fa.js",
+      "logicalKey": "js/576.js",
+      "type": "js",
+      "rawBytes": 5040,
+      "gzipBytes": 2115,
+      "brotliBytes": 1945,
+      "hints": [],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "js/262.2e3858b9.js",
+      "logicalKey": "route/pages/error/index.js",
+      "type": "js",
+      "rawBytes": 4318,
+      "gzipBytes": 1749,
+      "brotliBytes": 1400,
+      "hints": [],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    },
+    {
+      "path": "js/lazy-image-library-grid.6dd9f561.js",
+      "logicalKey": "js/lazy-image-library-grid.js",
+      "type": "js",
+      "rawBytes": 2060,
+      "gzipBytes": 955,
+      "brotliBytes": 817,
+      "hints": [
+        "图片库页"
+      ],
+      "sourceMap": {
+        "modules": [],
+        "groups": []
+      }
+    }
+  ],
+  "oversizedAssets": []
+}

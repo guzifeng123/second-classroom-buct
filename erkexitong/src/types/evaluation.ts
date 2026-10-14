@@ -25,6 +25,8 @@ export interface NoteReference {
   title: string;
   plainText: string;
   imageCount: number;
+  tags?: string[];
+  dimensionKeys?: DimensionKey[];
   referencedAt: number;
   contentSnapshot?: ContentBlock[];
 }
@@ -84,12 +86,16 @@ export interface EvaluationSnapshot {
   selectedItemIds?: string[];
   savedAt: number;
   source?: "local" | "remote";
+  deviceName?: string;
+  draftVersion?: string;
 }
 
 export interface EvaluationDraftSaveResult {
   snapshot: EvaluationSnapshot;
   remoteSaved: boolean;
   remoteError?: string;
+  remoteErrorCode?: string;
+  remoteErrorStatusCode?: number;
 }
 
 export type EvaluationSyncStatus =

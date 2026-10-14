@@ -35,7 +35,12 @@ export function useEvaluationPageData() {
   const hydrated = useEvaluationStore((state) => state.hydrated);
   const hydrateDraft = useEvaluationStore((state) => state.hydrateDraft);
   const lastSyncError = useEvaluationStore((state) => state.lastSyncError);
+  const lastSyncErrorCode = useEvaluationStore((state) => state.lastSyncErrorCode);
+  const lastSyncErrorStatusCode = useEvaluationStore((state) => state.lastSyncErrorStatusCode);
   const syncStatus = useEvaluationStore((state) => state.syncStatus);
+  const mobileDimensionKey = useEvaluationStore((state) => state.mobileDimensionKey);
+  const mobileItemId = useEvaluationStore((state) => state.mobileItemId);
+  const lastEditedAt = useEvaluationStore((state) => state.lastEditedAt);
   const getTotalScore = useEvaluationStore((state) => state.getTotalScore);
   const getDimensionScore = useEvaluationStore((state) => state.getDimensionScore);
   const getItemScore = useEvaluationStore((state) => state.getItemScore);
@@ -91,7 +96,12 @@ export function useEvaluationPageData() {
     hydrated,
     hydrateDraft,
     lastSyncError,
+    lastSyncErrorCode,
+    lastSyncErrorStatusCode,
     syncStatus,
+    mobileDimensionKey,
+    mobileItemId,
+    lastEditedAt,
     totalScore,
     validationIssues,
     materialCount,

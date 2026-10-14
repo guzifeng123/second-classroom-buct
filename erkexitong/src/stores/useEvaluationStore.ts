@@ -26,23 +26,44 @@ import {
   createDefaultSelectedEvaluationItemIds,
   createEvaluationRecord,
   createInitialEvaluationRecords,
+  buildEvaluationConflictMessage,
   evaluationSnapshotsDiffer,
   hasMeaningfulEvaluationDraft,
   normalizeEvaluationSnapshot
 } from "../utils/evaluationDraft";
 import { getEvaluationValidationIssues } from "../utils/evaluationValidation";
+import { recordErrorLog, recordKeyAction } from "../utils/monitoring";
 
 export { calculateRecordScore, hasRecordMaterial, makeRecordKey } from "../utils/evaluationScoring";
 
 const DRAFT_KEY = "erkexitong-evaluation-draft";
+const POSITION_KEY = "erkexitong-evaluation-position";
+let saveTimer: ReturnType<typeof setTimeout> | null = null;
+const SYNC_ERROR_CLEARED = {
+  lastSyncError: null,
+  lastSyncErrorCode: null,
+  lastSyncErrorStatusCode: null
+};
+
+interface SyncErrorMeta {
+  message: string;
+  code: string | null;
+  statusCode: number | null;
+}
 
 interface EvaluationState {
   records: EvaluationRecordMap;
   selectedItemIds: string[];
   draftSavedAt: number | null;
+  draftVersion: string | null;
   hydrated: boolean;
   lastSyncError: string | null;
+  lastSyncErrorCode: string | null;
+  lastSyncErrorStatusCode: number | null;
   syncStatus: EvaluationSyncStatus;
+  mobileDimensionKey: DimensionKey | null;
+  mobileItemId: string | null;
+  lastEditedAt: number | null;
   addRecord: (dimensionKey: DimensionKey, sectionKey: SectionKey, itemId: string) => string | null;
   removeRecord: (dimensionKey: DimensionKey, itemId: string, recordId: string) => void;
   toggleItemSelection: (
@@ -77,7 +98,8 @@ interface EvaluationState {
     dimensionKey: DimensionKey,
     itemId: string,
     recordId: string,
-    reference: NoteReference
+    reference: NoteReference,
+    text?: string
   ) => void;
   removeNoteReference: (dimensionKey: DimensionKey, itemId: string, recordId: string, noteId: string) => void;
   applyTransferPayload: (payload: EditingItemPayload) => Promise<void>;
@@ -85,6 +107,8 @@ interface EvaluationState {
   hydrateDraft: (userId?: string) => Promise<void>;
   applySnapshot: (snapshot: EvaluationSnapshot) => Promise<void>;
   saveDraft: (userId?: string) => Promise<EvaluationDraftSaveResult>;
+  setMobilePosition: (dimensionKey: DimensionKey, itemId?: string | null) => void;
+  saveDraftDebounced: (userId?: string, delayMs?: number) => void;
   resetDraft: () => void;
   getItemScore: (dimensionKey: DimensionKey, itemId: string) => number;
   getDimensionScore: (dimensionKey: DimensionKey) => number;
@@ -92,12 +116,33 @@ interface EvaluationState {
   getValidationIssues: () => EvaluationValidationIssue[];
 }
 
-function createSnapshotFromState(state: Pick<EvaluationState, "records" | "selectedItemIds">): EvaluationSnapshot {
+function getSyncErrorMeta(error: unknown, fallback: string): SyncErrorMeta {
+  const message = error instanceof Error && error.message ? error.message : fallback;
+  const code =
+    error && typeof error === "object" && "errorCode" in error && typeof error.errorCode === "string"
+      ? error.errorCode
+      : null;
+  const statusCode =
+    error && typeof error === "object" && "statusCode" in error && typeof error.statusCode === "number"
+      ? error.statusCode
+      : null;
+
+  return {
+    message,
+    code,
+    statusCode
+  };
+}
+
+function createSnapshotFromState(
+  state: Pick<EvaluationState, "records" | "selectedItemIds" | "draftVersion">
+): EvaluationSnapshot {
   return {
     records: state.records,
     selectedItemIds: state.selectedItemIds,
     savedAt: Date.now(),
-    source: "local"
+    source: "local",
+    draftVersion: state.draftVersion ?? undefined
   };
 }
 
@@ -117,7 +162,8 @@ async function persistLocalSnapshot(snapshot: EvaluationSnapshot): Promise<void>
       records: snapshot.records,
       selectedItemIds: snapshot.selectedItemIds,
       savedAt: snapshot.savedAt,
-      source: "local"
+      source: "local",
+      draftVersion: snapshot.draftVersion
     } satisfies EvaluationSnapshot
   });
 }
@@ -141,9 +187,15 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
   records: createInitialEvaluationRecords(),
   selectedItemIds: createDefaultSelectedEvaluationItemIds(),
   draftSavedAt: null,
+  draftVersion: null,
   hydrated: false,
   lastSyncError: null,
+  lastSyncErrorCode: null,
+  lastSyncErrorStatusCode: null,
   syncStatus: "local-saved",
+  mobileDimensionKey: null,
+  mobileItemId: null,
+  lastEditedAt: null,
   addRecord: (dimensionKey, sectionKey, itemId) => {
     const item = findEvaluationItem(itemId);
     const record = createEvaluationRecord(dimensionKey, sectionKey, itemId, item);
@@ -158,7 +210,8 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
         [key]: [...(state.records[key] ?? []), record]
       },
       syncStatus: "local-unsaved",
-      lastSyncError: null
+      lastEditedAt: Date.now(),
+      ...SYNC_ERROR_CLEARED
     }));
 
     return record.id;
@@ -171,7 +224,8 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
         [key]: (state.records[key] ?? []).filter((record) => record.id !== recordId)
       },
       syncStatus: "local-unsaved",
-      lastSyncError: null
+      lastEditedAt: Date.now(),
+      ...SYNC_ERROR_CLEARED
     }));
   },
   toggleItemSelection: (dimensionKey, sectionKey, itemId, selected) => {
@@ -200,7 +254,8 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
             }
           : state.records,
         syncStatus: "local-unsaved",
-        lastSyncError: null
+        lastEditedAt: Date.now(),
+        ...SYNC_ERROR_CLEARED
       };
     });
   },
@@ -213,7 +268,8 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
         updatedAt: Date.now()
       })),
       syncStatus: "local-unsaved",
-      lastSyncError: null
+      lastEditedAt: Date.now(),
+      ...SYNC_ERROR_CLEARED
     })),
   updateOption: (dimensionKey, itemId, recordId, selectedOption) =>
     set((state) => ({
@@ -224,7 +280,8 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
         updatedAt: Date.now()
       })),
       syncStatus: "local-unsaved",
-      lastSyncError: null
+      lastEditedAt: Date.now(),
+      ...SYNC_ERROR_CLEARED
     })),
   updateNumber: (dimensionKey, itemId, recordId, numericValue) =>
     set((state) => ({
@@ -235,7 +292,8 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
         updatedAt: Date.now()
       })),
       syncStatus: "local-unsaved",
-      lastSyncError: null
+      lastEditedAt: Date.now(),
+      ...SYNC_ERROR_CLEARED
     })),
   addImages: (dimensionKey, itemId, recordId, images) => {
     const item = findEvaluationItem(itemId);
@@ -247,7 +305,8 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
         updatedAt: Date.now()
       })),
       syncStatus: "local-unsaved",
-      lastSyncError: null
+      lastEditedAt: Date.now(),
+      ...SYNC_ERROR_CLEARED
     }));
   },
   replaceImage: (dimensionKey, itemId, recordId, imageId, image) =>
@@ -259,7 +318,8 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
         updatedAt: Date.now()
       })),
       syncStatus: "local-unsaved",
-      lastSyncError: null
+      lastEditedAt: Date.now(),
+      ...SYNC_ERROR_CLEARED
     })),
   removeImage: (dimensionKey, itemId, recordId, imageId) =>
     set((state) => ({
@@ -270,9 +330,10 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
         updatedAt: Date.now()
       })),
       syncStatus: "local-unsaved",
-      lastSyncError: null
+      lastEditedAt: Date.now(),
+      ...SYNC_ERROR_CLEARED
     })),
-  addNoteReference: (dimensionKey, itemId, recordId, reference) =>
+  addNoteReference: (dimensionKey, itemId, recordId, reference, text) =>
     set((state) => ({
       records: updateRecord(state.records, dimensionKey, itemId, recordId, (record) => {
         const existingReferences = record.noteReferences ?? [];
@@ -283,13 +344,15 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
 
         return {
           ...record,
+          text: text ?? record.text,
           noteReferences: references,
           dirty: true,
           updatedAt: Date.now()
         };
       }),
       syncStatus: "local-unsaved",
-      lastSyncError: null
+      lastEditedAt: Date.now(),
+      ...SYNC_ERROR_CLEARED
     })),
   removeNoteReference: (dimensionKey, itemId, recordId, noteId) =>
     set((state) => ({
@@ -300,7 +363,8 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
         updatedAt: Date.now()
       })),
       syncStatus: "local-unsaved",
-      lastSyncError: null
+      lastEditedAt: Date.now(),
+      ...SYNC_ERROR_CLEARED
     })),
   applyTransferPayload: async (payload) => {
     const key = makeRecordKey(payload.dimensionKey, payload.itemId);
@@ -342,8 +406,9 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
         selectedItemIds: nextSelectedItemIds,
         records: nextRecords,
         draftSavedAt: savedAt,
-        lastSyncError: null,
-        syncStatus: "local-saved"
+        draftVersion: state.draftVersion,
+        syncStatus: "local-saved",
+        ...SYNC_ERROR_CLEARED
       };
     });
 
@@ -359,9 +424,10 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
         records: snapshot.records,
         selectedItemIds: snapshot.selectedItemIds ?? createDefaultSelectedEvaluationItemIds(),
         draftSavedAt: snapshot.savedAt,
+        draftVersion: snapshot.draftVersion ?? null,
         hydrated: true,
-        lastSyncError: null,
-        syncStatus: "local-saved"
+        syncStatus: "local-saved",
+        ...SYNC_ERROR_CLEARED
       });
     } else {
       const records = createInitialEvaluationRecords();
@@ -369,22 +435,23 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
         records,
         selectedItemIds: createDefaultSelectedEvaluationItemIds(),
         draftSavedAt: null,
+        draftVersion: null,
         hydrated: true,
-        lastSyncError: null,
-        syncStatus: "local-saved"
+        syncStatus: "local-saved",
+        ...SYNC_ERROR_CLEARED
       });
     }
   },
   hydrateDraft: async (userId) => {
     const localSnapshot = await readLocalSnapshot();
     let remoteSnapshot: EvaluationSnapshot | null = null;
-    let remoteError: string | null = null;
+    let remoteErrorMeta: SyncErrorMeta | null = null;
 
     if (userId) {
       try {
         remoteSnapshot = await fetchEvaluationSnapshot(userId);
       } catch (error) {
-        remoteError = error instanceof Error ? error.message : "远端快照读取失败";
+        remoteErrorMeta = getSyncErrorMeta(error, "远端快照读取失败");
       }
     }
 
@@ -395,9 +462,7 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
     if (localSnapshot && remoteSnapshot && evaluationSnapshotsDiffer(localSnapshot, remoteSnapshot)) {
       const result = await Taro.showModal({
         title: "发现草稿冲突",
-        content: `本机暂存 ${new Date(localSnapshot.savedAt).toLocaleString()}，远端暂存 ${new Date(
-          remoteSnapshot.savedAt
-        ).toLocaleString()}。是否应用远端草稿？`,
+        content: buildEvaluationConflictMessage(localSnapshot, remoteSnapshot),
         confirmText: "用远端",
         cancelText: "保留本机"
       });
@@ -408,10 +473,20 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
 
     if (selectedSnapshot) {
       await get().applySnapshot(selectedSnapshot);
+      try {
+        const position = Taro.getStorageSync<{ dimensionKey?: DimensionKey; itemId?: string }>(POSITION_KEY);
+        if (position?.dimensionKey) {
+          set({ mobileDimensionKey: position.dimensionKey, mobileItemId: position.itemId ?? null });
+        }
+      } catch {
+        // Position recovery is best effort.
+      }
       set({
         hydrated: true,
-        lastSyncError: remoteError,
-        syncStatus: remoteError ? "sync-failed" : "local-saved"
+        lastSyncError: remoteErrorMeta?.message ?? null,
+        lastSyncErrorCode: remoteErrorMeta?.code ?? null,
+        lastSyncErrorStatusCode: remoteErrorMeta?.statusCode ?? null,
+        syncStatus: remoteErrorMeta ? "sync-failed" : "local-saved"
       });
       return;
     }
@@ -421,9 +496,12 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
       records,
       selectedItemIds: createDefaultSelectedEvaluationItemIds(),
       draftSavedAt: null,
+      draftVersion: null,
       hydrated: true,
-      lastSyncError: remoteError,
-      syncStatus: remoteError ? "sync-failed" : "local-saved"
+      lastSyncError: remoteErrorMeta?.message ?? null,
+      lastSyncErrorCode: remoteErrorMeta?.code ?? null,
+      lastSyncErrorStatusCode: remoteErrorMeta?.statusCode ?? null,
+      syncStatus: remoteErrorMeta ? "sync-failed" : "local-saved"
     });
   },
   applySnapshot: async (snapshot) => {
@@ -436,9 +514,10 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
       records: normalized.records,
       selectedItemIds: normalized.selectedItemIds ?? createDefaultSelectedEvaluationItemIds(),
       draftSavedAt: normalized.savedAt,
+      draftVersion: normalized.draftVersion ?? null,
       hydrated: true,
-      lastSyncError: null,
-      syncStatus: "local-saved"
+      syncStatus: "local-saved",
+      ...SYNC_ERROR_CLEARED
     });
   },
   saveDraft: async (userId) => {
@@ -446,37 +525,71 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
     await persistLocalSnapshot(snapshot);
     set({
       draftSavedAt: snapshot.savedAt,
-      lastSyncError: null,
-      syncStatus: userId ? "remote-syncing" : "local-saved"
+      syncStatus: userId ? "remote-syncing" : "local-saved",
+      ...SYNC_ERROR_CLEARED
     });
 
     if (!userId) {
+      recordKeyAction("evaluation_draft_save", "success", { target: "local" });
       return {
         snapshot,
-        remoteSaved: false,
-        remoteError: "未登录，已仅保存到本机"
+        remoteSaved: false
       };
     }
 
     try {
-      await saveEvaluationDraftRemote(userId, snapshot);
-      set({
-        lastSyncError: null,
-        syncStatus: "remote-synced"
+      const savedSnapshot = await saveEvaluationDraftRemote(userId, snapshot);
+      const normalizedSavedSnapshot = normalizeEvaluationSnapshot(savedSnapshot ?? snapshot, "remote");
+      await persistLocalSnapshot({
+        ...normalizedSavedSnapshot,
+        source: "local"
       });
+      set({
+        draftSavedAt: normalizedSavedSnapshot.savedAt,
+        draftVersion: normalizedSavedSnapshot.draftVersion ?? null,
+        syncStatus: "remote-synced",
+        ...SYNC_ERROR_CLEARED
+      });
+      recordKeyAction("evaluation_draft_save", "success", { target: "remote" });
       return {
-        snapshot,
+        snapshot: normalizedSavedSnapshot,
         remoteSaved: true
       };
     } catch (error) {
-      const remoteError = error instanceof Error ? error.message : "远端草稿保存失败";
-      set({ lastSyncError: remoteError, syncStatus: "sync-failed" });
+      const remoteErrorMeta = getSyncErrorMeta(error, "远端草稿保存失败");
+      set({
+        lastSyncError: remoteErrorMeta.message,
+        lastSyncErrorCode: remoteErrorMeta.code,
+        lastSyncErrorStatusCode: remoteErrorMeta.statusCode,
+        syncStatus: "sync-failed"
+      });
+      recordKeyAction("evaluation_draft_save", "failed", { target: "remote" });
+      recordErrorLog("evaluation_draft_save", error, { target: "remote" });
       return {
         snapshot,
         remoteSaved: false,
-        remoteError
+        remoteError: remoteErrorMeta.message,
+        remoteErrorCode: remoteErrorMeta.code ?? undefined,
+        remoteErrorStatusCode: remoteErrorMeta.statusCode ?? undefined
       };
     }
+  },
+  setMobilePosition: (dimensionKey, itemId = null) => {
+    set({ mobileDimensionKey: dimensionKey, mobileItemId: itemId });
+    try {
+      Taro.setStorageSync(POSITION_KEY, { dimensionKey, itemId });
+    } catch {
+      // Ignore storage failures; the current session still keeps the position.
+    }
+  },
+  saveDraftDebounced: (userId, delayMs = 900) => {
+    if (saveTimer) {
+      clearTimeout(saveTimer);
+    }
+    saveTimer = setTimeout(() => {
+      saveTimer = null;
+      void get().saveDraft(userId);
+    }, delayMs);
   },
   resetDraft: () => {
     try {
@@ -488,9 +601,13 @@ export const useEvaluationStore = create<EvaluationState>((set, get) => ({
       records: createInitialEvaluationRecords(),
       selectedItemIds: createDefaultSelectedEvaluationItemIds(),
       draftSavedAt: null,
+      draftVersion: null,
+      mobileDimensionKey: null,
+      mobileItemId: null,
+      lastEditedAt: null,
       hydrated: true,
-      lastSyncError: null,
-      syncStatus: "local-saved"
+      syncStatus: "local-saved",
+      ...SYNC_ERROR_CLEARED
     });
   },
   getItemScore: (dimensionKey, itemId) => {

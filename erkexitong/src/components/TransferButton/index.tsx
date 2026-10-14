@@ -4,6 +4,7 @@ import { hasWsBaseUrl } from "../../services/api";
 import { sendTransferTo } from "../../services/transferService";
 import { useConnectionStore } from "../../stores/useConnectionStore";
 import type { EditingItemPayload } from "../../types/transfer";
+import { getSelectableTransferDevices } from "../../utils/transferDelivery";
 import "./index.scss";
 
 interface TransferButtonProps {
@@ -23,7 +24,7 @@ export default function TransferButton({
   const isConnected = useConnectionStore((state) => state.isConnected);
   const mode = useConnectionStore((state) => state.mode);
   const isOfflineDemo = mode === "offline-demo" || !hasWsBaseUrl;
-  const onlineDevices = otherDevices.filter((device) => device.online);
+  const onlineDevices = getSelectableTransferDevices(otherDevices);
   const canSend = isConnected || isOfflineDemo;
 
   const handleTransfer = async () => {
@@ -40,25 +41,28 @@ export default function TransferButton({
     }
 
     const itemList = ["我的其他设备", ...onlineDevices.map((device) => device.deviceName)];
+    let targetDevice = "broadcast";
 
     try {
       const result = await Taro.showActionSheet({ itemList });
-      const targetDevice = result.tapIndex === 0 ? "broadcast" : onlineDevices[result.tapIndex - 1]?.deviceId;
-
-      await sendTransferTo(targetDevice || "broadcast", action, payload);
-      await Taro.showToast({
-        title: isOfflineDemo ? "已记录演示流转" : "内容已发送",
-        icon: "success"
-      });
+      targetDevice =
+        result.tapIndex === 0 ? "broadcast" : onlineDevices[result.tapIndex - 1]?.deviceId ?? "broadcast";
     } catch {
       if (!isOfflineDemo) {
         return;
       }
+    }
 
-      await sendTransferTo("broadcast", action, payload);
+    try {
+      await sendTransferTo(targetDevice, action, payload);
       await Taro.showToast({
-        title: "已记录演示流转",
+        title: isOfflineDemo ? "已记录演示流转" : "已发送，等待确认",
         icon: "success"
+      });
+    } catch {
+      await Taro.showToast({
+        title: "发送失败，可重试",
+        icon: "none"
       });
     }
   };

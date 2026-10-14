@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import Taro, { useRouter } from "@tarojs/taro";
 import { Button, ScrollView, Text, View } from "@tarojs/components";
-import NoteContentRenderer from "../../../components/NoteContentRenderer";
 import { EmptyState } from "../../../components/ui";
+import NoteContentRenderer from "../../../components/NoteContentRenderer";
 import type { NoteReference } from "../../../types/evaluation";
 import { getNoteSnapshotContent, NOTE_SNAPSHOT_STORAGE_KEY } from "../../../utils/noteSnapshot";
 import "./index.scss";

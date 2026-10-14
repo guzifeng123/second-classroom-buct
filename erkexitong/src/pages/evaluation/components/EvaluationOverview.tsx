@@ -27,7 +27,7 @@ export default function EvaluationOverview({
         className="evaluation-overview__issue-button"
         onClick={() => Taro.navigateTo({ url: "/pages/evaluation/preview/index" })}
       >
-        查看问题清单
+        预览并逐项修正
       </Button>
     </View>
   );
